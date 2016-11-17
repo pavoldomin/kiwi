@@ -1,0 +1,408 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kiwi.boot.image.base &#8212; kiwi 8.25.5 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '8.25.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="top" title="kiwi 8.25.5 documentation" href="../../../../index.html" />
+    <link rel="up" title="kiwi.boot.image" href="../image.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for kiwi.boot.image.base</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2015 SUSE Linux GmbH.  All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This file is part of kiwi.</span>
+<span class="c1">#</span>
+<span class="c1"># kiwi is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1"># (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># kiwi is distributed in the hope that it will be useful,</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1"># GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with kiwi.  If not, see &lt;http://www.gnu.org/licenses/&gt;</span>
+<span class="c1">#</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">from</span> <span class="nn">tempfile</span> <span class="k">import</span> <span class="n">mkdtemp</span>
+
+<span class="c1"># project</span>
+<span class="kn">from</span> <span class="nn">...defaults</span> <span class="k">import</span> <span class="n">Defaults</span>
+<span class="kn">from</span> <span class="nn">...xml_description</span> <span class="k">import</span> <span class="n">XMLDescription</span>
+<span class="kn">from</span> <span class="nn">...xml_state</span> <span class="k">import</span> <span class="n">XMLState</span>
+<span class="kn">from</span> <span class="nn">...logger</span> <span class="k">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">...path</span> <span class="k">import</span> <span class="n">Path</span>
+
+<span class="kn">from</span> <span class="nn">...exceptions</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">KiwiTargetDirectoryNotFound</span><span class="p">,</span>
+    <span class="n">KiwiConfigFileNotFound</span><span class="p">,</span>
+    <span class="n">KiwiBootImageDumpError</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="BootImageBase"><a class="viewcode-back" href="../../../../api/kiwi.boot.image.html#kiwi.boot.image.base.BootImageBase">[docs]</a><span class="k">class</span> <span class="nc">BootImageBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class for boot image(initrd) task</span>
+
+<span class="sd">    Attributes</span>
+
+<span class="sd">    * :attr:`xml_state`</span>
+<span class="sd">        Instance of XMLState of the system image description</span>
+
+<span class="sd">    * :attr:`target_dir`</span>
+<span class="sd">        target dir to store the initrd</span>
+
+<span class="sd">    * :attr:`initrd_filename`</span>
+<span class="sd">        initrd file name</span>
+
+<span class="sd">    * :attr:`temp_boot_root_directory`</span>
+<span class="sd">        temporary directory to create the initrd system</span>
+
+<span class="sd">    * :attr:`boot_xml_state`</span>
+<span class="sd">        Instance of XMLState of the boot image description</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xml_state</span><span class="p">,</span> <span class="n">target_dir</span><span class="p">,</span> <span class="n">root_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span> <span class="o">=</span> <span class="n">xml_state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target_dir</span> <span class="o">=</span> <span class="n">target_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initrd_filename</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">boot_xml_state</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">temp_directories</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">call_destructor</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">boot_root_directory</span> <span class="o">=</span> <span class="n">root_dir</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">boot_root_directory</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boot_root_directory</span> <span class="o">=</span> <span class="n">mkdtemp</span><span class="p">(</span>
+                <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;kiwi_boot_root.&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">target_dir</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">temp_directories</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">boot_root_directory</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">target_dir</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">KiwiTargetDirectoryNotFound</span><span class="p">(</span>
+                <span class="s1">&#39;target directory </span><span class="si">%s</span><span class="s1"> not found&#39;</span> <span class="o">%</span> <span class="n">target_dir</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">initrd_file_name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">target_dir</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">xml_data</span><span class="o">.</span><span class="n">get_name</span><span class="p">(),</span>
+                <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">platform</span><span class="o">.</span><span class="n">machine</span><span class="p">(),</span>
+                <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">get_image_version</span><span class="p">(),</span>
+                <span class="s1">&#39;.initrd&#39;</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="BootImageBase.dump"><a class="viewcode-back" href="../../../../api/kiwi.boot.image.html#kiwi.boot.image.base.BootImageBase.dump">[docs]</a>    <span class="k">def</span> <span class="nf">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Pickle dump this instance to a file. If the object dump</span>
+<span class="sd">        is requested the destructor code will also be disabled</span>
+<span class="sd">        in order to preserve the generated data</span>
+
+<span class="sd">        :param string filename: file path name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">boot_image</span><span class="p">:</span>
+                <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">boot_image</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">disable_cleanup</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">KiwiBootImageDumpError</span><span class="p">(</span>
+                <span class="s1">&#39;Failed to pickle dump boot image: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">format</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="BootImageBase.disable_cleanup"><a class="viewcode-back" href="../../../../api/kiwi.boot.image.html#kiwi.boot.image.base.BootImageBase.disable_cleanup">[docs]</a>    <span class="k">def</span> <span class="nf">disable_cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">call_destructor</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="BootImageBase.enable_cleanup"><a class="viewcode-back" href="../../../../api/kiwi.boot.image.html#kiwi.boot.image.base.BootImageBase.enable_cleanup">[docs]</a>    <span class="k">def</span> <span class="nf">enable_cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">call_destructor</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="BootImageBase.prepare"><a class="viewcode-back" href="../../../../api/kiwi.boot.image.html#kiwi.boot.image.base.BootImageBase.prepare">[docs]</a>    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prepare new root system to create initrd from. Implementation</span>
+<span class="sd">        is only needed if there is no other root system available</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="BootImageBase.create_initrd"><a class="viewcode-back" href="../../../../api/kiwi.boot.image.html#kiwi.boot.image.base.BootImageBase.create_initrd">[docs]</a>    <span class="k">def</span> <span class="nf">create_initrd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mbrid</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Implements creation of the initrd</span>
+
+<span class="sd">        :param object mbrid: instance of ImageIdentifier</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="BootImageBase.is_prepared"><a class="viewcode-back" href="../../../../api/kiwi.boot.image.html#kiwi.boot.image.base.BootImageBase.is_prepared">[docs]</a>    <span class="k">def</span> <span class="nf">is_prepared</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if initrd system is prepared</span>
+
+<span class="sd">        :return: initrd system preparation status</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">boot_root_directory</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BootImageBase.load_boot_xml_description"><a class="viewcode-back" href="../../../../api/kiwi.boot.image.html#kiwi.boot.image.base.BootImageBase.load_boot_xml_description">[docs]</a>    <span class="k">def</span> <span class="nf">load_boot_xml_description</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load the boot image description referenced by the system image</span>
+<span class="sd">        description boot attribute</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Loading Boot XML description&#39;</span><span class="p">)</span>
+        <span class="n">boot_description_directory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_boot_description_directory</span><span class="p">()</span>
+        <span class="n">boot_config_file</span> <span class="o">=</span> <span class="n">boot_description_directory</span> <span class="o">+</span> <span class="s1">&#39;/config.xml&#39;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">boot_config_file</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">KiwiConfigFileNotFound</span><span class="p">(</span>
+                <span class="s1">&#39;no Boot XML description found in </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
+                <span class="n">boot_description_directory</span>
+            <span class="p">)</span>
+        <span class="n">boot_description</span> <span class="o">=</span> <span class="n">XMLDescription</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="n">boot_config_file</span><span class="p">,</span>
+            <span class="n">derived_from</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">xml_data</span><span class="o">.</span><span class="n">description_dir</span>
+        <span class="p">)</span>
+
+        <span class="n">boot_image_profile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">build_type</span><span class="o">.</span><span class="n">get_bootprofile</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">boot_image_profile</span><span class="p">:</span>
+            <span class="n">boot_image_profile</span> <span class="o">=</span> <span class="s1">&#39;default&#39;</span>
+        <span class="n">boot_kernel_profile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">build_type</span><span class="o">.</span><span class="n">get_bootkernel</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">boot_kernel_profile</span><span class="p">:</span>
+            <span class="n">boot_kernel_profile</span> <span class="o">=</span> <span class="s1">&#39;std&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">boot_xml_state</span> <span class="o">=</span> <span class="n">XMLState</span><span class="p">(</span>
+            <span class="n">boot_description</span><span class="o">.</span><span class="n">load</span><span class="p">(),</span> <span class="p">[</span><span class="n">boot_image_profile</span><span class="p">,</span> <span class="n">boot_kernel_profile</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--&gt; loaded </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">boot_config_file</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">boot_xml_state</span><span class="o">.</span><span class="n">build_type</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s1">&#39;--&gt; Selected build type: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">boot_xml_state</span><span class="o">.</span><span class="n">get_build_type_name</span><span class="p">()</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">boot_xml_state</span><span class="o">.</span><span class="n">profiles</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s1">&#39;--&gt; Selected boot profiles: image: </span><span class="si">%s</span><span class="s1">, kernel: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                <span class="n">boot_image_profile</span><span class="p">,</span> <span class="n">boot_kernel_profile</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="BootImageBase.import_system_description_elements"><a class="viewcode-back" href="../../../../api/kiwi.boot.image.html#kiwi.boot.image.base.BootImageBase.import_system_description_elements">[docs]</a>    <span class="k">def</span> <span class="nf">import_system_description_elements</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Copy information from the system image relevant to create the</span>
+<span class="sd">        boot image to the boot image state XML description</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">copy_displayname</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boot_xml_state</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">copy_name</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boot_xml_state</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">copy_repository_sections</span><span class="p">(</span>
+            <span class="n">target_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">boot_xml_state</span><span class="p">,</span>
+            <span class="n">wipe</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">copy_drivers_sections</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boot_xml_state</span>
+        <span class="p">)</span>
+        <span class="n">strip_description</span> <span class="o">=</span> <span class="n">XMLDescription</span><span class="p">(</span>
+            <span class="n">Defaults</span><span class="o">.</span><span class="n">get_boot_image_strip_file</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="n">strip_xml_state</span> <span class="o">=</span> <span class="n">XMLState</span><span class="p">(</span><span class="n">strip_description</span><span class="o">.</span><span class="n">load</span><span class="p">())</span>
+        <span class="n">strip_xml_state</span><span class="o">.</span><span class="n">copy_strip_sections</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boot_xml_state</span>
+        <span class="p">)</span>
+        <span class="n">preferences_subsection_names</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;bootloader_theme&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;bootsplash_theme&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;locale&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;packagemanager&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;rpm_check_signatures&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;rpm_excludedocs&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;showlicense&#39;</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">copy_preferences_subsections</span><span class="p">(</span>
+            <span class="n">preferences_subsection_names</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">boot_xml_state</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">copy_bootincluded_packages</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boot_xml_state</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">copy_bootincluded_archives</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boot_xml_state</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">copy_bootdelete_packages</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boot_xml_state</span>
+        <span class="p">)</span>
+        <span class="n">type_attributes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;bootkernel&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;bootloader&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;bootloader_console&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;bootprofile&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;boottimeout&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;btrfs_root_is_snapshot&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;gpt_hybrid_mbr&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;devicepersistency&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;filesystem&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;firmware&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;fsmountoptions&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;hybrid&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;hybridpersistent&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;hybridpersistent_filesystem&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;initrd_system&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;installboot&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;installprovidefailsafe&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;kernelcmdline&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;ramonly&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;target_removable&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;vga&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;wwid_wait_timeout&#39;</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">copy_build_type_attributes</span><span class="p">(</span>
+            <span class="n">type_attributes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">boot_xml_state</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">copy_systemdisk_section</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boot_xml_state</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">copy_machine_section</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boot_xml_state</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">copy_oemconfig_section</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boot_xml_state</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="BootImageBase.get_boot_description_directory"><a class="viewcode-back" href="../../../../api/kiwi.boot.image.html#kiwi.boot.image.base.BootImageBase.get_boot_description_directory">[docs]</a>    <span class="k">def</span> <span class="nf">get_boot_description_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Provide path to the boot image XML description</span>
+
+<span class="sd">        :return: path name</span>
+<span class="sd">        :rtype: string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">boot_description</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">build_type</span><span class="o">.</span><span class="n">get_boot</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">boot_description</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">boot_description</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;/&#39;</span><span class="p">:</span>
+                <span class="n">boot_description</span> <span class="o">=</span> \
+                    <span class="n">Defaults</span><span class="o">.</span><span class="n">get_boot_image_description_path</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> \
+                    <span class="n">boot_description</span>
+            <span class="k">return</span> <span class="n">boot_description</span></div>
+
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">call_destructor</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Cleaning up </span><span class="si">%s</span><span class="s1"> instance&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">directory</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">temp_directories</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">directory</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
+                    <span class="n">Path</span><span class="o">.</span><span class="n">wipe</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../index.html">
+              <img class="logo" src="../../../../_static/kiwi-logo.png" alt="Logo"/>
+            </a></p><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  <li><a href="../image.html">kiwi.boot.image</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<h1 class="logo"><a href="../../../../index.html">kiwi</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=SUSE&repo=kiwi&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/SUSE/kiwi">
+    <img
+        alt="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+        src="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Marcus Schäfer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/SUSE/kiwi" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

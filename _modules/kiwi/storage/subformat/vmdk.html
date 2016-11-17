@@ -1,0 +1,399 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kiwi.storage.subformat.vmdk &#8212; kiwi 8.25.5 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '8.25.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="top" title="kiwi 8.25.5 documentation" href="../../../../index.html" />
+    <link rel="up" title="kiwi.storage.subformat" href="../subformat.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for kiwi.storage.subformat.vmdk</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2015 SUSE Linux GmbH.  All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This file is part of kiwi.</span>
+<span class="c1">#</span>
+<span class="c1"># kiwi is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1"># (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># kiwi is distributed in the hope that it will be useful,</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1"># GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with kiwi.  If not, see &lt;http://www.gnu.org/licenses/&gt;</span>
+<span class="c1">#</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="c1"># In python2 bytes is string which is different from</span>
+<span class="c1"># the bytes type in python3. The bytes type from the</span>
+<span class="c1"># builtins generalizes this type to be bytes always</span>
+<span class="kn">from</span> <span class="nn">builtins</span> <span class="k">import</span> <span class="nb">bytes</span>
+
+<span class="c1"># project</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">DiskFormatBase</span>
+<span class="kn">from</span> <span class="nn">...command</span> <span class="k">import</span> <span class="n">Command</span>
+<span class="kn">from</span> <span class="nn">...logger</span> <span class="k">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">.template.vmware_settings</span> <span class="k">import</span> <span class="n">VmwareSettingsTemplate</span>
+
+<span class="kn">from</span> <span class="nn">...exceptions</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">KiwiVmdkToolsError</span><span class="p">,</span>
+    <span class="n">KiwiTemplateError</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="DiskFormatVmdk"><a class="viewcode-back" href="../../../../api/kiwi.storage.subformat.html#kiwi.storage.subformat.vmdk.DiskFormatVmdk">[docs]</a><span class="k">class</span> <span class="nc">DiskFormatVmdk</span><span class="p">(</span><span class="n">DiskFormatBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create vmdk disk format</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="DiskFormatVmdk.post_init"><a class="viewcode-back" href="../../../../api/kiwi.storage.subformat.html#kiwi.storage.subformat.vmdk.DiskFormatVmdk.post_init">[docs]</a>    <span class="k">def</span> <span class="nf">post_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">custom_args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        vmdk disk format post initialization method</span>
+
+<span class="sd">        Store qemu options as list from custom args dict</span>
+
+<span class="sd">        Attributes</span>
+
+<span class="sd">        * :attr:`options`</span>
+<span class="sd">            qemu format conversion options</span>
+
+<span class="sd">        * :attr:`image_format`</span>
+<span class="sd">            disk format name: vmdk</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_format</span> <span class="o">=</span> <span class="s1">&#39;vmdk&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_qemu_option_list</span><span class="p">(</span><span class="n">custom_args</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DiskFormatVmdk.create_image_format"><a class="viewcode-back" href="../../../../api/kiwi.storage.subformat.html#kiwi.storage.subformat.vmdk.DiskFormatVmdk.create_image_format">[docs]</a>    <span class="k">def</span> <span class="nf">create_image_format</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create vmdk disk format and machine settings file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Command</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="s1">&#39;qemu-img&#39;</span><span class="p">,</span> <span class="s1">&#39;convert&#39;</span><span class="p">,</span> <span class="s1">&#39;-f&#39;</span><span class="p">,</span> <span class="s1">&#39;raw&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">diskname</span><span class="p">,</span>
+                <span class="s1">&#39;-O&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_format</span>
+            <span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">+</span> <span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">get_target_name_for_format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_format</span><span class="p">)</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_vmdk_descriptor</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_create_vmware_settings_file</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="DiskFormatVmdk.store_to_result"><a class="viewcode-back" href="../../../../api/kiwi.storage.subformat.html#kiwi.storage.subformat.vmdk.DiskFormatVmdk.store_to_result">[docs]</a>    <span class="k">def</span> <span class="nf">store_to_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Store result files of the vmdk format conversion into the</span>
+<span class="sd">        provided result instance. This includes the vmdk image file</span>
+<span class="sd">        and the VMware settings file</span>
+
+<span class="sd">        :param object result: Instance of Result</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+            <span class="n">key</span><span class="o">=</span><span class="s1">&#39;disk_format_image&#39;</span><span class="p">,</span>
+            <span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_target_name_for_format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">image_format</span>
+            <span class="p">),</span>
+            <span class="n">use_for_bundle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">compress</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">shasum</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+            <span class="n">key</span><span class="o">=</span><span class="s1">&#39;disk_format_machine_settings&#39;</span><span class="p">,</span>
+            <span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_target_name_for_format</span><span class="p">(</span>
+                <span class="s1">&#39;vmx&#39;</span>
+            <span class="p">),</span>
+            <span class="n">use_for_bundle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">compress</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">shasum</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_create_vmware_settings_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        In order to run a vmdk image in VMware products a settings file is</span>
+<span class="sd">        needed or the possibility to convert machine settings into an ovf</span>
+<span class="sd">        via VMware&#39;s proprietary ovftool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">template_record</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;display_name&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">xml_data</span><span class="o">.</span><span class="n">get_displayname</span><span class="p">()</span> <span class="ow">or</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">xml_data</span><span class="o">.</span><span class="n">get_name</span><span class="p">(),</span>
+            <span class="s1">&#39;vmdk_file&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">get_target_name_for_format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_format</span><span class="p">),</span>
+            <span class="s1">&#39;virtual_hardware_version&#39;</span><span class="p">:</span> <span class="s1">&#39;9&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;guest_os&#39;</span><span class="p">:</span> <span class="s1">&#39;suse-64&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;disk_id&#39;</span><span class="p">:</span> <span class="s1">&#39;0&#39;</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Basic setup</span>
+        <span class="n">machine_setup</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">get_build_type_machine_section</span><span class="p">()</span>
+        <span class="n">memory_setup</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">cpu_setup</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">machine_setup</span><span class="p">:</span>
+            <span class="n">memory_setup</span> <span class="o">=</span> <span class="n">machine_setup</span><span class="o">.</span><span class="n">get_memory</span><span class="p">()</span>
+            <span class="n">hardware_version</span> <span class="o">=</span> <span class="n">machine_setup</span><span class="o">.</span><span class="n">get_HWversion</span><span class="p">()</span>
+            <span class="n">guest_os</span> <span class="o">=</span> <span class="n">machine_setup</span><span class="o">.</span><span class="n">get_guestOS</span><span class="p">()</span>
+            <span class="n">cpu_setup</span> <span class="o">=</span> <span class="n">machine_setup</span><span class="o">.</span><span class="n">get_ncpus</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">hardware_version</span><span class="p">:</span>
+                <span class="n">template_record</span><span class="p">[</span><span class="s1">&#39;virtual_hardware_version&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hardware_version</span>
+            <span class="k">if</span> <span class="n">guest_os</span><span class="p">:</span>
+                <span class="n">template_record</span><span class="p">[</span><span class="s1">&#39;guest_os&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">guest_os</span>
+            <span class="k">if</span> <span class="n">memory_setup</span><span class="p">:</span>
+                <span class="n">template_record</span><span class="p">[</span><span class="s1">&#39;memory_size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">memory_setup</span>
+            <span class="k">if</span> <span class="n">cpu_setup</span><span class="p">:</span>
+                <span class="n">template_record</span><span class="p">[</span><span class="s1">&#39;number_of_cpus&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cpu_setup</span>
+
+        <span class="c1"># CD/DVD setup</span>
+        <span class="n">iso_setup</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">get_build_type_vmdvd_section</span><span class="p">()</span>
+        <span class="n">iso_controller</span> <span class="o">=</span> <span class="s1">&#39;ide&#39;</span>
+        <span class="k">if</span> <span class="n">iso_setup</span><span class="p">:</span>
+            <span class="n">iso_controller</span> <span class="o">=</span> <span class="n">iso_setup</span><span class="o">.</span><span class="n">get_controller</span><span class="p">()</span> <span class="ow">or</span> <span class="n">iso_controller</span>
+            <span class="n">template_record</span><span class="p">[</span><span class="s1">&#39;iso_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">iso_setup</span><span class="o">.</span><span class="n">get_id</span><span class="p">()</span>
+
+        <span class="c1"># Network setup</span>
+        <span class="n">network_setup</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">get_build_type_vmnic_section</span><span class="p">()</span>
+        <span class="n">network_driver</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">network_connection_type</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">network_mac</span> <span class="o">=</span> <span class="s1">&#39;generated&#39;</span>
+        <span class="k">if</span> <span class="n">network_setup</span><span class="p">:</span>
+            <span class="n">network_driver</span> <span class="o">=</span> <span class="n">network_setup</span><span class="o">.</span><span class="n">get_driver</span><span class="p">()</span>
+            <span class="n">network_connection_type</span> <span class="o">=</span> <span class="n">network_setup</span><span class="o">.</span><span class="n">get_mode</span><span class="p">()</span>
+            <span class="n">network_mac</span> <span class="o">=</span> <span class="n">network_setup</span><span class="o">.</span><span class="n">get_mac</span><span class="p">()</span> <span class="ow">or</span> <span class="n">network_mac</span>
+            <span class="n">template_record</span><span class="p">[</span><span class="s1">&#39;nic_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">network_setup</span><span class="o">.</span><span class="n">get_interface</span><span class="p">()</span> <span class="ow">or</span> <span class="s1">&#39;0&#39;</span>
+            <span class="n">template_record</span><span class="p">[</span><span class="s1">&#39;mac_address&#39;</span><span class="p">]</span> <span class="o">=</span> \
+                <span class="n">network_mac</span>
+            <span class="n">template_record</span><span class="p">[</span><span class="s1">&#39;network_connection_type&#39;</span><span class="p">]</span> <span class="o">=</span> \
+                <span class="n">network_connection_type</span>
+            <span class="n">template_record</span><span class="p">[</span><span class="s1">&#39;network_driver&#39;</span><span class="p">]</span> <span class="o">=</span> \
+                <span class="n">network_driver</span>
+
+        <span class="c1"># Disk setup</span>
+        <span class="n">disk_setup</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">get_build_type_vmdisk_section</span><span class="p">()</span>
+        <span class="n">disk_controller</span> <span class="o">=</span> <span class="s1">&#39;ide&#39;</span>
+        <span class="k">if</span> <span class="n">disk_setup</span><span class="p">:</span>
+            <span class="n">disk_controller</span> <span class="o">=</span> <span class="n">disk_setup</span><span class="o">.</span><span class="n">get_controller</span><span class="p">()</span> <span class="ow">or</span> <span class="n">disk_controller</span>
+            <span class="n">disk_id</span> <span class="o">=</span> <span class="n">disk_setup</span><span class="o">.</span><span class="n">get_id</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">disk_controller</span> <span class="o">==</span> <span class="s1">&#39;ide&#39;</span><span class="p">:</span>
+                <span class="n">template_record</span><span class="p">[</span><span class="s1">&#39;scsi_controller_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">disk_controller</span>
+            <span class="k">if</span> <span class="n">disk_id</span><span class="p">:</span>
+                <span class="n">template_record</span><span class="p">[</span><span class="s1">&#39;disk_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">disk_id</span>
+
+        <span class="c1"># Addition custom entries</span>
+        <span class="n">custom_entries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">get_build_type_vmconfig_entries</span><span class="p">()</span>
+
+        <span class="c1"># Build settings template and write settings file</span>
+        <span class="n">settings_template</span> <span class="o">=</span> <span class="n">VmwareSettingsTemplate</span><span class="p">()</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span>
+            <span class="n">memory_setup</span><span class="p">,</span>
+            <span class="n">cpu_setup</span><span class="p">,</span>
+            <span class="n">network_setup</span><span class="p">,</span>
+            <span class="n">iso_setup</span><span class="p">,</span>
+            <span class="n">disk_controller</span><span class="p">,</span>
+            <span class="n">iso_controller</span><span class="p">,</span>
+            <span class="n">network_mac</span><span class="p">,</span>
+            <span class="n">network_driver</span><span class="p">,</span>
+            <span class="n">network_connection_type</span>
+        <span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">settings_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_target_name_for_format</span><span class="p">(</span><span class="s1">&#39;vmx&#39;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">settings_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">config</span><span class="p">:</span>
+                <span class="n">config</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">settings_template</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">template_record</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">custom_entry</span> <span class="ow">in</span> <span class="n">custom_entries</span><span class="p">:</span>
+                    <span class="n">config</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">custom_entry</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">linesep</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">KiwiTemplateError</span><span class="p">(</span>
+                <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="nb">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_update_vmdk_descriptor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the VMDK descriptor with the VMware tools version</span>
+<span class="sd">        and type information. This is done to let VMware&#39;s virtualization</span>
+<span class="sd">        infrastructure know about the installed VMware tools at boot</span>
+<span class="sd">        time of the image within a VMware virtual environment</span>
+<span class="sd">        e.g VCloud Air. It&#39;s required to have vmtoolsd installed as</span>
+<span class="sd">        part of the image. If not found a warning is provided to the</span>
+<span class="sd">        user and the VMDK descriptor stays untouched</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vmdk_vmtoolsd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span> <span class="o">+</span> <span class="s1">&#39;/usr/bin/vmtoolsd&#39;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">vmdk_vmtoolsd</span><span class="p">):</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s1">&#39;Could not find vmtoolsd in image root </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span>
+            <span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s1">&#39;Update of VMDK metadata skipped&#39;</span>
+            <span class="p">)</span>
+            <span class="k">return</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Updating VMDK metadata&#39;</span><span class="p">)</span>
+        <span class="n">vmdk_tools_install_type</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="n">vmdk_tools_version</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_vmdk_tools_version</span><span class="p">()</span>
+        <span class="n">vmdk_image_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_target_name_for_format</span><span class="p">(</span><span class="s1">&#39;vmdk&#39;</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s1">&#39;--&gt; Setting tools version: </span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">vmdk_tools_version</span>
+        <span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s1">&#39;--&gt; Setting tools install type: </span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">vmdk_tools_install_type</span>
+        <span class="p">)</span>
+        <span class="n">vmdk_descriptor_call</span> <span class="o">=</span> <span class="n">Command</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="p">[</span><span class="s1">&#39;dd&#39;</span><span class="p">,</span> <span class="s1">&#39;if=&#39;</span> <span class="o">+</span> <span class="n">vmdk_image_name</span><span class="p">,</span> <span class="s1">&#39;bs=1&#39;</span><span class="p">,</span> <span class="s1">&#39;count=1024&#39;</span><span class="p">,</span> <span class="s1">&#39;skip=512&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">vmdk_descriptor_lines</span> <span class="o">=</span> \
+            <span class="n">vmdk_descriptor_call</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\0</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">vmdk_descriptor_lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;encoding=&quot;UTF-8&quot;&#39;</span><span class="p">):</span>
+            <span class="n">vmdk_descriptor_lines</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;encoding=&quot;UTF-8&quot;&#39;</span><span class="p">)</span>
+        <span class="n">vmdk_descriptor_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="s1">&#39;ddb.toolsInstallType = &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="n">vmdk_tools_install_type</span>
+        <span class="p">)</span>
+        <span class="n">vmdk_descriptor_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="s1">&#39;ddb.toolsVersion = &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="n">vmdk_tools_version</span>
+        <span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">vmdk_image_name</span><span class="p">,</span> <span class="s1">&#39;ab&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">vmdk</span><span class="p">:</span>
+            <span class="n">vmdk</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">vmdk</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">vmdk_descriptor_lines</span><span class="p">),</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+            <span class="n">vmdk</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_vmdk_tools_version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">vmdk_tools_version_call</span> <span class="o">=</span> <span class="n">Command</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="p">[</span><span class="s1">&#39;chroot&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span><span class="p">,</span> <span class="s1">&#39;vmtoolsd&#39;</span><span class="p">,</span> <span class="s1">&#39;--version&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">vmdk_tools_version</span> <span class="o">=</span> <span class="n">vmdk_tools_version_call</span><span class="o">.</span><span class="n">output</span>
+        <span class="n">vmdk_tools_version_format</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span>
+            <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="s1">&#39;^VMware Tools daemon, version &#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;(.*)&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;\.&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;(.*)&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;\.&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;(.*)&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;\.&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;(.*?)&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39; \(.*\)&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;$&#39;</span>
+                <span class="p">]</span>
+            <span class="p">),</span> <span class="n">vmdk_tools_version</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">vmdk_tools_version_format</span><span class="p">:</span>
+            <span class="k">return</span> \
+                <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">vmdk_tools_version_format</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">)</span> <span class="o">+</span> \
+                <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">vmdk_tools_version_format</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span> <span class="o">*</span> <span class="mi">32</span><span class="p">)</span> <span class="o">+</span> \
+                <span class="nb">int</span><span class="p">(</span><span class="n">vmdk_tools_version_format</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">KiwiVmdkToolsError</span><span class="p">(</span>
+                <span class="s1">&#39;vmtools version </span><span class="si">%s</span><span class="s1"> does not match format&#39;</span> <span class="o">%</span> <span class="n">vmdk_tools_version</span>
+            <span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../index.html">
+              <img class="logo" src="../../../../_static/kiwi-logo.png" alt="Logo"/>
+            </a></p><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  <li><a href="../subformat.html">kiwi.storage.subformat</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<h1 class="logo"><a href="../../../../index.html">kiwi</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=SUSE&repo=kiwi&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/SUSE/kiwi">
+    <img
+        alt="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+        src="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Marcus Schäfer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/SUSE/kiwi" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

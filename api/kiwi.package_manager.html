@@ -1,0 +1,769 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kiwi.package_manager Package &#8212; kiwi 8.25.5 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '8.25.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="kiwi 8.25.5 documentation" href="../index.html" />
+    <link rel="up" title="API Documentation 8.25.5" href="kiwi.html" />
+    <link rel="next" title="kiwi.partitioner Package" href="kiwi.partitioner.html" />
+    <link rel="prev" title="kiwi.filesystem Package" href="kiwi.filesystem.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="kiwi-package-manager-package">
+<h1>kiwi.package_manager Package<a class="headerlink" href="#kiwi-package-manager-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-kiwi.package_manager.base">
+<span id="kiwi-package-manager-base-module"></span><h2><a class="reference internal" href="#module-kiwi.package_manager.base" title="kiwi.package_manager.base"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.package_manager.base</span></code></a> Module<a class="headerlink" href="#module-kiwi.package_manager.base" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.package_manager.base.PackageManagerBase">
+<em class="property">class </em><code class="descclassname">kiwi.package_manager.base.</code><code class="descname">PackageManagerBase</code><span class="sig-paren">(</span><em>repository</em>, <em>custom_args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/base.html#PackageManagerBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.base.PackageManagerBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Implements base class for installation/deletion of
+packages and collections using a package manager</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">repository</span></code></dt>
+<dd><p class="first last">Instance of Repository</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">root_dir</span></code></dt>
+<dd><p class="first last">root directory path name</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">root_bind</span></code></dt>
+<dd><p class="first last">Instance of RootBind</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">package_requests</span></code></dt>
+<dd><p class="first last">list of packages to install or delete</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">collection_requests</span></code></dt>
+<dd><p class="first last">list of collections to install</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">product_requests</span></code></dt>
+<dd><p class="first last">list of products to install</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.package_manager.base.PackageManagerBase.cleanup_requests">
+<code class="descname">cleanup_requests</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/base.html#PackageManagerBase.cleanup_requests"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.base.PackageManagerBase.cleanup_requests" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cleanup request queues</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.package_manager.base.PackageManagerBase.database_consistent">
+<code class="descname">database_consistent</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/base.html#PackageManagerBase.database_consistent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.base.PackageManagerBase.database_consistent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if package database is consistent</p>
+<p>Implementation in specialized package manager class</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.package_manager.base.PackageManagerBase.dump_reload_package_database">
+<code class="descname">dump_reload_package_database</code><span class="sig-paren">(</span><em>version=45</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/base.html#PackageManagerBase.dump_reload_package_database"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.base.PackageManagerBase.dump_reload_package_database" title="Permalink to this definition">¶</a></dt>
+<dd><p>For rpm based package managers, dump and reload the database
+to match the desired rpm db version</p>
+<p>Implementation in specialized package manager class</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>version</strong> (<em>string</em>) &#8211; unused</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.package_manager.base.PackageManagerBase.match_package_deleted">
+<code class="descname">match_package_deleted</code><span class="sig-paren">(</span><em>package_list</em>, <em>log_line</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/base.html#PackageManagerBase.match_package_deleted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.base.PackageManagerBase.match_package_deleted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Match expression to indicate a package has been deleted</p>
+<p>Implementation in specialized package manager class</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>package_list</strong> (<em>list</em>) &#8211; unused</li>
+<li><strong>log_line</strong> (<em>string</em>) &#8211; unused</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.package_manager.base.PackageManagerBase.match_package_installed">
+<code class="descname">match_package_installed</code><span class="sig-paren">(</span><em>package_list</em>, <em>log_line</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/base.html#PackageManagerBase.match_package_installed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.base.PackageManagerBase.match_package_installed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Match expression to indicate a package has been installed</p>
+<p>Implementation in specialized package manager class</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>package_list</strong> (<em>list</em>) &#8211; unused</li>
+<li><strong>log_line</strong> (<em>string</em>) &#8211; unused</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.package_manager.base.PackageManagerBase.post_init">
+<code class="descname">post_init</code><span class="sig-paren">(</span><em>custom_args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/base.html#PackageManagerBase.post_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.base.PackageManagerBase.post_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Post initialization method</p>
+<p>Implementation in specialized package manager class</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>custom_args</strong> (<em>list</em>) &#8211; unused</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.package_manager.base.PackageManagerBase.process_delete_requests">
+<code class="descname">process_delete_requests</code><span class="sig-paren">(</span><em>force=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/base.html#PackageManagerBase.process_delete_requests"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.base.PackageManagerBase.process_delete_requests" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process package delete requests (chroot)</p>
+<p>Implementation in specialized package manager class</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>force</strong> (<em>bool</em>) &#8211; unused</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.package_manager.base.PackageManagerBase.process_install_requests">
+<code class="descname">process_install_requests</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/base.html#PackageManagerBase.process_install_requests"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.base.PackageManagerBase.process_install_requests" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process package install requests for image phase (chroot)</p>
+<p>Implementation in specialized package manager class</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.package_manager.base.PackageManagerBase.process_install_requests_bootstrap">
+<code class="descname">process_install_requests_bootstrap</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/base.html#PackageManagerBase.process_install_requests_bootstrap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.base.PackageManagerBase.process_install_requests_bootstrap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process package install requests for bootstrap phase (no chroot)</p>
+<p>Implementation in specialized package manager class</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.package_manager.base.PackageManagerBase.process_only_required">
+<code class="descname">process_only_required</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/base.html#PackageManagerBase.process_only_required"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.base.PackageManagerBase.process_only_required" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup package processing only for required packages</p>
+<p>Implementation in specialized package manager class</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.package_manager.base.PackageManagerBase.request_collection">
+<code class="descname">request_collection</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/base.html#PackageManagerBase.request_collection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.base.PackageManagerBase.request_collection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Queue a package collection</p>
+<p>Implementation in specialized package manager class</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<em>string</em>) &#8211; unused</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.package_manager.base.PackageManagerBase.request_package">
+<code class="descname">request_package</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/base.html#PackageManagerBase.request_package"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.base.PackageManagerBase.request_package" title="Permalink to this definition">¶</a></dt>
+<dd><p>Queue a package request</p>
+<p>Implementation in specialized package manager class</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<em>string</em>) &#8211; unused</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.package_manager.base.PackageManagerBase.request_product">
+<code class="descname">request_product</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/base.html#PackageManagerBase.request_product"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.base.PackageManagerBase.request_product" title="Permalink to this definition">¶</a></dt>
+<dd><p>Queue a product request</p>
+<p>Implementation in specialized package manager class</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<em>string</em>) &#8211; unused</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.package_manager.base.PackageManagerBase.update">
+<code class="descname">update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/base.html#PackageManagerBase.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.base.PackageManagerBase.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process package update requests (chroot)</p>
+<p>Implementation in specialized package manager class</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.package_manager.yum">
+<span id="kiwi-package-manager-yum-module"></span><h2><a class="reference internal" href="#module-kiwi.package_manager.yum" title="kiwi.package_manager.yum"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.package_manager.yum</span></code></a> Module<a class="headerlink" href="#module-kiwi.package_manager.yum" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.package_manager.yum.PackageManagerYum">
+<em class="property">class </em><code class="descclassname">kiwi.package_manager.yum.</code><code class="descname">PackageManagerYum</code><span class="sig-paren">(</span><em>repository</em>, <em>custom_args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/yum.html#PackageManagerYum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.yum.PackageManagerYum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kiwi.package_manager.base.PackageManagerBase" title="kiwi.package_manager.base.PackageManagerBase"><code class="xref py py-class docutils literal"><span class="pre">kiwi.package_manager.base.PackageManagerBase</span></code></a></p>
+<p>Implements base class for installation/deletion of
+packages and collections using yum</p>
+<dl class="method">
+<dt id="kiwi.package_manager.yum.PackageManagerYum.database_consistent">
+<code class="descname">database_consistent</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/yum.html#PackageManagerYum.database_consistent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.yum.PackageManagerYum.database_consistent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if rpm package database is consistent</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.package_manager.yum.PackageManagerYum.dump_reload_package_database">
+<code class="descname">dump_reload_package_database</code><span class="sig-paren">(</span><em>version=45</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/yum.html#PackageManagerYum.dump_reload_package_database"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.yum.PackageManagerYum.dump_reload_package_database" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dump and reload the rpm database to match the desired rpm db version</p>
+<p>For the supported RHEL versions there is no dump/reload cycle required</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>version</strong> (<em>string</em>) &#8211; unused</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.package_manager.yum.PackageManagerYum.match_package_deleted">
+<code class="descname">match_package_deleted</code><span class="sig-paren">(</span><em>package_name</em>, <em>yum_output</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/yum.html#PackageManagerYum.match_package_deleted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.yum.PackageManagerYum.match_package_deleted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Match expression to indicate a package has been deleted</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>package_list</strong> (<em>list</em>) &#8211; list of all packages</li>
+<li><strong>log_line</strong> (<em>string</em>) &#8211; yum status line</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.package_manager.yum.PackageManagerYum.match_package_installed">
+<code class="descname">match_package_installed</code><span class="sig-paren">(</span><em>package_name</em>, <em>yum_output</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/yum.html#PackageManagerYum.match_package_installed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.yum.PackageManagerYum.match_package_installed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Match expression to indicate a package has been installed</p>
+<p>This match for the package to be installed in the output
+of the yum command is not 100% accurate. There might
+be false positives due to sub package names starting with
+the same base package name</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>package_list</strong> (<em>list</em>) &#8211; list of all packages</li>
+<li><strong>log_line</strong> (<em>string</em>) &#8211; yum status line</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.package_manager.yum.PackageManagerYum.post_init">
+<code class="descname">post_init</code><span class="sig-paren">(</span><em>custom_args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/yum.html#PackageManagerYum.post_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.yum.PackageManagerYum.post_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Post initialization method</p>
+<p>Store custom yum arguments</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">yum_args</span></code></dt>
+<dd><p class="first last">yum arguments from repository runtime configuration</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">command_env</span></code></dt>
+<dd><p class="first last">yum command environment from repository runtime configuration</p>
+</dd>
+</dl>
+</li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>custom_args</strong> (<em>list</em>) &#8211; custom yum arguments</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.package_manager.yum.PackageManagerYum.process_delete_requests">
+<code class="descname">process_delete_requests</code><span class="sig-paren">(</span><em>force=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/yum.html#PackageManagerYum.process_delete_requests"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.yum.PackageManagerYum.process_delete_requests" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process package delete requests (chroot)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>force</strong> (<em>bool</em>) &#8211; force deletion: true|false</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.package_manager.yum.PackageManagerYum.process_install_requests">
+<code class="descname">process_install_requests</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/yum.html#PackageManagerYum.process_install_requests"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.yum.PackageManagerYum.process_install_requests" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process package install requests for image phase (chroot)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.package_manager.yum.PackageManagerYum.process_install_requests_bootstrap">
+<code class="descname">process_install_requests_bootstrap</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/yum.html#PackageManagerYum.process_install_requests_bootstrap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.yum.PackageManagerYum.process_install_requests_bootstrap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process package install requests for bootstrap phase (no chroot)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.package_manager.yum.PackageManagerYum.process_only_required">
+<code class="descname">process_only_required</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/yum.html#PackageManagerYum.process_only_required"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.yum.PackageManagerYum.process_only_required" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup package processing only for required packages</p>
+<p>There is no required/recommends information in the rhel repo data</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.package_manager.yum.PackageManagerYum.request_collection">
+<code class="descname">request_collection</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/yum.html#PackageManagerYum.request_collection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.yum.PackageManagerYum.request_collection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Queue a collection request</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<em>string</em>) &#8211; yum group name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.package_manager.yum.PackageManagerYum.request_package">
+<code class="descname">request_package</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/yum.html#PackageManagerYum.request_package"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.yum.PackageManagerYum.request_package" title="Permalink to this definition">¶</a></dt>
+<dd><p>Queue a package request</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<em>string</em>) &#8211; package name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.package_manager.yum.PackageManagerYum.request_product">
+<code class="descname">request_product</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/yum.html#PackageManagerYum.request_product"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.yum.PackageManagerYum.request_product" title="Permalink to this definition">¶</a></dt>
+<dd><p>Queue a product request</p>
+<p>There is no product definition in the rhel repo data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<em>string</em>) &#8211; unused</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.package_manager.yum.PackageManagerYum.update">
+<code class="descname">update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/yum.html#PackageManagerYum.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.yum.PackageManagerYum.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process package update requests (chroot)</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.package_manager.zypper">
+<span id="kiwi-package-manager-zypper-module"></span><h2><a class="reference internal" href="#module-kiwi.package_manager.zypper" title="kiwi.package_manager.zypper"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.package_manager.zypper</span></code></a> Module<a class="headerlink" href="#module-kiwi.package_manager.zypper" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.package_manager.zypper.PackageManagerZypper">
+<em class="property">class </em><code class="descclassname">kiwi.package_manager.zypper.</code><code class="descname">PackageManagerZypper</code><span class="sig-paren">(</span><em>repository</em>, <em>custom_args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/zypper.html#PackageManagerZypper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.zypper.PackageManagerZypper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kiwi.package_manager.base.PackageManagerBase" title="kiwi.package_manager.base.PackageManagerBase"><code class="xref py py-class docutils literal"><span class="pre">kiwi.package_manager.base.PackageManagerBase</span></code></a></p>
+<p>Implements base class for installation/deletion of
+packages and collections using zypper</p>
+<dl class="method">
+<dt id="kiwi.package_manager.zypper.PackageManagerZypper.database_consistent">
+<code class="descname">database_consistent</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/zypper.html#PackageManagerZypper.database_consistent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.zypper.PackageManagerZypper.database_consistent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if rpm package database is consistent</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.package_manager.zypper.PackageManagerZypper.dump_reload_package_database">
+<code class="descname">dump_reload_package_database</code><span class="sig-paren">(</span><em>version=45</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/zypper.html#PackageManagerZypper.dump_reload_package_database"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.zypper.PackageManagerZypper.dump_reload_package_database" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dump and reload the rpm database to match the desired rpm db version
+Supported target rpm database db versions are</p>
+<ul class="simple">
+<li>45 (db45_load)</li>
+<li>48 (db48_load)</li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>version</strong> (<em>string</em>) &#8211; target rpm db version</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.package_manager.zypper.PackageManagerZypper.match_package_deleted">
+<code class="descname">match_package_deleted</code><span class="sig-paren">(</span><em>package_name</em>, <em>zypper_output</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/zypper.html#PackageManagerZypper.match_package_deleted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.zypper.PackageManagerZypper.match_package_deleted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Match expression to indicate a package has been deleted</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>package_list</strong> (<em>list</em>) &#8211; list of all packages</li>
+<li><strong>log_line</strong> (<em>string</em>) &#8211; zypper status line</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.package_manager.zypper.PackageManagerZypper.match_package_installed">
+<code class="descname">match_package_installed</code><span class="sig-paren">(</span><em>package_name</em>, <em>zypper_output</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/zypper.html#PackageManagerZypper.match_package_installed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.zypper.PackageManagerZypper.match_package_installed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Match expression to indicate a package has been installed</p>
+<p>This match for the package to be installed in the output
+of the zypper command is not 100% accurate. There might
+be false positives due to sub package names starting with
+the same base package name</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>package_list</strong> (<em>list</em>) &#8211; list of all packages</li>
+<li><strong>log_line</strong> (<em>string</em>) &#8211; zypper status line</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.package_manager.zypper.PackageManagerZypper.post_init">
+<code class="descname">post_init</code><span class="sig-paren">(</span><em>custom_args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/zypper.html#PackageManagerZypper.post_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.zypper.PackageManagerZypper.post_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Post initialization method</p>
+<p>Store custom zypper arguments</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">zypper_args</span></code></dt>
+<dd><p class="first last">zypper arguments from repository runtime configuration</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">command_env</span></code></dt>
+<dd><p class="first last">zypper command environment from repository runtime configuration</p>
+</dd>
+</dl>
+</li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>custom_args</strong> (<em>list</em>) &#8211; custom zypper arguments</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.package_manager.zypper.PackageManagerZypper.process_delete_requests">
+<code class="descname">process_delete_requests</code><span class="sig-paren">(</span><em>force=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/zypper.html#PackageManagerZypper.process_delete_requests"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.zypper.PackageManagerZypper.process_delete_requests" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process package delete requests (chroot)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>force</strong> (<em>bool</em>) &#8211; force deletion: true|false</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.package_manager.zypper.PackageManagerZypper.process_install_requests">
+<code class="descname">process_install_requests</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/zypper.html#PackageManagerZypper.process_install_requests"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.zypper.PackageManagerZypper.process_install_requests" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process package install requests for image phase (chroot)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.package_manager.zypper.PackageManagerZypper.process_install_requests_bootstrap">
+<code class="descname">process_install_requests_bootstrap</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/zypper.html#PackageManagerZypper.process_install_requests_bootstrap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.zypper.PackageManagerZypper.process_install_requests_bootstrap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process package install requests for bootstrap phase (no chroot)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.package_manager.zypper.PackageManagerZypper.process_only_required">
+<code class="descname">process_only_required</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/zypper.html#PackageManagerZypper.process_only_required"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.zypper.PackageManagerZypper.process_only_required" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup package processing only for required packages</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.package_manager.zypper.PackageManagerZypper.request_collection">
+<code class="descname">request_collection</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/zypper.html#PackageManagerZypper.request_collection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.zypper.PackageManagerZypper.request_collection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Queue a collection request</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<em>string</em>) &#8211; zypper pattern name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.package_manager.zypper.PackageManagerZypper.request_package">
+<code class="descname">request_package</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/zypper.html#PackageManagerZypper.request_package"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.zypper.PackageManagerZypper.request_package" title="Permalink to this definition">¶</a></dt>
+<dd><p>Queue a package request</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<em>string</em>) &#8211; package name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.package_manager.zypper.PackageManagerZypper.request_product">
+<code class="descname">request_product</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/zypper.html#PackageManagerZypper.request_product"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.zypper.PackageManagerZypper.request_product" title="Permalink to this definition">¶</a></dt>
+<dd><p>Queue a product request</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<em>string</em>) &#8211; zypper product name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.package_manager.zypper.PackageManagerZypper.update">
+<code class="descname">update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/package_manager/zypper.html#PackageManagerZypper.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.zypper.PackageManagerZypper.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process package update requests (chroot)</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.package_manager">
+<span id="module-contents"></span><h2>Module Contents<a class="headerlink" href="#module-kiwi.package_manager" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.package_manager.PackageManager">
+<em class="property">class </em><code class="descclassname">kiwi.package_manager.</code><code class="descname">PackageManager</code><a class="reference internal" href="../_modules/kiwi/package_manager.html#PackageManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.package_manager.PackageManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Package manager factory</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">repository</span></code></dt>
+<dd><p class="first last">Instance of Repository</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">package_manager</span></code></dt>
+<dd><p class="first last">package manager name</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">custom_args</span></code></dt>
+<dd><p class="first last">custom package manager arguments list</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/kiwi-logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">kiwi.package_manager Package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-kiwi.package_manager.base"><code class="docutils literal"><span class="pre">kiwi.package_manager.base</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.package_manager.yum"><code class="docutils literal"><span class="pre">kiwi.package_manager.yum</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.package_manager.zypper"><code class="docutils literal"><span class="pre">kiwi.package_manager.zypper</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.package_manager">Module Contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="kiwi.html">API Documentation 8.25.5</a><ul>
+      <li>Previous: <a href="kiwi.filesystem.html" title="previous chapter">kiwi.filesystem Package</a></li>
+      <li>Next: <a href="kiwi.partitioner.html" title="next chapter">kiwi.partitioner Package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<h1 class="logo"><a href="../index.html">kiwi</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=SUSE&repo=kiwi&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/SUSE/kiwi">
+    <img
+        alt="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+        src="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Marcus Schäfer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/api/kiwi.package_manager.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/SUSE/kiwi" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

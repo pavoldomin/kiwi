@@ -1,0 +1,322 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Manual Pages &#8212; kiwi 8.25.5 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '8.25.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="kiwi 8.25.5 documentation" href="../index.html" />
+    <link rel="next" title="kiwi image resize" href="image_resize.html" />
+    <link rel="prev" title="Development and Contributing" href="../contributing.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="manual-pages">
+<h1>Manual Pages<a class="headerlink" href="#manual-pages" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="synopsis">
+<h2>SYNOPSIS<a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>kiwi <span class="o">[</span>global options<span class="o">]</span> service &lt;command&gt; <span class="o">[</span>&lt;args&gt;<span class="o">]</span>
+
+kiwi -h <span class="p">|</span> --help
+kiwi <span class="o">[</span>--profile<span class="o">=</span>&lt;name&gt;...<span class="o">]</span>
+     <span class="o">[</span>--type<span class="o">=</span>&lt;build_type&gt;<span class="o">]</span>
+     <span class="o">[</span>--logfile<span class="o">=</span>&lt;filename&gt;<span class="o">]</span>
+     <span class="o">[</span>--debug<span class="o">]</span>
+     <span class="o">[</span>--color-output<span class="o">]</span>
+    image &lt;command&gt; <span class="o">[</span>&lt;args&gt;...<span class="o">]</span>
+kiwi <span class="o">[</span>--debug<span class="o">]</span>
+     <span class="o">[</span>--color-output<span class="o">]</span>
+    result &lt;command&gt; <span class="o">[</span>&lt;args&gt;...<span class="o">]</span>
+kiwi <span class="o">[</span>--profile<span class="o">=</span>&lt;name&gt;...<span class="o">]</span>
+     <span class="o">[</span>--shared-cache-dir<span class="o">=</span>&lt;directory&gt;<span class="o">]</span>
+     <span class="o">[</span>--type<span class="o">=</span>&lt;build_type&gt;<span class="o">]</span>
+     <span class="o">[</span>--logfile<span class="o">=</span>&lt;filename&gt;<span class="o">]</span>
+     <span class="o">[</span>--debug<span class="o">]</span>
+     <span class="o">[</span>--color-output<span class="o">]</span>
+    system &lt;command&gt; <span class="o">[</span>&lt;args&gt;...<span class="o">]</span>
+kiwi --compat &lt;legacy_args&gt;...
+kiwi -v <span class="p">|</span> --version
+kiwi <span class="nb">help</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="description">
+<h2>DESCRIPTION<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
+<p>KIWI is an imaging solution that is based on an image XML description.
+Such a description is represented by a directory which includes at least
+one <code class="file docutils literal"><span class="pre">config.xml</span></code> or <code class="file docutils literal"><span class="pre">.kiwi</span></code> file and may as well include other files like
+scripts or configuration data.</p>
+<p>A collection of example image descriptions can be found on the github
+repository here: <a class="reference external" href="https://github.com/SUSE/kiwi-descriptions">https://github.com/SUSE/kiwi-descriptions</a>. Most of the
+descriptions provide a so called JeOS image. JeOS means Just enough
+Operating System. A JeOS is a small, text only based image including a
+predefined remote source setup to allow installation of missing
+software components at a later point in time.</p>
+<p>KIWI operates in two steps. The system build command combines
+both steps into one to make it easier to start with KIWI. The first
+step is the preparation step and if that step was successful, a
+creation step follows which is able to create different image output
+types.</p>
+<p>In the preparation step, you prepare a directory including the contents
+of your new filesystem based on one or more software package source(s)
+The creation step is based on the result of the preparation step and
+uses the contents of the new image root tree to create the output
+image.</p>
+<p>KIWI supports the creation of the following image types:</p>
+<ul class="simple">
+<li>ISO Live Systems</li>
+<li>Virtual Disk for e.g cloud frameworks</li>
+<li>OEM Expandable Disk for system deployment from ISO or the network</li>
+<li>File system images for deployment in a pxe boot environment</li>
+</ul>
+<p>Depending on the image type a variety of different disk formats and
+architectures are supported.</p>
+</div>
+<div class="section" id="global-options">
+<h2>GLOBAL OPTIONS<a class="headerlink" href="#global-options" title="Permalink to this headline">¶</a></h2>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd><span class="option">--color-output</span></kbd></td>
+<td>Use Escape Sequences to print different types of information
+in colored output. The underlaying terminal has to understand
+those escape characters. Error messages appear red, warning
+messages yellow and debugging information will be printed light
+grey.</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--compat</span></kbd></td>
+<td>Support legacy kiwi commandline, see COMPATIBILITY section for details.</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--debug</span></kbd></td>
+<td>Print debug information on the commandline.</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--logfile=<var>&lt;filename&gt;</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>Specify log file. the logfile contains detailed information about
+the process.</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--profile=<var>&lt;name&gt;</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>Select profile to use. The specified profile must be part of the
+XML description. The option can be specified multiple times to
+allow using a combination of profiles</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--shared-cache-dir=<var>&lt;directory&gt;</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>Specify an alternative shared cache directory. The directory
+is shared via bind mount between the build host and image
+root system and contains information about package repositories
+and their cache and meta data. The default location is set
+to /var/cache/kiwi</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--type=<var>&lt;build_type&gt;</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>Select image build type. The specified build type must be configured
+as part of the XML description.</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--version</span></kbd></td>
+<td>Show program version</td></tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="example">
+<h2>EXAMPLE<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$ git clone https://github.com/SUSE/kiwi-descriptions
+
+$ kiwi --type vmx system build <span class="se">\</span>
+    --description kiwi-descriptions/suse/x86_64/suse-leap-42.1-JeOS <span class="se">\</span>
+    --target-dir /tmp/myimage
+</pre></div>
+</div>
+</div>
+<div class="section" id="services-and-commands">
+<h2>SERVICES and COMMANDS<a class="headerlink" href="#services-and-commands" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="image_resize.html">kiwi image resize</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="image_resize.html#synopsis">SYNOPSIS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="image_resize.html#description">DESCRIPTION</a></li>
+<li class="toctree-l2"><a class="reference internal" href="image_resize.html#options">OPTIONS</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="result_list.html">kiwi result list</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="result_list.html#synopsis">SYNOPSIS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="result_list.html#description">DESCRIPTION</a></li>
+<li class="toctree-l2"><a class="reference internal" href="result_list.html#options">OPTIONS</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="result_bundle.html">kiwi result bundle</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="result_bundle.html#synopsis">SYNOPSIS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="result_bundle.html#description">DESCRIPTION</a></li>
+<li class="toctree-l2"><a class="reference internal" href="result_bundle.html#options">OPTIONS</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="system_prepare.html">kiwi system prepare</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="system_prepare.html#synopsis">SYNOPSIS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="system_prepare.html#description">DESCRIPTION</a></li>
+<li class="toctree-l2"><a class="reference internal" href="system_prepare.html#options">OPTIONS</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="system_create.html">kiwi system create</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="system_create.html#synopsis">SYNOPSIS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="system_create.html#description">DESCRIPTION</a></li>
+<li class="toctree-l2"><a class="reference internal" href="system_create.html#options">OPTIONS</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="system_update.html">kiwi system update</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="system_update.html#synopsis">SYNOPSIS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="system_update.html#description">DESCRIPTION</a></li>
+<li class="toctree-l2"><a class="reference internal" href="system_update.html#options">OPTIONS</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="system_build.html">kiwi system build</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="system_build.html#synopsis">SYNOPSIS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="system_build.html#description">DESCRIPTION</a></li>
+<li class="toctree-l2"><a class="reference internal" href="system_build.html#options">OPTIONS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="system_build.html#uri-types">URI_TYPES</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="compatibility">
+<h2>COMPATIBILITY<a class="headerlink" href="#compatibility" title="Permalink to this headline">¶</a></h2>
+<p>This version of KIWI uses a different caller syntax compared to
+former versions. However there is a compatibility mode which allows
+to use a legacy KIWI commandline as follows:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$ kiwi --compat -- <span class="se">\</span>
+    --build kiwi-descriptions/suse/x86_64/suse-leap-42.1-JeOS <span class="se">\</span>
+    --type vmx -d /tmp/myimage
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/kiwi-logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Manual Pages</a><ul>
+<li><a class="reference internal" href="#synopsis">SYNOPSIS</a></li>
+<li><a class="reference internal" href="#description">DESCRIPTION</a></li>
+<li><a class="reference internal" href="#global-options">GLOBAL OPTIONS</a></li>
+<li><a class="reference internal" href="#example">EXAMPLE</a></li>
+<li><a class="reference internal" href="#services-and-commands">SERVICES and COMMANDS</a></li>
+<li><a class="reference internal" href="#compatibility">COMPATIBILITY</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../contributing.html" title="previous chapter">Development and Contributing</a></li>
+      <li>Next: <a href="image_resize.html" title="next chapter">kiwi image resize</a></li>
+  </ul></li>
+</ul>
+</div>
+<h1 class="logo"><a href="../index.html">kiwi</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=SUSE&repo=kiwi&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/SUSE/kiwi">
+    <img
+        alt="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+        src="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Marcus Schäfer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/manual/kiwi.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/SUSE/kiwi" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

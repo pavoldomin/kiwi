@@ -1,0 +1,448 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kiwi.bootloader.template Package &#8212; kiwi 8.25.5 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '8.25.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="kiwi 8.25.5 documentation" href="../index.html" />
+    <link rel="up" title="kiwi.bootloader Package" href="kiwi.bootloader.html" />
+    <link rel="next" title="kiwi.builder Package" href="kiwi.builder.html" />
+    <link rel="prev" title="kiwi.bootloader.install Package" href="kiwi.bootloader.install.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="kiwi-bootloader-template-package">
+<h1>kiwi.bootloader.template Package<a class="headerlink" href="#kiwi-bootloader-template-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-kiwi.bootloader.template.grub2">
+<span id="kiwi-bootloader-template-grub2-module"></span><h2><a class="reference internal" href="#module-kiwi.bootloader.template.grub2" title="kiwi.bootloader.template.grub2"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.bootloader.template.grub2</span></code></a> Module<a class="headerlink" href="#module-kiwi.bootloader.template.grub2" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.bootloader.template.grub2.BootLoaderTemplateGrub2">
+<em class="property">class </em><code class="descclassname">kiwi.bootloader.template.grub2.</code><code class="descname">BootLoaderTemplateGrub2</code><a class="reference internal" href="../_modules/kiwi/bootloader/template/grub2.html#BootLoaderTemplateGrub2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.template.grub2.BootLoaderTemplateGrub2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>grub2 configuraton file templates</p>
+<dl class="method">
+<dt id="kiwi.bootloader.template.grub2.BootLoaderTemplateGrub2.get_disk_template">
+<code class="descname">get_disk_template</code><span class="sig-paren">(</span><em>failsafe=True</em>, <em>hybrid=True</em>, <em>terminal='gfxterm'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/template/grub2.html#BootLoaderTemplateGrub2.get_disk_template"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.template.grub2.BootLoaderTemplateGrub2.get_disk_template" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bootloader configuration template for disk image</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>failsafe</strong> (<em>bool</em>) &#8211; with failsafe true|false</li>
+<li><strong>hybrid</strong> (<em>bool</em>) &#8211; with hybrid true|false</li>
+<li><strong>terminal</strong> (<em>string</em>) &#8211; output terminal name</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Template</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.template.grub2.BootLoaderTemplateGrub2.get_install_template">
+<code class="descname">get_install_template</code><span class="sig-paren">(</span><em>failsafe=True</em>, <em>hybrid=True</em>, <em>terminal='gfxterm'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/template/grub2.html#BootLoaderTemplateGrub2.get_install_template"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.template.grub2.BootLoaderTemplateGrub2.get_install_template" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bootloader configuration template for install media</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>failsafe</strong> (<em>bool</em>) &#8211; with failsafe true|false</li>
+<li><strong>hybrid</strong> (<em>bool</em>) &#8211; with hybrid true|false</li>
+<li><strong>terminal</strong> (<em>string</em>) &#8211; output terminal name</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Template</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.template.grub2.BootLoaderTemplateGrub2.get_iso_template">
+<code class="descname">get_iso_template</code><span class="sig-paren">(</span><em>failsafe=True</em>, <em>hybrid=True</em>, <em>terminal='gfxterm'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/template/grub2.html#BootLoaderTemplateGrub2.get_iso_template"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.template.grub2.BootLoaderTemplateGrub2.get_iso_template" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bootloader configuration template for live ISO media</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>failsafe</strong> (<em>bool</em>) &#8211; with failsafe true|false</li>
+<li><strong>hybrid</strong> (<em>bool</em>) &#8211; with hybrid true|false</li>
+<li><strong>terminal</strong> (<em>string</em>) &#8211; output terminal name</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Template</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.template.grub2.BootLoaderTemplateGrub2.get_multiboot_disk_template">
+<code class="descname">get_multiboot_disk_template</code><span class="sig-paren">(</span><em>failsafe=True</em>, <em>terminal='gfxterm'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/template/grub2.html#BootLoaderTemplateGrub2.get_multiboot_disk_template"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.template.grub2.BootLoaderTemplateGrub2.get_multiboot_disk_template" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bootloader configuration template for disk image with
+hypervisor, e.g Xen dom0</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>failsafe</strong> (<em>bool</em>) &#8211; with failsafe true|false</li>
+<li><strong>terminal</strong> (<em>string</em>) &#8211; output terminal name</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Template</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.template.grub2.BootLoaderTemplateGrub2.get_multiboot_install_template">
+<code class="descname">get_multiboot_install_template</code><span class="sig-paren">(</span><em>failsafe=True</em>, <em>terminal='gfxterm'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/template/grub2.html#BootLoaderTemplateGrub2.get_multiboot_install_template"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.template.grub2.BootLoaderTemplateGrub2.get_multiboot_install_template" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bootloader configuration template for install media with
+hypervisor, e.g Xen dom0</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>failsafe</strong> (<em>bool</em>) &#8211; with failsafe true|false</li>
+<li><strong>terminal</strong> (<em>string</em>) &#8211; output terminal name</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Template</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.template.grub2.BootLoaderTemplateGrub2.get_multiboot_iso_template">
+<code class="descname">get_multiboot_iso_template</code><span class="sig-paren">(</span><em>failsafe=True</em>, <em>terminal='gfxterm'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/template/grub2.html#BootLoaderTemplateGrub2.get_multiboot_iso_template"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.template.grub2.BootLoaderTemplateGrub2.get_multiboot_iso_template" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bootloader configuration template for live ISO media with
+hypervisor, e.g Xen dom0</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>failsafe</strong> (<em>bool</em>) &#8211; with failsafe true|false</li>
+<li><strong>terminal</strong> (<em>string</em>) &#8211; output terminal name</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Template</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.bootloader.template.isolinux">
+<span id="kiwi-bootloader-template-isolinux-module"></span><h2><a class="reference internal" href="#module-kiwi.bootloader.template.isolinux" title="kiwi.bootloader.template.isolinux"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.bootloader.template.isolinux</span></code></a> Module<a class="headerlink" href="#module-kiwi.bootloader.template.isolinux" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.bootloader.template.isolinux.BootLoaderTemplateIsoLinux">
+<em class="property">class </em><code class="descclassname">kiwi.bootloader.template.isolinux.</code><code class="descname">BootLoaderTemplateIsoLinux</code><a class="reference internal" href="../_modules/kiwi/bootloader/template/isolinux.html#BootLoaderTemplateIsoLinux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.template.isolinux.BootLoaderTemplateIsoLinux" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>isolinux configuraton file templates</p>
+<dl class="method">
+<dt id="kiwi.bootloader.template.isolinux.BootLoaderTemplateIsoLinux.get_install_message_template">
+<code class="descname">get_install_message_template</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/template/isolinux.html#BootLoaderTemplateIsoLinux.get_install_message_template"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.template.isolinux.BootLoaderTemplateIsoLinux.get_install_message_template" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bootloader template for text message file in install mode.
+isolinux displays this as menu if no graphics mode can be
+initialized</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Template</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.template.isolinux.BootLoaderTemplateIsoLinux.get_install_template">
+<code class="descname">get_install_template</code><span class="sig-paren">(</span><em>failsafe=True</em>, <em>with_theme=True</em>, <em>terminal=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/template/isolinux.html#BootLoaderTemplateIsoLinux.get_install_template"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.template.isolinux.BootLoaderTemplateIsoLinux.get_install_template" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bootloader configuration template for install media</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>failsafe</strong> (<em>bool</em>) &#8211; with failsafe true|false</li>
+<li><strong>with_theme</strong> (<em>bool</em>) &#8211; with graphics theme true|false</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Template</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.template.isolinux.BootLoaderTemplateIsoLinux.get_message_template">
+<code class="descname">get_message_template</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/template/isolinux.html#BootLoaderTemplateIsoLinux.get_message_template"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.template.isolinux.BootLoaderTemplateIsoLinux.get_message_template" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bootloader template for text message file. isolinux
+displays this as menu if no graphics mode can be initialized</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Template</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.template.isolinux.BootLoaderTemplateIsoLinux.get_multiboot_install_template">
+<code class="descname">get_multiboot_install_template</code><span class="sig-paren">(</span><em>failsafe=True</em>, <em>with_theme=True</em>, <em>terminal=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/template/isolinux.html#BootLoaderTemplateIsoLinux.get_multiboot_install_template"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.template.isolinux.BootLoaderTemplateIsoLinux.get_multiboot_install_template" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bootloader configuration template for install media with
+hypervisor, e.g Xen dom0</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>failsafe</strong> (<em>bool</em>) &#8211; with failsafe true|false</li>
+<li><strong>with_theme</strong> (<em>bool</em>) &#8211; with graphics theme true|false</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Template</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.template.isolinux.BootLoaderTemplateIsoLinux.get_multiboot_template">
+<code class="descname">get_multiboot_template</code><span class="sig-paren">(</span><em>failsafe=True</em>, <em>with_theme=True</em>, <em>terminal=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/template/isolinux.html#BootLoaderTemplateIsoLinux.get_multiboot_template"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.template.isolinux.BootLoaderTemplateIsoLinux.get_multiboot_template" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bootloader configuration template for live media with
+hypervisor, e.g Xen dom0</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>failsafe</strong> (<em>bool</em>) &#8211; with failsafe true|false</li>
+<li><strong>with_theme</strong> (<em>bool</em>) &#8211; with graphics theme true|false</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Template</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.template.isolinux.BootLoaderTemplateIsoLinux.get_template">
+<code class="descname">get_template</code><span class="sig-paren">(</span><em>failsafe=True</em>, <em>with_theme=True</em>, <em>terminal=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/template/isolinux.html#BootLoaderTemplateIsoLinux.get_template"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.template.isolinux.BootLoaderTemplateIsoLinux.get_template" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bootloader configuration template for live media</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>failsafe</strong> (<em>bool</em>) &#8211; with failsafe true|false</li>
+<li><strong>with_theme</strong> (<em>bool</em>) &#8211; with graphics theme true|false</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Template</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.bootloader.template.zipl">
+<span id="kiwi-bootloader-template-zipl-module"></span><h2><a class="reference internal" href="#module-kiwi.bootloader.template.zipl" title="kiwi.bootloader.template.zipl"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.bootloader.template.zipl</span></code></a> Module<a class="headerlink" href="#module-kiwi.bootloader.template.zipl" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.bootloader.template.zipl.BootLoaderTemplateZipl">
+<em class="property">class </em><code class="descclassname">kiwi.bootloader.template.zipl.</code><code class="descname">BootLoaderTemplateZipl</code><a class="reference internal" href="../_modules/kiwi/bootloader/template/zipl.html#BootLoaderTemplateZipl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.template.zipl.BootLoaderTemplateZipl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>zipl configuraton file templates</p>
+<dl class="method">
+<dt id="kiwi.bootloader.template.zipl.BootLoaderTemplateZipl.get_template">
+<code class="descname">get_template</code><span class="sig-paren">(</span><em>failsafe=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/template/zipl.html#BootLoaderTemplateZipl.get_template"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.template.zipl.BootLoaderTemplateZipl.get_template" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bootloader configuration template for disk boot</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>failsafe</strong> (<em>bool</em>) &#8211; with failsafe true|false</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">Template</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.bootloader.template">
+<span id="module-contents"></span><h2>Module Contents<a class="headerlink" href="#module-kiwi.bootloader.template" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/kiwi-logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">kiwi.bootloader.template Package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-kiwi.bootloader.template.grub2"><code class="docutils literal"><span class="pre">kiwi.bootloader.template.grub2</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.bootloader.template.isolinux"><code class="docutils literal"><span class="pre">kiwi.bootloader.template.isolinux</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.bootloader.template.zipl"><code class="docutils literal"><span class="pre">kiwi.bootloader.template.zipl</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.bootloader.template">Module Contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="kiwi.html">API Documentation 8.25.5</a><ul>
+  <li><a href="kiwi.bootloader.html">kiwi.bootloader Package</a><ul>
+      <li>Previous: <a href="kiwi.bootloader.install.html" title="previous chapter">kiwi.bootloader.install Package</a></li>
+      <li>Next: <a href="kiwi.builder.html" title="next chapter">kiwi.builder Package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<h1 class="logo"><a href="../index.html">kiwi</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=SUSE&repo=kiwi&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/SUSE/kiwi">
+    <img
+        alt="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+        src="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Marcus Schäfer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/api/kiwi.bootloader.template.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/SUSE/kiwi" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

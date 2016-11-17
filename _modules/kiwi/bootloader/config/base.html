@@ -1,0 +1,550 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kiwi.bootloader.config.base &#8212; kiwi 8.25.5 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '8.25.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="top" title="kiwi 8.25.5 documentation" href="../../../../index.html" />
+    <link rel="up" title="kiwi.bootloader.config" href="../config.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for kiwi.bootloader.config.base</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2015 SUSE Linux GmbH.  All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This file is part of kiwi.</span>
+<span class="c1">#</span>
+<span class="c1"># kiwi is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1"># (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># kiwi is distributed in the hope that it will be useful,</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1"># GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with kiwi.  If not, see &lt;http://www.gnu.org/licenses/&gt;</span>
+<span class="c1">#</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span>
+
+<span class="c1"># project</span>
+<span class="kn">from</span> <span class="nn">...logger</span> <span class="k">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">...storage.setup</span> <span class="k">import</span> <span class="n">DiskSetup</span>
+<span class="kn">from</span> <span class="nn">...path</span> <span class="k">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">...defaults</span> <span class="k">import</span> <span class="n">Defaults</span>
+
+<span class="kn">from</span> <span class="nn">...exceptions</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">KiwiBootLoaderTargetError</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="BootLoaderConfigBase"><a class="viewcode-back" href="../../../../api/kiwi.bootloader.config.html#kiwi.bootloader.config.base.BootLoaderConfigBase">[docs]</a><span class="k">class</span> <span class="nc">BootLoaderConfigBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class for bootloader configuration</span>
+
+<span class="sd">    Attributes</span>
+
+<span class="sd">    * :attr:`root_dir`</span>
+<span class="sd">        root directory path name</span>
+
+<span class="sd">    * :attr:`xml_state`</span>
+<span class="sd">        Instance of XMLState of the system image description</span>
+
+<span class="sd">    * :attr:`custom_args`</span>
+<span class="sd">        List of custom bootloader arguments</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xml_state</span><span class="p">,</span> <span class="n">root_dir</span><span class="p">,</span> <span class="n">custom_args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span> <span class="o">=</span> <span class="n">root_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span> <span class="o">=</span> <span class="n">xml_state</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">post_init</span><span class="p">(</span><span class="n">custom_args</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BootLoaderConfigBase.post_init"><a class="viewcode-back" href="../../../../api/kiwi.bootloader.config.html#kiwi.bootloader.config.base.BootLoaderConfigBase.post_init">[docs]</a>    <span class="k">def</span> <span class="nf">post_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">custom_args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Post initialization method</span>
+
+<span class="sd">        Store custom arguments by default</span>
+
+<span class="sd">        :param list custom_args: custom bootloader arguments</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">custom_args</span> <span class="o">=</span> <span class="n">custom_args</span></div>
+
+<div class="viewcode-block" id="BootLoaderConfigBase.write"><a class="viewcode-back" href="../../../../api/kiwi.bootloader.config.html#kiwi.bootloader.config.base.BootLoaderConfigBase.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write config data to config file.</span>
+
+<span class="sd">        Implementation in specialized bootloader class required</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="BootLoaderConfigBase.setup_disk_image_config"><a class="viewcode-back" href="../../../../api/kiwi.bootloader.config.html#kiwi.bootloader.config.base.BootLoaderConfigBase.setup_disk_image_config">[docs]</a>    <span class="k">def</span> <span class="nf">setup_disk_image_config</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">uuid</span><span class="p">,</span> <span class="n">hypervisor</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">initrd</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create boot config file to boot from disk.</span>
+
+<span class="sd">        Implementation in specialized bootloader class required</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="BootLoaderConfigBase.setup_install_image_config"><a class="viewcode-back" href="../../../../api/kiwi.bootloader.config.html#kiwi.bootloader.config.base.BootLoaderConfigBase.setup_install_image_config">[docs]</a>    <span class="k">def</span> <span class="nf">setup_install_image_config</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">mbrid</span><span class="p">,</span> <span class="n">hypervisor</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">initrd</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create boot config file to boot from install media in EFI mode.</span>
+
+<span class="sd">        Implementation in specialized bootloader class required</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="BootLoaderConfigBase.setup_live_image_config"><a class="viewcode-back" href="../../../../api/kiwi.bootloader.config.html#kiwi.bootloader.config.base.BootLoaderConfigBase.setup_live_image_config">[docs]</a>    <span class="k">def</span> <span class="nf">setup_live_image_config</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">mbrid</span><span class="p">,</span> <span class="n">hypervisor</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">initrd</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create boot config file to boot live ISO image in EFI mode.</span>
+
+<span class="sd">        Implementation in specialized bootloader class required</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="BootLoaderConfigBase.setup_disk_boot_images"><a class="viewcode-back" href="../../../../api/kiwi.bootloader.config.html#kiwi.bootloader.config.base.BootLoaderConfigBase.setup_disk_boot_images">[docs]</a>    <span class="k">def</span> <span class="nf">setup_disk_boot_images</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">boot_uuid</span><span class="p">,</span> <span class="n">lookup_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create bootloader images for disk boot</span>
+
+<span class="sd">        Some bootloaders requires to build a boot image the bootloader</span>
+<span class="sd">        can load from a specific offset address or from a standardized</span>
+<span class="sd">        path on a filesystem.</span>
+
+<span class="sd">        Implementation in specialized bootloader class required</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="BootLoaderConfigBase.setup_install_boot_images"><a class="viewcode-back" href="../../../../api/kiwi.bootloader.config.html#kiwi.bootloader.config.base.BootLoaderConfigBase.setup_install_boot_images">[docs]</a>    <span class="k">def</span> <span class="nf">setup_install_boot_images</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mbrid</span><span class="p">,</span> <span class="n">lookup_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create bootloader images for ISO boot an install media</span>
+
+<span class="sd">        Implementation in specialized bootloader class required</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="BootLoaderConfigBase.setup_live_boot_images"><a class="viewcode-back" href="../../../../api/kiwi.bootloader.config.html#kiwi.bootloader.config.base.BootLoaderConfigBase.setup_live_boot_images">[docs]</a>    <span class="k">def</span> <span class="nf">setup_live_boot_images</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mbrid</span><span class="p">,</span> <span class="n">lookup_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create bootloader images for ISO boot a live ISO image</span>
+
+<span class="sd">        Implementation in specialized bootloader class required</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="BootLoaderConfigBase.create_efi_path"><a class="viewcode-back" href="../../../../api/kiwi.bootloader.config.html#kiwi.bootloader.config.base.BootLoaderConfigBase.create_efi_path">[docs]</a>    <span class="k">def</span> <span class="nf">create_efi_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_sub_dir</span><span class="o">=</span><span class="s1">&#39;boot/efi&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create standard EFI boot directory structure</span>
+
+<span class="sd">        :param string in_sub_dir: toplevel directory</span>
+
+<span class="sd">        :return: Full qualified EFI boot path</span>
+<span class="sd">        :rtype: string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">efi_boot_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">in_sub_dir</span> <span class="o">+</span> <span class="s1">&#39;/EFI/BOOT&#39;</span>
+        <span class="n">Path</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">efi_boot_path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">efi_boot_path</span></div>
+
+<div class="viewcode-block" id="BootLoaderConfigBase.get_boot_theme"><a class="viewcode-back" href="../../../../api/kiwi.bootloader.config.html#kiwi.bootloader.config.base.BootLoaderConfigBase.get_boot_theme">[docs]</a>    <span class="k">def</span> <span class="nf">get_boot_theme</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Bootloader Theme name</span>
+
+<span class="sd">        :return: theme name</span>
+<span class="sd">        :rtype: string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">theme</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">preferences</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">get_preferences_sections</span><span class="p">():</span>
+            <span class="n">section_content</span> <span class="o">=</span> <span class="n">preferences</span><span class="o">.</span><span class="n">get_bootloader_theme</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">section_content</span><span class="p">:</span>
+                <span class="n">theme</span> <span class="o">=</span> <span class="n">section_content</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">theme</span></div>
+
+<div class="viewcode-block" id="BootLoaderConfigBase.get_boot_timeout_seconds"><a class="viewcode-back" href="../../../../api/kiwi.bootloader.config.html#kiwi.bootloader.config.base.BootLoaderConfigBase.get_boot_timeout_seconds">[docs]</a>    <span class="k">def</span> <span class="nf">get_boot_timeout_seconds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Bootloader timeout in seconds</span>
+
+<span class="sd">        If no timeout is specified the default timeout applies</span>
+
+<span class="sd">        :return: timeout seconds</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">timeout_seconds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">build_type</span><span class="o">.</span><span class="n">get_boottimeout</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">timeout_seconds</span><span class="p">:</span>
+            <span class="n">timeout_seconds</span> <span class="o">=</span> <span class="n">Defaults</span><span class="o">.</span><span class="n">get_default_boot_timeout_seconds</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">timeout_seconds</span></div>
+
+<div class="viewcode-block" id="BootLoaderConfigBase.failsafe_boot_entry_requested"><a class="viewcode-back" href="../../../../api/kiwi.bootloader.config.html#kiwi.bootloader.config.base.BootLoaderConfigBase.failsafe_boot_entry_requested">[docs]</a>    <span class="k">def</span> <span class="nf">failsafe_boot_entry_requested</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if a failsafe boot entry is requested</span>
+
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">build_type</span><span class="o">.</span><span class="n">get_installprovidefailsafe</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="BootLoaderConfigBase.get_hypervisor_domain"><a class="viewcode-back" href="../../../../api/kiwi.bootloader.config.html#kiwi.bootloader.config.base.BootLoaderConfigBase.get_hypervisor_domain">[docs]</a>    <span class="k">def</span> <span class="nf">get_hypervisor_domain</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Hypervisor domain name</span>
+
+<span class="sd">        :return: domain name</span>
+<span class="sd">        :rtype: string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">machine</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">get_build_type_machine_section</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">machine</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">machine</span><span class="o">.</span><span class="n">get_domain</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="BootLoaderConfigBase.get_boot_cmdline"><a class="viewcode-back" href="../../../../api/kiwi.bootloader.config.html#kiwi.bootloader.config.base.BootLoaderConfigBase.get_boot_cmdline">[docs]</a>    <span class="k">def</span> <span class="nf">get_boot_cmdline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uuid</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Boot commandline arguments passed to the kernel</span>
+
+<span class="sd">        :return: kernel boot arguments</span>
+<span class="sd">        :rtype: string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cmdline</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">custom_cmdline</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">build_type</span><span class="o">.</span><span class="n">get_kernelcmdline</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">custom_cmdline</span><span class="p">:</span>
+            <span class="n">cmdline</span> <span class="o">+=</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">custom_cmdline</span>
+        <span class="n">custom_root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_root_cmdline_parameter</span><span class="p">(</span><span class="n">uuid</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">custom_root</span><span class="p">:</span>
+            <span class="n">cmdline</span> <span class="o">+=</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">custom_root</span>
+        <span class="k">return</span> <span class="n">cmdline</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="BootLoaderConfigBase.get_install_image_boot_default"><a class="viewcode-back" href="../../../../api/kiwi.bootloader.config.html#kiwi.bootloader.config.base.BootLoaderConfigBase.get_install_image_boot_default">[docs]</a>    <span class="k">def</span> <span class="nf">get_install_image_boot_default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loader</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Provide the default boot menu entry identifier for install images</span>
+
+<span class="sd">        The install image can be configured to provide more than</span>
+<span class="sd">        one boot menu entry. Menu entries configured are:</span>
+
+<span class="sd">        * [0] Boot From Hard Disk</span>
+<span class="sd">        * [1] Install</span>
+<span class="sd">        * [2] Failsafe Install</span>
+
+<span class="sd">        The installboot attribute controlls which of these are used</span>
+<span class="sd">        by default. If not specified the boot from hard disk entry</span>
+<span class="sd">        will be the default. Depending on the specified loader type</span>
+<span class="sd">        either an entry number or name will be returned.</span>
+
+<span class="sd">        :return: menu name or id</span>
+<span class="sd">        :rtype: string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">menu_entry_title</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_menu_entry_title</span><span class="p">(</span><span class="n">plain</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">menu_type</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span>
+            <span class="s1">&#39;menu_type&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;menu_id&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">menu_list</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">menu_type</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Boot_from_Hard_Disk&#39;</span><span class="p">,</span> <span class="n">menu_id</span><span class="o">=</span><span class="s1">&#39;0&#39;</span>
+            <span class="p">),</span>
+            <span class="n">menu_type</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Install_&#39;</span> <span class="o">+</span> <span class="n">menu_entry_title</span><span class="p">,</span> <span class="n">menu_id</span><span class="o">=</span><span class="s1">&#39;1&#39;</span>
+            <span class="p">),</span>
+            <span class="n">menu_type</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Failsafe_--_Install_&#39;</span> <span class="o">+</span> <span class="n">menu_entry_title</span><span class="p">,</span> <span class="n">menu_id</span><span class="o">=</span><span class="s1">&#39;2&#39;</span>
+            <span class="p">)</span>
+        <span class="p">]</span>
+        <span class="n">boot_id</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">install_boot_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">build_type</span><span class="o">.</span><span class="n">get_installboot</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">install_boot_name</span> <span class="o">==</span> <span class="s1">&#39;failsafe-install&#39;</span><span class="p">:</span>
+            <span class="n">boot_id</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="k">elif</span> <span class="n">install_boot_name</span> <span class="o">==</span> <span class="s1">&#39;install&#39;</span><span class="p">:</span>
+            <span class="n">boot_id</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">failsafe_boot_entry_requested</span><span class="p">()</span> <span class="ow">and</span> <span class="n">boot_id</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s1">&#39;Failsafe install requested but failsafe menu entry is disabled&#39;</span>
+            <span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Switching to standard install&#39;</span><span class="p">)</span>
+            <span class="n">boot_id</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">loader</span> <span class="ow">and</span> <span class="n">loader</span> <span class="o">==</span> <span class="s1">&#39;isolinux&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">menu_list</span><span class="p">[</span><span class="n">boot_id</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">menu_list</span><span class="p">[</span><span class="n">boot_id</span><span class="p">]</span><span class="o">.</span><span class="n">menu_id</span></div>
+
+<div class="viewcode-block" id="BootLoaderConfigBase.get_boot_path"><a class="viewcode-back" href="../../../../api/kiwi.bootloader.config.html#kiwi.bootloader.config.base.BootLoaderConfigBase.get_boot_path">[docs]</a>    <span class="k">def</span> <span class="nf">get_boot_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s1">&#39;disk&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Bootloader lookup path on boot device</span>
+
+<span class="sd">        If the bootloader reads the data it needs to boot, it does</span>
+<span class="sd">        that from the configured boot device. Depending if that</span>
+<span class="sd">        device is an extra boot partition or the root partition or</span>
+<span class="sd">        or based on a non standard filesystem like a btrfs snapshot,</span>
+<span class="sd">        the path name varies</span>
+
+<span class="sd">        :return: path name</span>
+<span class="sd">        :rtype: string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">target</span> <span class="o">!=</span> <span class="s1">&#39;disk&#39;</span> <span class="ow">and</span> <span class="n">target</span> <span class="o">!=</span> <span class="s1">&#39;iso&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">KiwiBootLoaderTargetError</span><span class="p">(</span>
+                <span class="s1">&#39;Invalid boot loader target </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">target</span>
+            <span class="p">)</span>
+        <span class="n">bootpath</span> <span class="o">=</span> <span class="s1">&#39;/boot&#39;</span>
+        <span class="n">need_boot_partition</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">target</span> <span class="o">==</span> <span class="s1">&#39;disk&#39;</span><span class="p">:</span>
+            <span class="n">disk_setup</span> <span class="o">=</span> <span class="n">DiskSetup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span><span class="p">)</span>
+            <span class="n">need_boot_partition</span> <span class="o">=</span> <span class="n">disk_setup</span><span class="o">.</span><span class="n">need_boot_partition</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">need_boot_partition</span><span class="p">:</span>
+                <span class="c1"># if an extra boot partition is used we will find the</span>
+                <span class="c1"># data directly in the root of this partition and not</span>
+                <span class="c1"># below the boot/ directory</span>
+                <span class="n">bootpath</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span>
+
+        <span class="k">if</span> <span class="n">target</span> <span class="o">==</span> <span class="s1">&#39;disk&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">need_boot_partition</span><span class="p">:</span>
+                <span class="n">filesystem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">build_type</span><span class="o">.</span><span class="n">get_filesystem</span><span class="p">()</span>
+                <span class="n">volumes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">get_volumes</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">filesystem</span> <span class="o">==</span> <span class="s1">&#39;btrfs&#39;</span> <span class="ow">and</span> <span class="n">volumes</span><span class="p">:</span>
+                    <span class="c1"># boot or boot/grub2 on a subvolume prevents grub from</span>
+                    <span class="c1"># finding its config file</span>
+                    <span class="k">for</span> <span class="n">volume</span> <span class="ow">in</span> <span class="n">volumes</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">volume</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;boot&#39;</span> <span class="ow">or</span> <span class="n">volume</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;boot/grub2&#39;</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="n">KiwiBootLoaderTargetError</span><span class="p">(</span>
+                                <span class="s1">&#39;boot or boot/grub2 must not be a subvolume&#39;</span>
+                            <span class="p">)</span>
+
+                    <span class="c1"># if we directly boot a btrfs filesystem with a subvolume</span>
+                    <span class="c1"># setup and no extra boot partition we have to care for</span>
+                    <span class="c1"># the layout of the system which places all volumes below</span>
+                    <span class="c1"># a toplevel volume. However if the root is placed into</span>
+                    <span class="c1"># a snapshot we use the SUSE_BTRFS_SNAPSHOT_BOOTING</span>
+                    <span class="c1"># extension which is configured in etc/default/grub and</span>
+                    <span class="c1"># maps the correct snapshot to the bootpath</span>
+                    <span class="n">root_is_snapshot</span> <span class="o">=</span> \
+                        <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">build_type</span><span class="o">.</span><span class="n">get_btrfs_root_is_snapshot</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">root_is_snapshot</span><span class="p">:</span>
+                        <span class="n">bootpath</span> <span class="o">=</span> <span class="s1">&#39;/@&#39;</span> <span class="o">+</span> <span class="n">bootpath</span>
+
+        <span class="k">return</span> <span class="n">bootpath</span></div>
+
+<div class="viewcode-block" id="BootLoaderConfigBase.quote_title"><a class="viewcode-back" href="../../../../api/kiwi.bootloader.config.html#kiwi.bootloader.config.base.BootLoaderConfigBase.quote_title">[docs]</a>    <span class="k">def</span> <span class="nf">quote_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Quote special characters in the title name</span>
+
+<span class="sd">        Not all characters can be displayed correctly in the bootloader</span>
+<span class="sd">        environment. Therefore a quoting is required</span>
+
+<span class="sd">        :return: quoted text</span>
+<span class="sd">        :rtype: string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;[&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;]&#39;</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">name</span></div>
+
+<div class="viewcode-block" id="BootLoaderConfigBase.get_menu_entry_title"><a class="viewcode-back" href="../../../../api/kiwi.bootloader.config.html#kiwi.bootloader.config.base.BootLoaderConfigBase.get_menu_entry_title">[docs]</a>    <span class="k">def</span> <span class="nf">get_menu_entry_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plain</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prefixed menu entry title</span>
+
+<span class="sd">        If no displayname is specified in the image description,</span>
+<span class="sd">        the menu title is constructed from the image name and</span>
+<span class="sd">        build type</span>
+
+<span class="sd">        :return: title text</span>
+<span class="sd">        :rtype: string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">xml_data</span><span class="o">.</span><span class="n">get_displayname</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">title</span><span class="p">:</span>
+            <span class="n">title</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">xml_data</span><span class="o">.</span><span class="n">get_name</span><span class="p">()</span>
+        <span class="n">type_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">build_type</span><span class="o">.</span><span class="n">get_image</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">plain</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">title</span>
+        <span class="k">return</span> <span class="n">title</span> <span class="o">+</span> <span class="s1">&#39; [ &#39;</span> <span class="o">+</span> <span class="n">type_name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39; ]&#39;</span></div>
+
+<div class="viewcode-block" id="BootLoaderConfigBase.get_menu_entry_install_title"><a class="viewcode-back" href="../../../../api/kiwi.bootloader.config.html#kiwi.bootloader.config.base.BootLoaderConfigBase.get_menu_entry_install_title">[docs]</a>    <span class="k">def</span> <span class="nf">get_menu_entry_install_title</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prefixed menu entry title for install images</span>
+
+<span class="sd">        If no displayname is specified in the image description,</span>
+<span class="sd">        the menu title is constructed from the image name</span>
+
+<span class="sd">        :return: title text</span>
+<span class="sd">        :rtype: string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">xml_data</span><span class="o">.</span><span class="n">get_displayname</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">title</span><span class="p">:</span>
+            <span class="n">title</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">xml_data</span><span class="o">.</span><span class="n">get_name</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">title</span></div>
+
+<div class="viewcode-block" id="BootLoaderConfigBase.get_gfxmode"><a class="viewcode-back" href="../../../../api/kiwi.bootloader.config.html#kiwi.bootloader.config.base.BootLoaderConfigBase.get_gfxmode">[docs]</a>    <span class="k">def</span> <span class="nf">get_gfxmode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Graphics mode according to bootloader target</span>
+
+<span class="sd">        Bootloaders which support a graphics mode can be configured</span>
+<span class="sd">        to run graphics in a specific resolution and colors. There</span>
+<span class="sd">        is no standard for this setup which causes kiwi to create</span>
+<span class="sd">        a mapping from the kernel vesa mode number to the corresponding</span>
+<span class="sd">        bootloader graphics mode setup</span>
+
+<span class="sd">        :param string target: bootloader name</span>
+
+<span class="sd">        :return: boot graphics mode</span>
+<span class="sd">        :rtype: string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">gfxmode_map</span> <span class="o">=</span> <span class="n">Defaults</span><span class="o">.</span><span class="n">get_video_mode_map</span><span class="p">()</span>
+
+        <span class="n">default_mode</span> <span class="o">=</span> <span class="n">Defaults</span><span class="o">.</span><span class="n">get_default_video_mode</span><span class="p">()</span>
+        <span class="n">requested_gfxmode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">build_type</span><span class="o">.</span><span class="n">get_vga</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">requested_gfxmode</span> <span class="ow">in</span> <span class="n">gfxmode_map</span><span class="p">:</span>
+            <span class="n">gfxmode</span> <span class="o">=</span> <span class="n">requested_gfxmode</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">gfxmode</span> <span class="o">=</span> <span class="n">default_mode</span>
+
+        <span class="k">if</span> <span class="n">target</span> <span class="o">==</span> <span class="s1">&#39;grub2&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">gfxmode_map</span><span class="p">[</span><span class="n">gfxmode</span><span class="p">]</span><span class="o">.</span><span class="n">grub2</span>
+        <span class="k">elif</span> <span class="n">target</span> <span class="o">==</span> <span class="s1">&#39;isolinux&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">gfxmode_map</span><span class="p">[</span><span class="n">gfxmode</span><span class="p">]</span><span class="o">.</span><span class="n">isolinux</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">gfxmode</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_root_cmdline_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uuid</span><span class="p">):</span>
+        <span class="n">firmware</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">build_type</span><span class="o">.</span><span class="n">get_firmware</span><span class="p">()</span>
+        <span class="n">initrd_system</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">build_type</span><span class="o">.</span><span class="n">get_initrd_system</span><span class="p">()</span>
+        <span class="n">cmdline</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">build_type</span><span class="o">.</span><span class="n">get_kernelcmdline</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">cmdline</span> <span class="ow">and</span> <span class="s1">&#39;root=&#39;</span> <span class="ow">in</span> <span class="n">cmdline</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s1">&#39;Kernel root device explicitly set via kernelcmdline&#39;</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">want_root_cmdline_parameter</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">firmware</span> <span class="ow">and</span> <span class="s1">&#39;ec2&#39;</span> <span class="ow">in</span> <span class="n">firmware</span><span class="p">:</span>
+            <span class="c1"># EC2 requires to specifiy the root device in the bootloader</span>
+            <span class="c1"># configuration. This is because the used pvgrub or hvmloader</span>
+            <span class="c1"># reads this information and passes it to the guest configuration</span>
+            <span class="c1"># which has an impact on the devices attached to the guest.</span>
+            <span class="n">want_root_cmdline_parameter</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">initrd_system</span> <span class="ow">and</span> <span class="s1">&#39;dracut&#39;</span> <span class="ow">in</span> <span class="n">initrd_system</span><span class="p">:</span>
+            <span class="c1"># When using a dracut initrd we have to specify the location</span>
+            <span class="c1"># of the root device</span>
+            <span class="n">want_root_cmdline_parameter</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">want_root_cmdline_parameter</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">uuid</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s1">&#39;root=UUID=</span><span class="si">%s</span><span class="s1"> rw&#39;</span> <span class="o">%</span> <span class="nb">format</span><span class="p">(</span><span class="n">uuid</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s1">&#39;root=UUID=&lt;uuid&gt; setup requested, but uuid is not provided&#39;</span>
+                <span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../index.html">
+              <img class="logo" src="../../../../_static/kiwi-logo.png" alt="Logo"/>
+            </a></p><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  <li><a href="../config.html">kiwi.bootloader.config</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<h1 class="logo"><a href="../../../../index.html">kiwi</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=SUSE&repo=kiwi&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/SUSE/kiwi">
+    <img
+        alt="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+        src="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Marcus Schäfer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/SUSE/kiwi" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

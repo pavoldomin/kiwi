@@ -1,0 +1,285 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kiwi.tasks.base &#8212; kiwi 8.25.5 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '8.25.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="top" title="kiwi 8.25.5 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for kiwi.tasks.base</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2015 SUSE Linux GmbH.  All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This file is part of kiwi.</span>
+<span class="c1">#</span>
+<span class="c1"># kiwi is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1"># (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># kiwi is distributed in the hope that it will be useful,</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1"># GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with kiwi.  If not, see &lt;http://www.gnu.org/licenses/&gt;</span>
+<span class="c1">#</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+
+<span class="c1"># project</span>
+<span class="kn">from</span> <span class="nn">..cli</span> <span class="k">import</span> <span class="n">Cli</span>
+<span class="kn">from</span> <span class="nn">..xml_state</span> <span class="k">import</span> <span class="n">XMLState</span>
+<span class="kn">from</span> <span class="nn">..xml_description</span> <span class="k">import</span> <span class="n">XMLDescription</span>
+<span class="kn">from</span> <span class="nn">..runtime_checker</span> <span class="k">import</span> <span class="n">RuntimeChecker</span>
+
+<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">KiwiConfigFileNotFound</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="CliTask"><a class="viewcode-back" href="../../../api/kiwi.tasks.html#kiwi.tasks.base.CliTask">[docs]</a><span class="k">class</span> <span class="nc">CliTask</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class for all task classes, loads the task and provides</span>
+<span class="sd">    the interface to the command options and the XML description</span>
+
+<span class="sd">    Attributes</span>
+
+<span class="sd">    * :attr:`cli`</span>
+<span class="sd">        Instance of Cli</span>
+
+<span class="sd">    * :attr:`task`</span>
+<span class="sd">        Instance of imported task class</span>
+
+<span class="sd">    * :attr:`command_args`</span>
+<span class="sd">        command specific docopt arguments dictionary</span>
+
+<span class="sd">    * :attr:`global_args`</span>
+<span class="sd">        global docopt arguments dictionary</span>
+
+<span class="sd">    * :attr:`runtime_checker`</span>
+<span class="sd">        Instance of RuntimeChecker</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">should_perform_task_setup</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">..logger</span> <span class="k">import</span> <span class="n">log</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cli</span> <span class="o">=</span> <span class="n">Cli</span><span class="p">()</span>
+
+        <span class="c1"># initialize runtime checker</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">runtime_checker</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># help requested</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cli</span><span class="o">.</span><span class="n">show_and_exit_on_help_request</span><span class="p">()</span>
+
+        <span class="c1"># load/import task module</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cli</span><span class="o">.</span><span class="n">load_command</span><span class="p">()</span>
+
+        <span class="c1"># get command specific args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">command_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cli</span><span class="o">.</span><span class="n">get_command_args</span><span class="p">()</span>
+
+        <span class="c1"># get global args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">global_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cli</span><span class="o">.</span><span class="n">get_global_args</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">should_perform_task_setup</span><span class="p">:</span>
+            <span class="c1"># set log level</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">global_args</span><span class="p">[</span><span class="s1">&#39;--debug&#39;</span><span class="p">]:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">setLogLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">setLogLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+
+            <span class="c1"># set log file</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">global_args</span><span class="p">[</span><span class="s1">&#39;--logfile&#39;</span><span class="p">]:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">set_logfile</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">global_args</span><span class="p">[</span><span class="s1">&#39;--logfile&#39;</span><span class="p">]</span>
+                <span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">global_args</span><span class="p">[</span><span class="s1">&#39;--color-output&#39;</span><span class="p">]:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">set_color_format</span><span class="p">()</span>
+
+<div class="viewcode-block" id="CliTask.load_xml_description"><a class="viewcode-back" href="../../../api/kiwi.tasks.html#kiwi.tasks.base.CliTask.load_xml_description">[docs]</a>    <span class="k">def</span> <span class="nf">load_xml_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">description_directory</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load, upgrade, validate XML description</span>
+
+<span class="sd">        Attributes</span>
+
+<span class="sd">        * :attr:`xml_data`</span>
+<span class="sd">            instance of XML data toplevel domain (image), stateless data</span>
+
+<span class="sd">        * :attr:`config_file`</span>
+<span class="sd">            used config file path</span>
+
+<span class="sd">        * :attr:`xml_state`</span>
+<span class="sd">            Instance of XMLState, stateful data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">..logger</span> <span class="k">import</span> <span class="n">log</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Loading XML description&#39;</span><span class="p">)</span>
+        <span class="n">config_file</span> <span class="o">=</span> <span class="n">description_directory</span> <span class="o">+</span> <span class="s1">&#39;/config.xml&#39;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">config_file</span><span class="p">):</span>
+            <span class="c1"># alternative config file lookup location</span>
+            <span class="n">config_file</span> <span class="o">=</span> <span class="n">description_directory</span> <span class="o">+</span> <span class="s1">&#39;/image/config.xml&#39;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">config_file</span><span class="p">):</span>
+            <span class="c1"># glob config file search, first match wins</span>
+            <span class="n">glob_match</span> <span class="o">=</span> <span class="n">description_directory</span> <span class="o">+</span> <span class="s1">&#39;/*.kiwi&#39;</span>
+            <span class="k">for</span> <span class="n">kiwi_file</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">iglob</span><span class="p">(</span><span class="n">glob_match</span><span class="p">):</span>
+                <span class="n">config_file</span> <span class="o">=</span> <span class="n">kiwi_file</span>
+                <span class="k">break</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">config_file</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">KiwiConfigFileNotFound</span><span class="p">(</span>
+                <span class="s1">&#39;no XML description found in </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">description_directory</span>
+            <span class="p">)</span>
+
+        <span class="n">description</span> <span class="o">=</span> <span class="n">XMLDescription</span><span class="p">(</span>
+            <span class="n">config_file</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xml_data</span> <span class="o">=</span> <span class="n">description</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config_file</span> <span class="o">=</span> <span class="n">config_file</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;//&#39;</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span> <span class="o">=</span> <span class="n">XMLState</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">xml_data</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">global_args</span><span class="p">[</span><span class="s1">&#39;--profile&#39;</span><span class="p">],</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">global_args</span><span class="p">[</span><span class="s1">&#39;--type&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--&gt; loaded </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config_file</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">build_type</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s1">&#39;--&gt; Selected build type: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">get_build_type_name</span><span class="p">()</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">profiles</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s1">&#39;--&gt; Selected profiles: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">profiles</span><span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">runtime_checker</span> <span class="o">=</span> <span class="n">RuntimeChecker</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CliTask.quadruple_token"><a class="viewcode-back" href="../../../api/kiwi.tasks.html#kiwi.tasks.base.CliTask.quadruple_token">[docs]</a>    <span class="k">def</span> <span class="nf">quadruple_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">option</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Helper method for commandline options of the form --option a,b,c,d</span>
+
+<span class="sd">        Make sure to provide a common result for option values which</span>
+<span class="sd">        separates the information in a comma separated list of values</span>
+
+<span class="sd">        :return: common option value representation</span>
+<span class="sd">        :rtype: string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tokens</span> <span class="o">=</span> <span class="n">option</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">tokens</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">)]</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/kiwi-logo.png" alt="Logo"/>
+            </a></p><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<h1 class="logo"><a href="../../../index.html">kiwi</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=SUSE&repo=kiwi&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/SUSE/kiwi">
+    <img
+        alt="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+        src="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Marcus Schäfer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/SUSE/kiwi" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

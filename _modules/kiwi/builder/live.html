@@ -1,0 +1,484 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kiwi.builder.live &#8212; kiwi 8.25.5 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '8.25.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="top" title="kiwi 8.25.5 documentation" href="../../../index.html" />
+    <link rel="up" title="kiwi.builder" href="../builder.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for kiwi.builder.live</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2015 SUSE Linux GmbH.  All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This file is part of kiwi.</span>
+<span class="c1">#</span>
+<span class="c1"># kiwi is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1"># (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># kiwi is distributed in the hope that it will be useful,</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1"># GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with kiwi.  If not, see &lt;http://www.gnu.org/licenses/&gt;</span>
+<span class="c1">#</span>
+<span class="kn">from</span> <span class="nn">tempfile</span> <span class="k">import</span> <span class="n">mkdtemp</span>
+<span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+
+<span class="c1"># project</span>
+<span class="kn">from</span> <span class="nn">..bootloader.config</span> <span class="k">import</span> <span class="n">BootLoaderConfig</span>
+<span class="kn">from</span> <span class="nn">..filesystem</span> <span class="k">import</span> <span class="n">FileSystem</span>
+<span class="kn">from</span> <span class="nn">..filesystem.isofs</span> <span class="k">import</span> <span class="n">FileSystemIsoFs</span>
+<span class="kn">from</span> <span class="nn">..boot.image</span> <span class="k">import</span> <span class="n">BootImage</span>
+<span class="kn">from</span> <span class="nn">..system.size</span> <span class="k">import</span> <span class="n">SystemSize</span>
+<span class="kn">from</span> <span class="nn">..system.setup</span> <span class="k">import</span> <span class="n">SystemSetup</span>
+<span class="kn">from</span> <span class="nn">..firmware</span> <span class="k">import</span> <span class="n">FirmWare</span>
+<span class="kn">from</span> <span class="nn">..defaults</span> <span class="k">import</span> <span class="n">Defaults</span>
+<span class="kn">from</span> <span class="nn">..path</span> <span class="k">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">..system.result</span> <span class="k">import</span> <span class="n">Result</span>
+<span class="kn">from</span> <span class="nn">..iso</span> <span class="k">import</span> <span class="n">Iso</span>
+<span class="kn">from</span> <span class="nn">..system.identifier</span> <span class="k">import</span> <span class="n">SystemIdentifier</span>
+<span class="kn">from</span> <span class="nn">..system.kernel</span> <span class="k">import</span> <span class="n">Kernel</span>
+<span class="kn">from</span> <span class="nn">..command</span> <span class="k">import</span> <span class="n">Command</span>
+<span class="kn">from</span> <span class="nn">..logger</span> <span class="k">import</span> <span class="n">log</span>
+
+<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">KiwiLiveBootImageError</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="LiveImageBuilder"><a class="viewcode-back" href="../../../api/kiwi.builder.html#kiwi.builder.live.LiveImageBuilder">[docs]</a><span class="k">class</span> <span class="nc">LiveImageBuilder</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Live image builder</span>
+
+<span class="sd">    Attributes</span>
+
+<span class="sd">    * :attr:`media_dir`</span>
+<span class="sd">        Temporary directory to collect the install ISO contents</span>
+
+<span class="sd">    * :attr:`arch`</span>
+<span class="sd">        platform.machine</span>
+
+<span class="sd">    * :attr:`root_dir`</span>
+<span class="sd">        root directory path name</span>
+
+<span class="sd">    * :attr:`target_dir`</span>
+<span class="sd">        target directory path name</span>
+
+<span class="sd">    * :attr:`xml_state`</span>
+<span class="sd">        Instance of XMLState</span>
+
+<span class="sd">    * :attr:`live_type`</span>
+<span class="sd">        Configured live ISO type name</span>
+
+<span class="sd">    * :attr:`types`</span>
+<span class="sd">        List of supported live ISO types</span>
+
+<span class="sd">    * :attr:`hybrid`</span>
+<span class="sd">        Request for hybrid ISO: true|false</span>
+
+<span class="sd">    * :attr:`volume_id`</span>
+<span class="sd">        Configured ISO volume ID or default</span>
+
+<span class="sd">    * :attr:`mbrid`</span>
+<span class="sd">        Instance of SystemIdentifier</span>
+
+<span class="sd">    * :attr:`filesystem_custom_parameters`</span>
+<span class="sd">        Configured custom filesystem mount and creation arguments</span>
+
+<span class="sd">    * :attr:`boot_image_task`</span>
+<span class="sd">        Instance of BootImage</span>
+
+<span class="sd">    * :attr:`firmware`</span>
+<span class="sd">        Instance of FirmWare</span>
+
+<span class="sd">    * :attr:`system_setup`</span>
+<span class="sd">        Instance of SystemSetup</span>
+
+<span class="sd">    * :attr:`isoname`</span>
+<span class="sd">        File name of the live ISO image</span>
+
+<span class="sd">    * :attr:`live_image_file`</span>
+<span class="sd">        File name of compressed image on the ISO</span>
+
+<span class="sd">    * :attr:`result`</span>
+<span class="sd">        Instance of Result</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xml_state</span><span class="p">,</span> <span class="n">target_dir</span><span class="p">,</span> <span class="n">root_dir</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">media_dir</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">arch</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">machine</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">arch</span> <span class="o">==</span> <span class="s1">&#39;i686&#39;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">arch</span> <span class="o">==</span> <span class="s1">&#39;i586&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">arch</span> <span class="o">=</span> <span class="s1">&#39;ix86&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span> <span class="o">=</span> <span class="n">root_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target_dir</span> <span class="o">=</span> <span class="n">target_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span> <span class="o">=</span> <span class="n">xml_state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">live_type</span> <span class="o">=</span> <span class="n">xml_state</span><span class="o">.</span><span class="n">build_type</span><span class="o">.</span><span class="n">get_flags</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">types</span> <span class="o">=</span> <span class="n">Defaults</span><span class="o">.</span><span class="n">get_live_iso_types</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hybrid</span> <span class="o">=</span> <span class="n">xml_state</span><span class="o">.</span><span class="n">build_type</span><span class="o">.</span><span class="n">get_hybrid</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">volume_id</span> <span class="o">=</span> <span class="n">xml_state</span><span class="o">.</span><span class="n">build_type</span><span class="o">.</span><span class="n">get_volid</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">machine</span> <span class="o">=</span> <span class="n">xml_state</span><span class="o">.</span><span class="n">get_build_type_machine_section</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mbrid</span> <span class="o">=</span> <span class="n">SystemIdentifier</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mbrid</span><span class="o">.</span><span class="n">calculate_id</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filesystem_custom_parameters</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;mount_options&#39;</span><span class="p">:</span> <span class="n">xml_state</span><span class="o">.</span><span class="n">get_fs_mount_option_list</span><span class="p">()</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">live_type</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">live_type</span> <span class="o">=</span> <span class="n">Defaults</span><span class="o">.</span><span class="n">get_default_live_iso_type</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">boot_image_task</span> <span class="o">=</span> <span class="n">BootImage</span><span class="p">(</span>
+            <span class="n">xml_state</span><span class="p">,</span> <span class="n">target_dir</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">firmware</span> <span class="o">=</span> <span class="n">FirmWare</span><span class="p">(</span>
+            <span class="n">xml_state</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">system_setup</span> <span class="o">=</span> <span class="n">SystemSetup</span><span class="p">(</span>
+            <span class="n">xml_state</span><span class="o">=</span><span class="n">xml_state</span><span class="p">,</span> <span class="n">root_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">isoname</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">target_dir</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span>
+                <span class="n">xml_state</span><span class="o">.</span><span class="n">xml_data</span><span class="o">.</span><span class="n">get_name</span><span class="p">(),</span>
+                <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">platform</span><span class="o">.</span><span class="n">machine</span><span class="p">(),</span>
+                <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="n">xml_state</span><span class="o">.</span><span class="n">get_image_version</span><span class="p">(),</span>
+                <span class="s1">&#39;.iso&#39;</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">live_image_file</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">target_dir</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span>
+                <span class="n">xml_state</span><span class="o">.</span><span class="n">xml_data</span><span class="o">.</span><span class="n">get_name</span><span class="p">(),</span>
+                <span class="s1">&#39;-read-only.&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">arch</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span>
+                <span class="n">xml_state</span><span class="o">.</span><span class="n">get_image_version</span><span class="p">()</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">Result</span><span class="p">(</span><span class="n">xml_state</span><span class="p">)</span>
+
+<div class="viewcode-block" id="LiveImageBuilder.create"><a class="viewcode-back" href="../../../api/kiwi.builder.html#kiwi.builder.live.LiveImageBuilder.create">[docs]</a>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Build a bootable hybrid live ISO image</span>
+
+<span class="sd">        Image types which triggers this builder are:</span>
+
+<span class="sd">        * image=&quot;iso&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># media dir to store CD contents</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">media_dir</span> <span class="o">=</span> <span class="n">mkdtemp</span><span class="p">(</span>
+            <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;live-media.&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">target_dir</span>
+        <span class="p">)</span>
+        <span class="n">rootsize</span> <span class="o">=</span> <span class="n">SystemSize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">media_dir</span><span class="p">)</span>
+
+        <span class="c1"># custom iso metadata</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Using following live ISO metadata:&#39;</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--&gt; Application id: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mbrid</span><span class="o">.</span><span class="n">get_id</span><span class="p">())</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--&gt; Publisher: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">Defaults</span><span class="o">.</span><span class="n">get_publisher</span><span class="p">())</span>
+        <span class="n">custom_iso_args</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;create_options&#39;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s1">&#39;-A&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mbrid</span><span class="o">.</span><span class="n">get_id</span><span class="p">(),</span>
+                <span class="s1">&#39;-p&#39;</span><span class="p">,</span> <span class="s1">&#39;&quot;&#39;</span> <span class="o">+</span> <span class="n">Defaults</span><span class="o">.</span><span class="n">get_preparer</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;&quot;&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;-publisher&#39;</span><span class="p">,</span> <span class="s1">&#39;&quot;&#39;</span> <span class="o">+</span> <span class="n">Defaults</span><span class="o">.</span><span class="n">get_publisher</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;&quot;&#39;</span>
+            <span class="p">]</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume_id</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--&gt; Volume id: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume_id</span><span class="p">)</span>
+            <span class="n">custom_iso_args</span><span class="p">[</span><span class="s1">&#39;create_options&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;-V&#39;</span><span class="p">)</span>
+            <span class="n">custom_iso_args</span><span class="p">[</span><span class="s1">&#39;create_options&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume_id</span> <span class="o">+</span> <span class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
+
+        <span class="c1"># prepare boot(initrd) root system</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Preparing live ISO boot system&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">boot_image_task</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
+
+        <span class="c1"># export modprobe configuration to boot image</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">system_setup</span><span class="o">.</span><span class="n">export_modprobe_setup</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boot_image_task</span><span class="o">.</span><span class="n">boot_root_directory</span>
+        <span class="p">)</span>
+
+        <span class="c1"># pack system into live boot structure</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Packing system into live ISO type: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">live_type</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">live_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">types</span><span class="p">:</span>
+            <span class="n">live_type_image</span> <span class="o">=</span> <span class="n">FileSystem</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">types</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">live_type</span><span class="p">],</span>
+                <span class="n">device_provider</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">root_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span><span class="p">,</span>
+                <span class="n">custom_args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filesystem_custom_parameters</span>
+            <span class="p">)</span>
+            <span class="n">live_type_image</span><span class="o">.</span><span class="n">create_on_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">live_image_file</span><span class="p">)</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+                <span class="p">[</span><span class="s1">&#39;mv&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">live_image_file</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">media_dir</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_create_live_iso_client_config</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">live_type</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">KiwiLiveBootImageError</span><span class="p">(</span>
+                <span class="s1">&#39;live ISO type &quot;</span><span class="si">%s</span><span class="s1">&quot; not supported&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">live_type</span>
+            <span class="p">)</span>
+
+        <span class="c1"># setup bootloader config to boot the ISO via isolinux</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Setting up isolinux bootloader configuration&#39;</span><span class="p">)</span>
+        <span class="n">bootloader_config_isolinux</span> <span class="o">=</span> <span class="n">BootLoaderConfig</span><span class="p">(</span>
+            <span class="s1">&#39;isolinux&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">media_dir</span>
+        <span class="p">)</span>
+        <span class="n">bootloader_config_isolinux</span><span class="o">.</span><span class="n">setup_live_boot_images</span><span class="p">(</span>
+            <span class="n">mbrid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">lookup_path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">boot_image_task</span><span class="o">.</span><span class="n">boot_root_directory</span>
+        <span class="p">)</span>
+        <span class="n">bootloader_config_isolinux</span><span class="o">.</span><span class="n">setup_live_image_config</span><span class="p">(</span>
+            <span class="n">mbrid</span><span class="o">=</span><span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="n">bootloader_config_isolinux</span><span class="o">.</span><span class="n">write</span><span class="p">()</span>
+
+        <span class="c1"># setup bootloader config to boot the ISO via EFI</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">firmware</span><span class="o">.</span><span class="n">efi_mode</span><span class="p">():</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Setting up EFI grub bootloader configuration&#39;</span><span class="p">)</span>
+            <span class="n">bootloader_config_grub</span> <span class="o">=</span> <span class="n">BootLoaderConfig</span><span class="p">(</span>
+                <span class="s1">&#39;grub2&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">media_dir</span>
+            <span class="p">)</span>
+            <span class="n">bootloader_config_grub</span><span class="o">.</span><span class="n">setup_live_boot_images</span><span class="p">(</span>
+                <span class="n">mbrid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mbrid</span><span class="p">,</span>
+                <span class="n">lookup_path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">boot_image_task</span><span class="o">.</span><span class="n">boot_root_directory</span>
+            <span class="p">)</span>
+            <span class="n">bootloader_config_grub</span><span class="o">.</span><span class="n">setup_live_image_config</span><span class="p">(</span>
+                <span class="n">mbrid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mbrid</span>
+            <span class="p">)</span>
+            <span class="n">bootloader_config_grub</span><span class="o">.</span><span class="n">write</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">firmware</span><span class="o">.</span><span class="n">efi_mode</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;uefi&#39;</span><span class="p">:</span>
+                <span class="c1"># write bootloader config to EFI directory in order to allow</span>
+                <span class="c1"># grub loaded by shim to find the config file</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">media_dir</span> <span class="o">+</span> <span class="s1">&#39;/boot/grub2/grub.cfg&#39;</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">media_dir</span> <span class="o">+</span> <span class="s1">&#39;/EFI/BOOT&#39;</span>
+                <span class="p">)</span>
+
+        <span class="c1"># create initrd for live image</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Creating live ISO boot image&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_create_live_iso_kernel_and_initrd</span><span class="p">()</span>
+
+        <span class="c1"># calculate size and decide if we need UDF</span>
+        <span class="k">if</span> <span class="n">rootsize</span><span class="o">.</span><span class="n">accumulate_mbyte_file_sizes</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">4096</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;ISO exceeds 4G size, using UDF filesystem&#39;</span><span class="p">)</span>
+            <span class="n">custom_iso_args</span><span class="p">[</span><span class="s1">&#39;create_options&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;-iso-level&#39;</span><span class="p">)</span>
+            <span class="n">custom_iso_args</span><span class="p">[</span><span class="s1">&#39;create_options&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;3&#39;</span><span class="p">)</span>
+            <span class="n">custom_iso_args</span><span class="p">[</span><span class="s1">&#39;create_options&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;-udf&#39;</span><span class="p">)</span>
+
+        <span class="c1"># create iso filesystem from media_dir</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Creating live ISO image&#39;</span><span class="p">)</span>
+        <span class="n">iso_image</span> <span class="o">=</span> <span class="n">FileSystemIsoFs</span><span class="p">(</span>
+            <span class="n">device_provider</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">root_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">media_dir</span><span class="p">,</span>
+            <span class="n">custom_args</span><span class="o">=</span><span class="n">custom_iso_args</span>
+        <span class="p">)</span>
+        <span class="n">iso_header_offset</span> <span class="o">=</span> <span class="n">iso_image</span><span class="o">.</span><span class="n">create_on_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">isoname</span><span class="p">)</span>
+
+        <span class="c1"># make it hybrid</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hybrid</span><span class="p">:</span>
+            <span class="n">Iso</span><span class="o">.</span><span class="n">create_hybrid</span><span class="p">(</span>
+                <span class="n">iso_header_offset</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mbrid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">isoname</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+            <span class="n">key</span><span class="o">=</span><span class="s1">&#39;live_image&#39;</span><span class="p">,</span>
+            <span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">isoname</span><span class="p">,</span>
+            <span class="n">use_for_bundle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">compress</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">shasum</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+            <span class="n">key</span><span class="o">=</span><span class="s1">&#39;image_packages&#39;</span><span class="p">,</span>
+            <span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">system_setup</span><span class="o">.</span><span class="n">export_rpm_package_list</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">target_dir</span>
+            <span class="p">),</span>
+            <span class="n">use_for_bundle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">compress</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">shasum</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+            <span class="n">key</span><span class="o">=</span><span class="s1">&#39;image_verified&#39;</span><span class="p">,</span>
+            <span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">system_setup</span><span class="o">.</span><span class="n">export_rpm_package_verification</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">target_dir</span>
+            <span class="p">),</span>
+            <span class="n">use_for_bundle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">compress</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">shasum</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span></div>
+
+    <span class="k">def</span> <span class="nf">_create_live_iso_kernel_and_initrd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">boot_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">media_dir</span> <span class="o">+</span> <span class="s1">&#39;/boot/&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">arch</span> <span class="o">+</span> <span class="s1">&#39;/loader&#39;</span>
+        <span class="n">Path</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">boot_path</span><span class="p">)</span>
+        <span class="n">kernel</span> <span class="o">=</span> <span class="n">Kernel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">boot_image_task</span><span class="o">.</span><span class="n">boot_root_directory</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">kernel</span><span class="o">.</span><span class="n">get_kernel</span><span class="p">():</span>
+            <span class="n">kernel</span><span class="o">.</span><span class="n">copy_kernel</span><span class="p">(</span><span class="n">boot_path</span><span class="p">,</span> <span class="s1">&#39;/linux&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">KiwiLiveBootImageError</span><span class="p">(</span>
+                <span class="s1">&#39;No kernel in boot image tree </span><span class="si">%s</span><span class="s1"> found&#39;</span> <span class="o">%</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">boot_image_task</span><span class="o">.</span><span class="n">boot_root_directory</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">machine</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">machine</span><span class="o">.</span><span class="n">get_domain</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;dom0&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">kernel</span><span class="o">.</span><span class="n">get_xen_hypervisor</span><span class="p">():</span>
+                <span class="n">kernel</span><span class="o">.</span><span class="n">copy_xen_hypervisor</span><span class="p">(</span><span class="n">boot_path</span><span class="p">,</span> <span class="s1">&#39;/xen.gz&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">KiwiLiveBootImageError</span><span class="p">(</span>
+                    <span class="s1">&#39;No hypervisor in boot image tree </span><span class="si">%s</span><span class="s1"> found&#39;</span> <span class="o">%</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">boot_image_task</span><span class="o">.</span><span class="n">boot_root_directory</span>
+                <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">boot_image_task</span><span class="o">.</span><span class="n">create_initrd</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mbrid</span><span class="p">)</span>
+        <span class="n">Command</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="s1">&#39;mv&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">boot_image_task</span><span class="o">.</span><span class="n">initrd_filename</span><span class="p">,</span>
+                <span class="n">boot_path</span> <span class="o">+</span> <span class="s1">&#39;/initrd&#39;</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_create_live_iso_client_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iso_type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Setup IMAGE and UNIONFS_CONFIG variables as they are used in</span>
+<span class="sd">            the kiwi isoboot code. Variable contents:</span>
+
+<span class="sd">            + IMAGE=target_device;live_iso_name_definition</span>
+<span class="sd">            + UNIONFS_CONFIG=rw_device,ro_device,union_type</span>
+
+<span class="sd">            If no real block device is used or can be predefined the</span>
+<span class="sd">            word &#39;loop&#39; is set as a placeholder or indicator to use a loop</span>
+<span class="sd">            device. For more details please refer to the kiwi shell boot</span>
+<span class="sd">            code</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">iso_client_config_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">media_dir</span> <span class="o">+</span> <span class="s1">&#39;/config.isoclient&#39;</span>
+        <span class="n">iso_client_params</span> <span class="o">=</span> <span class="n">Defaults</span><span class="o">.</span><span class="n">get_live_iso_client_parameters</span><span class="p">()</span>
+        <span class="p">(</span><span class="n">system_device</span><span class="p">,</span> <span class="n">union_device</span><span class="p">,</span> <span class="n">union_type</span><span class="p">)</span> <span class="o">=</span> <span class="n">iso_client_params</span><span class="p">[</span><span class="n">iso_type</span><span class="p">]</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">iso_client_config_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">config</span><span class="p">:</span>
+            <span class="n">config</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="s1">&#39;IMAGE=&quot;</span><span class="si">%s</span><span class="s1">;</span><span class="si">%s</span><span class="s1">.</span><span class="si">%s</span><span class="s1">;</span><span class="si">%s</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                    <span class="n">system_device</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">xml_data</span><span class="o">.</span><span class="n">get_name</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">arch</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">get_image_version</span><span class="p">()</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">config</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="s1">&#39;UNIONFS_CONFIG=&quot;</span><span class="si">%s</span><span class="s1">,loop,</span><span class="si">%s</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span>
+                <span class="p">(</span><span class="n">union_device</span><span class="p">,</span> <span class="n">union_type</span><span class="p">)</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">media_dir</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Cleaning up </span><span class="si">%s</span><span class="s1"> instance&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span>
+            <span class="n">Path</span><span class="o">.</span><span class="n">wipe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">media_dir</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/kiwi-logo.png" alt="Logo"/>
+            </a></p><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  <li><a href="../builder.html">kiwi.builder</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<h1 class="logo"><a href="../../../index.html">kiwi</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=SUSE&repo=kiwi&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/SUSE/kiwi">
+    <img
+        alt="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+        src="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Marcus Schäfer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/SUSE/kiwi" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

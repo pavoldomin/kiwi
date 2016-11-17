@@ -1,0 +1,397 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kiwi.solver.repository.base &#8212; kiwi 8.25.5 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '8.25.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="top" title="kiwi 8.25.5 documentation" href="../../../../index.html" />
+    <link rel="up" title="kiwi.solver.repository" href="../repository.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for kiwi.solver.repository.base</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2015 SUSE Linux GmbH.  All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This file is part of kiwi.</span>
+<span class="c1">#</span>
+<span class="c1"># kiwi is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1"># (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># kiwi is distributed in the hope that it will be useful,</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1"># GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with kiwi.  If not, see &lt;http://www.gnu.org/licenses/&gt;</span>
+<span class="c1">#</span>
+<span class="kn">from</span> <span class="nn">six.moves.urllib.request</span> <span class="k">import</span> <span class="n">urlopen</span>
+<span class="kn">from</span> <span class="nn">tempfile</span> <span class="k">import</span> <span class="n">NamedTemporaryFile</span>
+<span class="kn">from</span> <span class="nn">tempfile</span> <span class="k">import</span> <span class="n">mkdtemp</span>
+<span class="kn">from</span> <span class="nn">lxml</span> <span class="k">import</span> <span class="n">etree</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="c1"># project</span>
+<span class="kn">from</span> <span class="nn">...exceptions</span> <span class="k">import</span> <span class="n">KiwiUriOpenError</span>
+<span class="kn">from</span> <span class="nn">...path</span> <span class="k">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">...command</span> <span class="k">import</span> <span class="n">Command</span>
+<span class="kn">from</span> <span class="nn">...defaults</span> <span class="k">import</span> <span class="n">Defaults</span>
+
+
+<div class="viewcode-block" id="SolverRepositoryBase"><a class="viewcode-back" href="../../../../api/kiwi.solver.repository.html#kiwi.solver.repository.base.SolverRepositoryBase">[docs]</a><span class="k">class</span> <span class="nc">SolverRepositoryBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class interface for SAT solvable creation.</span>
+
+<span class="sd">    Attributes</span>
+
+<span class="sd">    * :attr:`uri`</span>
+<span class="sd">        Instance of Uri class</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uri</span> <span class="o">=</span> <span class="n">uri</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_temporary_dir_names</span><span class="p">()</span>
+
+<div class="viewcode-block" id="SolverRepositoryBase.create_repository_solvable"><a class="viewcode-back" href="../../../../api/kiwi.solver.repository.html#kiwi.solver.repository.base.SolverRepositoryBase.create_repository_solvable">[docs]</a>    <span class="k">def</span> <span class="nf">create_repository_solvable</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">target_dir</span><span class="o">=</span><span class="n">Defaults</span><span class="o">.</span><span class="n">get_solvable_location</span><span class="p">()</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create SAT solvable for this repository from previously</span>
+<span class="sd">        created intermediate solvables by merge and store the</span>
+<span class="sd">        result solvable in the specified target_dir</span>
+
+<span class="sd">        :param string target_dir: path name</span>
+
+<span class="sd">        :return: file path to solvable</span>
+<span class="sd">        :rtype: string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Path</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">target_dir</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_uptodate</span><span class="p">(</span><span class="n">target_dir</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_setup_repository_metadata</span><span class="p">()</span>
+            <span class="n">solvable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_merge_solvables</span><span class="p">(</span><span class="n">target_dir</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cleanup</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">solvable</span></div>
+
+<div class="viewcode-block" id="SolverRepositoryBase.timestamp"><a class="viewcode-back" href="../../../../api/kiwi.solver.repository.html#kiwi.solver.repository.base.SolverRepositoryBase.timestamp">[docs]</a>    <span class="k">def</span> <span class="nf">timestamp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return repository timestamp</span>
+
+<span class="sd">        The retrieval of the repository timestamp depends on the</span>
+<span class="sd">        type of the repository and is therefore supposed to be implemented</span>
+<span class="sd">        in the specialized Solver Repository classes. If no such</span>
+<span class="sd">        implementation exists the method returns the value &#39;static&#39;</span>
+<span class="sd">        to indicate there is no timestamp information available.</span>
+
+<span class="sd">        :rtype: string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;static&#39;</span></div>
+
+<div class="viewcode-block" id="SolverRepositoryBase.is_uptodate"><a class="viewcode-back" href="../../../../api/kiwi.solver.repository.html#kiwi.solver.repository.base.SolverRepositoryBase.is_uptodate">[docs]</a>    <span class="k">def</span> <span class="nf">is_uptodate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_dir</span><span class="o">=</span><span class="n">Defaults</span><span class="o">.</span><span class="n">get_solvable_location</span><span class="p">()):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if repository metadata is up to date</span>
+
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">solvable_time_file</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">target_dir</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="o">.</span><span class="n">alias</span><span class="p">(),</span> <span class="s1">&#39;.timestamp&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">solvable_time_file</span><span class="p">):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">solvable_time_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">solvable_time</span><span class="p">:</span>
+                <span class="n">saved_time</span> <span class="o">=</span> <span class="n">solvable_time</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">saved_time</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">saved_time</span> <span class="o">==</span> <span class="s1">&#39;static&#39;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="SolverRepositoryBase.download_from_repository"><a class="viewcode-back" href="../../../../api/kiwi.solver.repository.html#kiwi.solver.repository.base.SolverRepositoryBase.download_from_repository">[docs]</a>    <span class="k">def</span> <span class="nf">download_from_repository</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">repo_source</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Download given source file from the repository and store</span>
+<span class="sd">        it as target file</span>
+
+<span class="sd">        The repo_source location is used relative to the repository</span>
+<span class="sd">        location and will be part of a mime type source like:</span>
+<span class="sd">        file://repo_path/repo_source</span>
+
+<span class="sd">        :param string source: source file in the repo</span>
+<span class="sd">        :param string target: file path</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">location</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_mime_typed_uri</span><span class="p">(),</span> <span class="n">repo_source</span><span class="p">])</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">KiwiUriOpenError</span><span class="p">(</span>
+                <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">: </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="nb">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">target_file</span><span class="p">:</span>
+            <span class="n">target_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">location</span><span class="o">.</span><span class="n">read</span><span class="p">())</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_repomd_xml</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lookup_path</span><span class="o">=</span><span class="s1">&#39;repodata&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parse repomd.xml file from lookup_path and return an etree</span>
+<span class="sd">        This method only applies to rpm-md type repositories</span>
+
+<span class="sd">        :rtype: XML etree</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">xml_download</span> <span class="o">=</span> <span class="n">NamedTemporaryFile</span><span class="p">()</span>
+        <span class="n">xml_setup_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">lookup_path</span><span class="p">,</span> <span class="s1">&#39;repomd.xml&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">download_from_repository</span><span class="p">(</span><span class="n">xml_setup_file</span><span class="p">,</span> <span class="n">xml_download</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">etree</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">xml_download</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_repomd_xpath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xml_data</span><span class="p">,</span> <span class="n">expression</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Call the provided xpath expression on the root element</span>
+<span class="sd">        of the xml_data which must be an XML etree parsed document</span>
+<span class="sd">        and return the result. This method only applies to</span>
+<span class="sd">        repomd.xml files of the correct namespaces:</span>
+
+<span class="sd">        * http://linux.duke.edu/metadata/repo</span>
+<span class="sd">        * http://linux.duke.edu/metadata/rpm</span>
+
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">namespace_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">repo</span><span class="o">=</span><span class="s1">&#39;http://linux.duke.edu/metadata/repo&#39;</span><span class="p">,</span>
+            <span class="n">rpm</span><span class="o">=</span><span class="s1">&#39;http://linux.duke.edu/metadata/rpm&#39;</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">xml_data</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span>
+            <span class="n">expression</span><span class="p">,</span> <span class="n">namespaces</span><span class="o">=</span><span class="n">namespace_map</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_setup_repository_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Download all relevant repository metadata and create</span>
+<span class="sd">        intermediate solvables from the result. The metadata structure</span>
+<span class="sd">        depends on the type of the repository and must be implemented</span>
+<span class="sd">        in the specialized Solver Repository classes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">_create_solvables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata_dir</span><span class="p">,</span> <span class="n">tool</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create intermediate (before merge) SAT solvables from the</span>
+<span class="sd">        data given in the metadata_dir and store the result in the</span>
+<span class="sd">        temporary repository_solvable_dir. The given tool must</span>
+<span class="sd">        match the solvable data structure. There are the following</span>
+<span class="sd">        tools to create a solvable from repository metadata:</span>
+
+<span class="sd">        * rpmmd2solv</span>
+<span class="sd">          solvable from repodata files</span>
+
+<span class="sd">        * susetags2solv</span>
+<span class="sd">          solvable from SUSE (yast2) repository files</span>
+
+<span class="sd">        * comps2solv</span>
+<span class="sd">          solvable from RHEL component files</span>
+
+<span class="sd">        * rpms2solv</span>
+<span class="sd">          solvable from rpm header files</span>
+
+<span class="sd">        :param string metadata_dir: path name</span>
+<span class="sd">        :param string tool: one of the above tools</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">repository_solvable_dir</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">repository_solvable_dir</span> <span class="o">=</span> <span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;solvable_dir.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">tool</span> <span class="ow">is</span> <span class="s1">&#39;rpms2solv&#39;</span><span class="p">:</span>
+            <span class="c1"># solvable is created from a bunch of rpm files</span>
+            <span class="n">bash_command</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">tool</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">metadata_dir</span><span class="p">,</span> <span class="s1">&#39;*.rpm&#39;</span><span class="p">]),</span>
+                <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_random_solvable_name</span><span class="p">()</span>
+            <span class="p">]</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;bash&#39;</span><span class="p">,</span> <span class="s1">&#39;-c&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">bash_command</span><span class="p">)])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># each file in the metadata_dir is considered a valid</span>
+            <span class="c1"># solvable for the selected solv tool</span>
+            <span class="k">for</span> <span class="n">source</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">iglob</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">metadata_dir</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">])):</span>
+                <span class="n">bash_command</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="s1">&#39;gzip&#39;</span><span class="p">,</span> <span class="s1">&#39;-cd&#39;</span><span class="p">,</span> <span class="s1">&#39;--force&#39;</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="n">tool</span><span class="p">,</span>
+                    <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_random_solvable_name</span><span class="p">()</span>
+                <span class="p">]</span>
+                <span class="n">Command</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;bash&#39;</span><span class="p">,</span> <span class="s1">&#39;-c&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">bash_command</span><span class="p">)])</span>
+
+    <span class="k">def</span> <span class="nf">_merge_solvables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_dir</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Merge all intermediate SAT solvables into one and store</span>
+<span class="sd">        the result in the given target_dir. In addition an</span>
+<span class="sd">        info file containing the repo url and a timestamp file</span>
+<span class="sd">        is created</span>
+
+<span class="sd">        :param string target_dir: path name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">repository_solvable_dir</span><span class="p">:</span>
+            <span class="n">solvable</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">target_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="o">.</span><span class="n">alias</span><span class="p">()])</span>
+            <span class="n">bash_command</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="s1">&#39;mergesolv&#39;</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">repository_solvable_dir</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">]),</span>
+                <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="n">solvable</span>
+            <span class="p">]</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;bash&#39;</span><span class="p">,</span> <span class="s1">&#39;-c&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">bash_command</span><span class="p">)])</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">solvable</span><span class="p">,</span> <span class="s1">&#39;info&#39;</span><span class="p">]),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">solvable_info</span><span class="p">:</span>
+                <span class="n">solvable_info</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="o">.</span><span class="n">uri</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">linesep</span><span class="p">]))</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">solvable</span><span class="p">,</span> <span class="s1">&#39;timestamp&#39;</span><span class="p">]),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">solvable_time</span><span class="p">:</span>
+                <span class="n">solvable_time</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timestamp</span><span class="p">())</span>
+            <span class="k">return</span> <span class="n">solvable</span>
+
+    <span class="k">def</span> <span class="nf">_cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Delete all temporary directories</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">metadata_dir</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">repository_metadata_dirs</span><span class="p">:</span>
+            <span class="n">Path</span><span class="o">.</span><span class="n">wipe</span><span class="p">(</span><span class="n">metadata_dir</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">repository_solvable_dir</span><span class="p">:</span>
+            <span class="n">Path</span><span class="o">.</span><span class="n">wipe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">repository_solvable_dir</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_temporary_dir_names</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_get_mime_typed_uri</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="o">.</span><span class="n">translate</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="o">.</span><span class="n">is_remote</span><span class="p">()</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">[</span><span class="s1">&#39;file://&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="o">.</span><span class="n">translate</span><span class="p">()]</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_init_temporary_dir_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize data structures to store temporary directory names</span>
+<span class="sd">        required to hold the repository metadata and solvable files</span>
+<span class="sd">        until the final repository solvable got created</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">repository_metadata_dirs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">repository_solvable_dir</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_create_temporary_metadata_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create and manage a temporary metadata directory</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">metadata_dir</span> <span class="o">=</span> <span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;metadata_dir.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">repository_metadata_dirs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metadata_dir</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">metadata_dir</span>
+
+    <span class="k">def</span> <span class="nf">_get_random_solvable_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">repository_solvable_dir</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">/solvable-</span><span class="si">{1}{2}{3}{4}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">repository_solvable_dir</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_rand</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rand</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rand</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rand</span><span class="p">()</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_rand</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%02x</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mh">0xfe</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cleanup</span><span class="p">()</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../index.html">
+              <img class="logo" src="../../../../_static/kiwi-logo.png" alt="Logo"/>
+            </a></p><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  <li><a href="../repository.html">kiwi.solver.repository</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<h1 class="logo"><a href="../../../../index.html">kiwi</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=SUSE&repo=kiwi&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/SUSE/kiwi">
+    <img
+        alt="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+        src="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Marcus Schäfer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/SUSE/kiwi" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

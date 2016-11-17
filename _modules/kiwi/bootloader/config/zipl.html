@@ -1,0 +1,394 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kiwi.bootloader.config.zipl &#8212; kiwi 8.25.5 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '8.25.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="top" title="kiwi 8.25.5 documentation" href="../../../../index.html" />
+    <link rel="up" title="kiwi.bootloader.config" href="../config.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for kiwi.bootloader.config.zipl</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2015 SUSE Linux GmbH.  All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This file is part of kiwi.</span>
+<span class="c1">#</span>
+<span class="c1"># kiwi is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1"># (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># kiwi is distributed in the hope that it will be useful,</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1"># GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with kiwi.  If not, see &lt;http://www.gnu.org/licenses/&gt;</span>
+<span class="c1">#</span>
+
+<span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="c1"># project</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">BootLoaderConfigBase</span>
+<span class="kn">from</span> <span class="nn">..template.zipl</span> <span class="k">import</span> <span class="n">BootLoaderTemplateZipl</span>
+<span class="kn">from</span> <span class="nn">...command</span> <span class="k">import</span> <span class="n">Command</span>
+<span class="kn">from</span> <span class="nn">...logger</span> <span class="k">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">...path</span> <span class="k">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">...firmware</span> <span class="k">import</span> <span class="n">FirmWare</span>
+<span class="kn">from</span> <span class="nn">...defaults</span> <span class="k">import</span> <span class="n">Defaults</span>
+
+<span class="kn">from</span> <span class="nn">...exceptions</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">KiwiTemplateError</span><span class="p">,</span>
+    <span class="n">KiwiBootLoaderZiplPlatformError</span><span class="p">,</span>
+    <span class="n">KiwiBootLoaderZiplSetupError</span><span class="p">,</span>
+    <span class="n">KiwiDiskGeometryError</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="BootLoaderConfigZipl"><a class="viewcode-back" href="../../../../api/kiwi.bootloader.config.html#kiwi.bootloader.config.zipl.BootLoaderConfigZipl">[docs]</a><span class="k">class</span> <span class="nc">BootLoaderConfigZipl</span><span class="p">(</span><span class="n">BootLoaderConfigBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    zipl bootloader configuration.</span>
+
+<span class="sd">    Attributes</span>
+
+<span class="sd">    * :attr:`arch`</span>
+<span class="sd">        platform.machine</span>
+
+<span class="sd">    * :attr:`timeout`</span>
+<span class="sd">        configured or default boot timeout</span>
+
+<span class="sd">    * :attr:`bootpath`</span>
+<span class="sd">        boot path set to: &#39;.&#39;</span>
+
+<span class="sd">    * :attr:`cmdline`</span>
+<span class="sd">        kernel boot arguments</span>
+
+<span class="sd">    * :attr:`cmdline_failsafe`</span>
+<span class="sd">        kernel failsafe boot arguments</span>
+
+<span class="sd">    * :attr:`target_blocksize`</span>
+<span class="sd">        configured or default target blocksize</span>
+
+<span class="sd">    * :attr:`target_type`</span>
+<span class="sd">        configured or default zipl target type</span>
+
+<span class="sd">    * :attr:`failsafe_boot`</span>
+<span class="sd">        failsafe mode requested true|false</span>
+
+<span class="sd">    * :attr:`target_device`</span>
+<span class="sd">        device node of target device</span>
+
+<span class="sd">    * :attr:`firmware`</span>
+<span class="sd">        Instance of FirmWare</span>
+
+<span class="sd">    * :attr:`target_table_type`</span>
+<span class="sd">        disk table type according to target device</span>
+
+<span class="sd">    * :attr:`zipl`</span>
+<span class="sd">        Instance of config template: BootLoaderTemplateZipl</span>
+
+<span class="sd">    * :attr:`config`</span>
+<span class="sd">        Configuration data from template substitution</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="BootLoaderConfigZipl.post_init"><a class="viewcode-back" href="../../../../api/kiwi.bootloader.config.html#kiwi.bootloader.config.zipl.BootLoaderConfigZipl.post_init">[docs]</a>    <span class="k">def</span> <span class="nf">post_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">custom_args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        zipl post initialization method</span>
+
+<span class="sd">        Setup class attributes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">custom_args</span> <span class="o">=</span> <span class="n">custom_args</span>
+        <span class="n">arch</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">machine</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s1">&#39;s390&#39;</span> <span class="ow">in</span> <span class="n">arch</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">arch</span> <span class="o">=</span> <span class="n">arch</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">KiwiBootLoaderZiplPlatformError</span><span class="p">(</span>
+                <span class="s1">&#39;host architecture </span><span class="si">%s</span><span class="s1"> not supported for zipl setup&#39;</span> <span class="o">%</span> <span class="n">arch</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">custom_args</span> <span class="ow">or</span> <span class="s1">&#39;targetbase&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">custom_args</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">KiwiBootLoaderZiplSetupError</span><span class="p">(</span>
+                <span class="s1">&#39;targetbase device name is required for zipl setup&#39;</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">bootpath</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_boot_timeout_seconds</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmdline</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_boot_cmdline</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmdline_failsafe</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">cmdline</span><span class="p">,</span> <span class="n">Defaults</span><span class="o">.</span><span class="n">get_failsafe_kernel_options</span><span class="p">()]</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target_blocksize</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">build_type</span><span class="o">.</span><span class="n">get_target_blocksize</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="o">.</span><span class="n">build_type</span><span class="o">.</span><span class="n">get_zipl_targettype</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">failsafe_boot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">failsafe_boot_entry_requested</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target_device</span> <span class="o">=</span> <span class="n">custom_args</span><span class="p">[</span><span class="s1">&#39;targetbase&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">firmware</span> <span class="o">=</span> <span class="n">FirmWare</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target_table_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">firmware</span><span class="o">.</span><span class="n">get_partition_table_type</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">zipl</span> <span class="o">=</span> <span class="n">BootLoaderTemplateZipl</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="BootLoaderConfigZipl.write"><a class="viewcode-back" href="../../../../api/kiwi.bootloader.config.html#kiwi.bootloader.config.zipl.BootLoaderConfigZipl.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write zipl config file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Writing zipl config file&#39;</span><span class="p">)</span>
+        <span class="n">config_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_zipl_boot_path</span><span class="p">()</span>
+        <span class="n">config_file</span> <span class="o">=</span> <span class="n">config_dir</span> <span class="o">+</span> <span class="s1">&#39;/config&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">:</span>
+            <span class="n">Path</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">config_dir</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">config</span><span class="p">:</span>
+                <span class="n">config</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
+
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Moving initrd/kernel to zipl boot directory&#39;</span><span class="p">)</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="s1">&#39;mv&#39;</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span> <span class="o">+</span> <span class="s1">&#39;/boot/initrd.vmx&#39;</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span> <span class="o">+</span> <span class="s1">&#39;/boot/linux.vmx&#39;</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_get_zipl_boot_path</span><span class="p">()</span>
+                <span class="p">]</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="BootLoaderConfigZipl.setup_disk_image_config"><a class="viewcode-back" href="../../../../api/kiwi.bootloader.config.html#kiwi.bootloader.config.zipl.BootLoaderConfigZipl.setup_disk_image_config">[docs]</a>    <span class="k">def</span> <span class="nf">setup_disk_image_config</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">uuid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hypervisor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">kernel</span><span class="o">=</span><span class="s1">&#39;linux.vmx&#39;</span><span class="p">,</span> <span class="n">initrd</span><span class="o">=</span><span class="s1">&#39;initrd.vmx&#39;</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create the zipl config in memory from a template suitable to</span>
+<span class="sd">        boot from a disk image.</span>
+
+<span class="sd">        :param string uuid: unused</span>
+<span class="sd">        :param string hypervisor: unused</span>
+<span class="sd">        :param string kernel: kernel name</span>
+<span class="sd">        :param string initrd: initrd name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Creating zipl config file from template&#39;</span><span class="p">)</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;device&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_device</span><span class="p">,</span>
+            <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_type</span><span class="p">,</span>
+            <span class="s1">&#39;blocksize&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_blocksize</span><span class="p">,</span>
+            <span class="s1">&#39;offset&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_target_offset</span><span class="p">(),</span>
+            <span class="s1">&#39;geometry&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_target_geometry</span><span class="p">(),</span>
+            <span class="s1">&#39;default_boot&#39;</span><span class="p">:</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;bootpath&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">bootpath</span><span class="p">,</span>
+            <span class="s1">&#39;boot_timeout&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span><span class="p">,</span>
+            <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">quote_title</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_menu_entry_title</span><span class="p">()),</span>
+            <span class="s1">&#39;kernel_file&#39;</span><span class="p">:</span> <span class="n">kernel</span><span class="p">,</span>
+            <span class="s1">&#39;initrd_file&#39;</span><span class="p">:</span> <span class="n">initrd</span><span class="p">,</span>
+            <span class="s1">&#39;boot_options&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmdline</span><span class="p">,</span>
+            <span class="s1">&#39;failsafe_boot_options&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmdline_failsafe</span>
+        <span class="p">}</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--&gt; Using standard disk boot template&#39;</span><span class="p">)</span>
+        <span class="n">template</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">zipl</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">failsafe_boot</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">parameters</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">KiwiTemplateError</span><span class="p">(</span>
+                <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="nb">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="BootLoaderConfigZipl.setup_disk_boot_images"><a class="viewcode-back" href="../../../../api/kiwi.bootloader.config.html#kiwi.bootloader.config.zipl.BootLoaderConfigZipl.setup_disk_boot_images">[docs]</a>    <span class="k">def</span> <span class="nf">setup_disk_boot_images</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">boot_uuid</span><span class="p">,</span> <span class="n">lookup_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        On s390 no bootloader images needs to be created</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_zipl_boot_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span> <span class="o">+</span> <span class="s1">&#39;/boot/zipl&#39;</span>
+
+    <span class="k">def</span> <span class="nf">_get_target_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_table_type</span> <span class="o">==</span> <span class="s1">&#39;dasd&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%d</span><span class="s1">,</span><span class="si">%d</span><span class="s1">,</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_read_dasd_disk_geometry</span><span class="p">(</span><span class="s1">&#39;cylinders&#39;</span><span class="p">),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_read_dasd_disk_geometry</span><span class="p">(</span><span class="s1">&#39;tracks per cylinder&#39;</span><span class="p">),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_read_dasd_disk_geometry</span><span class="p">(</span><span class="s1">&#39;blocks per track&#39;</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%d</span><span class="s1">,</span><span class="si">%d</span><span class="s1">,</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_read_msdos_disk_geometry</span><span class="p">(</span><span class="s1">&#39;cylinders&#39;</span><span class="p">),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_read_msdos_disk_geometry</span><span class="p">(</span><span class="s1">&#39;tracks per cylinder&#39;</span><span class="p">),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_read_msdos_disk_geometry</span><span class="p">(</span><span class="s1">&#39;blocks per track&#39;</span><span class="p">)</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_target_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_table_type</span> <span class="o">==</span> <span class="s1">&#39;dasd&#39;</span><span class="p">:</span>
+            <span class="n">blocks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_dasd_disk_geometry</span><span class="p">(</span><span class="s1">&#39;blocks per track&#39;</span><span class="p">)</span>
+            <span class="n">bash_command</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="s1">&#39;fdasd&#39;</span><span class="p">,</span> <span class="s1">&#39;-f&#39;</span><span class="p">,</span> <span class="s1">&#39;-s&#39;</span><span class="p">,</span> <span class="s1">&#39;-p&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_device</span><span class="p">,</span>
+                <span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="s1">&#39;head&#39;</span><span class="p">,</span> <span class="s1">&#39;-n&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="s1">&#39;tr&#39;</span><span class="p">,</span> <span class="s1">&#39;-s&#39;</span><span class="p">,</span> <span class="s1">&#39;&quot; &quot;&#39;</span>
+            <span class="p">]</span>
+            <span class="n">fdasd_call</span> <span class="o">=</span> <span class="n">Command</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+                <span class="p">[</span><span class="s1">&#39;bash&#39;</span><span class="p">,</span> <span class="s1">&#39;-c&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">bash_command</span><span class="p">)]</span>
+            <span class="p">)</span>
+            <span class="n">fdasd_output</span> <span class="o">=</span> <span class="n">fdasd_call</span><span class="o">.</span><span class="n">output</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">start_track</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fdasd_output</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">lstrip</span><span class="p">())</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">KiwiDiskGeometryError</span><span class="p">(</span>
+                    <span class="s1">&#39;unknown partition format: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">fdasd_output</span>
+                <span class="p">)</span>
+            <span class="k">return</span> <span class="n">start_track</span> <span class="o">*</span> <span class="n">blocks</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">blocks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_msdos_disk_geometry</span><span class="p">(</span><span class="s1">&#39;blocks per track&#39;</span><span class="p">)</span>
+            <span class="n">parted_call</span> <span class="o">=</span> <span class="n">Command</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+                <span class="p">[</span><span class="s1">&#39;parted&#39;</span><span class="p">,</span> <span class="s1">&#39;-m&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_device</span><span class="p">,</span> <span class="s1">&#39;unit&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="s1">&#39;print&#39;</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">parted_output</span> <span class="o">=</span> <span class="n">parted_call</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()</span>
+            <span class="n">first_partition_format</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;1:(.*?)s&#39;</span><span class="p">,</span> <span class="n">parted_output</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">first_partition_format</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">KiwiDiskGeometryError</span><span class="p">(</span>
+                    <span class="s1">&#39;unknown partition format: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">parted_output</span>
+                <span class="p">)</span>
+            <span class="n">start_track</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">first_partition_format</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">start_track</span> <span class="o">*</span> <span class="n">blocks</span>
+
+    <span class="k">def</span> <span class="nf">_read_msdos_disk_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">sfdisk_call</span> <span class="o">=</span> <span class="n">Command</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="p">[</span><span class="s1">&#39;sfdisk&#39;</span><span class="p">,</span> <span class="s1">&#39;-g&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_device</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">sfdisk_output</span> <span class="o">=</span> <span class="n">sfdisk_call</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()</span>
+        <span class="n">geometry_format</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span>
+            <span class="s1">&#39;/dev.*: (.*) cylinders, (.*) heads, (.*) sectors/track&#39;</span><span class="p">,</span>
+            <span class="n">sfdisk_output</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">geometry_format</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">KiwiDiskGeometryError</span><span class="p">(</span>
+                <span class="s1">&#39;unknown format for geometry: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">sfdisk_output</span>
+            <span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;cylinders&#39;</span><span class="p">:</span> <span class="n">geometry_format</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+            <span class="s1">&#39;tracks per cylinder&#39;</span><span class="p">:</span> <span class="n">geometry_format</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+            <span class="s1">&#39;blocks per track&#39;</span><span class="p">:</span> <span class="n">geometry_format</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="n">value</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">_read_dasd_disk_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">fdasd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;fdasd&#39;</span><span class="p">,</span> <span class="s1">&#39;-f&#39;</span><span class="p">,</span> <span class="s1">&#39;-p&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_device</span><span class="p">]</span>
+        <span class="n">bash_command</span> <span class="o">=</span> <span class="n">fdasd</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="s1">&#39;grep&#39;</span><span class="p">,</span> <span class="s1">&#39;&quot;&#39;</span> <span class="o">+</span> <span class="n">value</span> <span class="o">+</span> <span class="s1">&#39;&quot;&#39;</span><span class="p">]</span>
+        <span class="n">fdasd_call</span> <span class="o">=</span> <span class="n">Command</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="p">[</span><span class="s1">&#39;bash&#39;</span><span class="p">,</span> <span class="s1">&#39;-c&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">bash_command</span><span class="p">)]</span>
+        <span class="p">)</span>
+        <span class="n">fdasd_output</span> <span class="o">=</span> <span class="n">fdasd_call</span><span class="o">.</span><span class="n">output</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">fdasd_output</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lstrip</span><span class="p">())</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">KiwiDiskGeometryError</span><span class="p">(</span>
+                <span class="s1">&#39;unknown format for disk geometry: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">fdasd_output</span>
+            <span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../index.html">
+              <img class="logo" src="../../../../_static/kiwi-logo.png" alt="Logo"/>
+            </a></p><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  <li><a href="../config.html">kiwi.bootloader.config</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<h1 class="logo"><a href="../../../../index.html">kiwi</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=SUSE&repo=kiwi&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/SUSE/kiwi">
+    <img
+        alt="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+        src="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Marcus Schäfer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/SUSE/kiwi" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

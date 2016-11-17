@@ -1,0 +1,263 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kiwi system build &#8212; kiwi 8.25.5 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '8.25.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="kiwi 8.25.5 documentation" href="../index.html" />
+    <link rel="up" title="Manual Pages" href="kiwi.html" />
+    <link rel="next" title="API Documentation 8.25.5" href="../api/kiwi.html" />
+    <link rel="prev" title="kiwi system update" href="system_update.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="kiwi-system-build">
+<h1>kiwi system build<a class="headerlink" href="#kiwi-system-build" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="synopsis">
+<h2>SYNOPSIS<a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>kiwi <span class="o">[</span>global options<span class="o">]</span> service &lt;command&gt; <span class="o">[</span>&lt;args&gt;<span class="o">]</span>
+
+kiwi system build -h <span class="p">|</span> --help
+kiwi system build --description<span class="o">=</span>&lt;directory&gt; --target-dir<span class="o">=</span>&lt;directory&gt;
+    <span class="o">[</span>--ignore-repos<span class="o">]</span>
+    <span class="o">[</span>--set-repo<span class="o">=</span>&lt;source,type,alias,priority&gt;<span class="o">]</span>
+    <span class="o">[</span>--add-repo<span class="o">=</span>&lt;source,type,alias,priority&gt;...<span class="o">]</span>
+    <span class="o">[</span>--obs-repo-internal<span class="o">]</span>
+    <span class="o">[</span>--add-package<span class="o">=</span>&lt;name&gt;...<span class="o">]</span>
+    <span class="o">[</span>--delete-package<span class="o">=</span>&lt;name&gt;...<span class="o">]</span>
+kiwi system build <span class="nb">help</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="description">
+<h2>DESCRIPTION<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
+<p>build an image in one step. The build command combines kiwi&#8217;s prepare and
+create steps in order to build an image with just one command call. The
+build command creates the root directory of the image below
+<code class="xref py py-obj docutils literal"><span class="pre">&lt;target-dir&gt;/build/image-root</span></code> and if not specified differently writes
+a log file <code class="xref py py-obj docutils literal"><span class="pre">&lt;target-dir&gt;/build/image-root.log</span></code>. The result image files
+are created in the specified target-dir.</p>
+</div>
+<div class="section" id="options">
+<h2>OPTIONS<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--add-package=<var>&lt;name&gt;</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>specify package to add(install). The option can be specified
+multiple times</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--add-repo=<var>&lt;source,type,alias,priority&gt;</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>Add a new repository to the existing repository setup in the XML
+description. This option can be specified multiple times</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--delete-package=<var>&lt;name&gt;</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>specify package to delete. The option can be specified
+multiple times</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--description=<var>&lt;directory&gt;</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>Path to the XML description. This is a directory containing at least
+one _config.xml_ or _*.kiwi_ XML file.</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--obs-repo-internal</span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>The repository source type <strong>obs://</strong> by default points to the
+<a class="reference external" href="http://download.opensuse.org">Open Build Service</a>. With the
+<em>&#8211;obs-repo-internal</em> option the source type is changed to the
+<strong>ibs://</strong> type, pointing to the <strong>Internal Build Service</strong>.
+This allows to build images with repositories pointing to the SUSE
+internal build service. Please note this requires access permissions
+to the SUSE internal build service on the machine building the image.</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--set-repo=<var>&lt;source,type,alias,priority&gt;</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td><p class="first">Overwrite the first repository entry in the XML description with the
+provided information:</p>
+<ul class="last">
+<li><p class="first"><strong>source</strong></p>
+<p>source url, pointing to a package repository which must be in a format
+supported by the selected package manager. See the URI_TYPES section for
+details about the supported source locators.</p>
+</li>
+<li><p class="first"><strong>type</strong></p>
+<p>repository type, could be one of <code class="xref py py-obj docutils literal"><span class="pre">rpm-md</span></code>, <code class="xref py py-obj docutils literal"><span class="pre">rpm-dir</span></code> or <code class="xref py py-obj docutils literal"><span class="pre">yast2</span></code>.</p>
+</li>
+<li><p class="first"><strong>alias</strong></p>
+<p>An alias name for the repository. If not specified kiwi calculates
+an alias name as result from a sha sum. The sha sum is used to uniquely
+identify the repository, but not very expressive. We recommend to
+set an expressive and uniq alias name.</p>
+</li>
+<li><p class="first"><strong>priority</strong></p>
+<p>A number indicating the repository priority. How the value is evaluated
+depends on the selected package manager. Please refer to the package
+manager documentation for details about the supported priority ranges
+and their meaning.</p>
+</li>
+</ul>
+</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--target-dir=<var>&lt;directory&gt;</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>Path to store the build results.</td></tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="uri-types">
+<h2>URI_TYPES<a class="headerlink" href="#uri-types" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first"><strong>http://</strong> | <strong>https://</strong> | <strong>ftp://</strong></p>
+<p>remote repository delivered via http or ftp protocol.</p>
+</li>
+<li><p class="first"><strong>obs://</strong></p>
+<p>Open Buildservice repository. The source data is translated into
+an http url pointing to <a class="reference external" href="http://download.opensuse.org">http://download.opensuse.org</a>.</p>
+</li>
+<li><p class="first"><strong>ibs://</strong></p>
+<p>Internal Open Buildservice repository. The source data is translated into
+an http url pointing to download.suse.de.</p>
+</li>
+<li><p class="first"><strong>iso://</strong></p>
+<p>Local iso file. kiwi loop mounts the file and uses the mount point
+as temporary directory source type</p>
+</li>
+<li><p class="first"><strong>dir://</strong></p>
+<p>Local directory</p>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/kiwi-logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">kiwi system build</a><ul>
+<li><a class="reference internal" href="#synopsis">SYNOPSIS</a></li>
+<li><a class="reference internal" href="#description">DESCRIPTION</a></li>
+<li><a class="reference internal" href="#options">OPTIONS</a></li>
+<li><a class="reference internal" href="#uri-types">URI_TYPES</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="kiwi.html">Manual Pages</a><ul>
+      <li>Previous: <a href="system_update.html" title="previous chapter">kiwi system update</a></li>
+      <li>Next: <a href="../api/kiwi.html" title="next chapter">API Documentation 8.25.5</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<h1 class="logo"><a href="../index.html">kiwi</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=SUSE&repo=kiwi&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/SUSE/kiwi">
+    <img
+        alt="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+        src="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Marcus Schäfer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/manual/system_build.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/SUSE/kiwi" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

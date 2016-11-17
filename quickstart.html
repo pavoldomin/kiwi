@@ -1,0 +1,290 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Quick Start &#8212; kiwi 8.25.5 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '8.25.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="kiwi 8.25.5 documentation" href="index.html" />
+    <link rel="next" title="Building in a Self-Contained Environment" href="container_builder.html" />
+    <link rel="prev" title="KIWI Appliance Builder 8.25.5" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="quick-start">
+<h1>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h1>
+<div class="topic">
+<p class="topic-title first">Abstract</p>
+<p>This document describes how to start with KIWI, an OS appliance builder.
+This description applies for version 8.25.5.</p>
+</div>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>Packages for the new KIWI version are provided at the <a class="reference external" href="http://download.opensuse.org/repositories/Virtualization:/Appliances:/Builder">openSUSE
+buildservice</a>.</p>
+<p>Add the repository with <strong class="command">zypper ar</strong> (see following code) and replace
+the distribution placeholder. The best approach is to click on the
+desired distribution from the build service link above and there follow
+the <strong>Go to download repository</strong> link.</p>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span>$ sudo zypper ar -f \
+    http://download.opensuse.org/repositories/Virtualization:/Appliances:/Builder/&lt;DIST&gt;
+$ sudo zypper in python3-kiwi
+</pre></div>
+</div>
+</div>
+<div class="section" id="compatibility">
+<h2>Compatibility<a class="headerlink" href="#compatibility" title="Permalink to this headline">¶</a></h2>
+<p>The legacy KIWI version can be installed and used together with the next
+generation KIWI.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Automatic Link Creation for <strong class="command">kiwi</strong> Command</p>
+<p class="last">Note the python3-kiwi package uses the alternatives mechanism to
+setup a symbolic link named <strong class="command">kiwi</strong> to the real executable
+named <strong class="command">kiwi-ng</strong>. If the link target <code class="file docutils literal"><span class="pre">/usr/bin/kiwi</span></code>
+already exists on your system, the alternative setup will skip the
+creation of the link target because it already exists.</p>
+</div>
+<p>From an appliance description perspective, both KIWI versions are fully
+compatible. Users can build their appliances with both versions and the
+same appliance description. If the appliance description uses features
+the next generation KIWI does not provide, the build will fail with an
+exception early. If the appliance description uses next generation
+features like the selection of the initrd system, it&#8217;s not possible to
+build that with the legacy KIWI, unless the appliance description
+properly encapsulates the differences into a profile.</p>
+<p>The next generation KIWI also provides the <code class="xref py py-obj docutils literal"><span class="pre">--compat</span></code> option and
+the <strong class="command">kiwicompat</strong> tool to be able to use the same commandline
+as provided with the legacy KIWI version.</p>
+</div>
+<div class="section" id="example-appliance-descriptions">
+<h2>Example Appliance Descriptions<a class="headerlink" href="#example-appliance-descriptions" title="Permalink to this headline">¶</a></h2>
+<p>For use with the next generation KIWI there is also a GitHub project
+hosting example appliance descriptions. Users who need an example to
+start with should checkout the project as follows:</p>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span>$ git clone https://github.com/SUSE/kiwi-descriptions
+</pre></div>
+</div>
+<div class="section" id="example-image-build-on-host-system">
+<h3>Example Image Build on Host System<a class="headerlink" href="#example-image-build-on-host-system" title="Permalink to this headline">¶</a></h3>
+<p>Install python3-kiwi as explained above and build as follows:</p>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span>$ sudo kiwi-ng --type vmx system build \
+    --description kiwi-descriptions/suse/x86_64/suse-leap-42.1-JeOS \
+    --target-dir /tmp/myimage
+</pre></div>
+</div>
+<p>Find the image with the suffix <code class="file docutils literal"><span class="pre">.raw</span></code> below <code class="file docutils literal"><span class="pre">/tmp/myimage</span></code>.</p>
+</div>
+<div class="section" id="example-image-build-in-container">
+<h3>Example Image Build in Container<a class="headerlink" href="#example-image-build-in-container" title="Permalink to this headline">¶</a></h3>
+<p>Install <a class="reference external" href="https://github.com/SUSE/dice">dice</a> and build as follows:</p>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span>$ dice build kiwi-descriptions/suse/x86_64/suse-leap-42.1-JeOS
+$ dice status kiwi-descriptions/suse/x86_64/suse-leap-42.1-JeOS
+</pre></div>
+</div>
+<p>Find the image in a tarball displayed by the <strong class="command">status</strong> command.</p>
+<p>In order to run your image build, call <strong class="command">qemu</strong> as follows:</p>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span>$ qemu -drive \
+    file=LimeJeOS-Leap-42.1.x86_64-1.42.1.raw,format=raw,if=virtio
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="using-kiwi-ng-from-build-service">
+<h2>Using KIWI NG from Build Service<a class="headerlink" href="#using-kiwi-ng-from-build-service" title="Permalink to this headline">¶</a></h2>
+<p>The next generation KIWI is fully integrated with the build service. As
+an example you can find the integration testing system in the
+buildservice project <code class="xref py py-obj docutils literal"><span class="pre">Virtualization:Appliances:Images:Testing_</span></code> at:</p>
+<p><a class="reference external" href="https://build.opensuse.org">https://build.opensuse.org</a></p>
+<p>In order to use the next generation KIWI to build an appliance in the
+build service it is only required to add the Builder project as
+repository to the KIWI XML configuration like in the following example:</p>
+<div class="code xml highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">repository</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;rpm-md&quot;</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;kiwi-next-generation&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">source</span> <span class="n">path</span><span class="o">=</span><span class="s2">&quot;obs://Virtualization:Appliances:Builder/Factory&quot;</span><span class="o">/&gt;</span>
+<span class="o">&lt;/</span><span class="n">repository</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>The Builder project configuration in the build service is setup to prefer
+the next generation KIWI over the legacy version. Thus adding the
+Builder repository inherits this project setup and activates building
+with the next generation KIWI.</p>
+</div>
+<div class="section" id="using-kiwi-ng-in-a-python-project">
+<h2>Using KIWI NG in a Python Project<a class="headerlink" href="#using-kiwi-ng-in-a-python-project" title="Permalink to this headline">¶</a></h2>
+<p>KIWI NG can also function as a module for other Python projects.
+The following example demonstrates how to read an existing image
+description, add a new repository definition and export the
+modified description on stdout.</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">from</span> <span class="nn">kiwi.xml_description</span> <span class="k">import</span> <span class="n">XMLDescription</span>
+<span class="kn">from</span> <span class="nn">kiwi.xml_state</span> <span class="k">import</span> <span class="n">XMLState</span>
+
+<span class="c1"># Import of log handler only needed if default logging</span>
+<span class="c1"># setup is not appropriate for the project</span>
+<span class="c1"># from kiwi.logger import log</span>
+
+<span class="c1"># By default the logging level is set to DEBUG, which</span>
+<span class="c1"># can be changed by the following call</span>
+<span class="c1"># log.setLogLevel(logging.INFO)</span>
+
+<span class="c1"># Logging can also be disabled completely</span>
+<span class="c1"># log.disabled = True</span>
+
+<span class="n">description</span> <span class="o">=</span> <span class="n">XMLDescription</span><span class="p">(</span><span class="s1">&#39;path/to/kiwi/XML/config.xml&#39;</span><span class="p">)</span>
+
+<span class="n">xml_data</span> <span class="o">=</span> <span class="n">description</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+
+<span class="n">xml_state</span> <span class="o">=</span> <span class="n">XMLState</span><span class="p">(</span>
+    <span class="n">xml_data</span><span class="o">=</span><span class="n">xml_data</span><span class="p">,</span> <span class="n">profiles</span><span class="o">=</span><span class="p">[],</span> <span class="n">build_type</span><span class="o">=</span><span class="s1">&#39;iso&#39;</span>
+<span class="p">)</span>
+
+<span class="n">xml_state</span><span class="o">.</span><span class="n">add_repository</span><span class="p">(</span>
+    <span class="n">repo_source</span><span class="o">=</span><span class="s1">&#39;http://repo&#39;</span><span class="p">,</span>
+    <span class="n">repo_type</span><span class="o">=</span><span class="s1">&#39;rpm-md&#39;</span><span class="p">,</span>
+    <span class="n">repo_alias</span><span class="o">=</span><span class="s1">&#39;myrepo&#39;</span><span class="p">,</span>
+    <span class="n">repo_prio</span><span class="o">=</span><span class="mi">99</span>
+<span class="p">)</span>
+
+<span class="n">xml_data</span><span class="o">.</span><span class="n">export</span><span class="p">(</span>
+    <span class="n">outfile</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">0</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>All classes are written in a way to care for a single responsibility
+in order to allow for re-use on other use cases. Therefore it is possible
+to use KIWI NG outside of the main image building scope to manage e.g
+the setup of loop devices, filesystems, partitions, etc...</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/kiwi-logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Quick Start</a><ul>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#compatibility">Compatibility</a></li>
+<li><a class="reference internal" href="#example-appliance-descriptions">Example Appliance Descriptions</a><ul>
+<li><a class="reference internal" href="#example-image-build-on-host-system">Example Image Build on Host System</a></li>
+<li><a class="reference internal" href="#example-image-build-in-container">Example Image Build in Container</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#using-kiwi-ng-from-build-service">Using KIWI NG from Build Service</a></li>
+<li><a class="reference internal" href="#using-kiwi-ng-in-a-python-project">Using KIWI NG in a Python Project</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">KIWI Appliance Builder 8.25.5</a></li>
+      <li>Next: <a href="container_builder.html" title="next chapter">Building in a Self-Contained Environment</a></li>
+  </ul></li>
+</ul>
+</div>
+<h1 class="logo"><a href="index.html">kiwi</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=SUSE&repo=kiwi&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/SUSE/kiwi">
+    <img
+        alt="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+        src="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Marcus Schäfer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/quickstart.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/SUSE/kiwi" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

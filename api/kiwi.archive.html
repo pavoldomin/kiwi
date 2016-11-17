@@ -1,0 +1,326 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kiwi.archive Package &#8212; kiwi 8.25.5 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '8.25.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="kiwi 8.25.5 documentation" href="../index.html" />
+    <link rel="up" title="API Documentation 8.25.5" href="kiwi.html" />
+    <link rel="next" title="kiwi.boot Package" href="kiwi.boot.html" />
+    <link rel="prev" title="API Documentation 8.25.5" href="kiwi.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="kiwi-archive-package">
+<h1>kiwi.archive Package<a class="headerlink" href="#kiwi-archive-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-kiwi.archive.cpio">
+<span id="kiwi-archive-cpio-module"></span><h2><a class="reference internal" href="#module-kiwi.archive.cpio" title="kiwi.archive.cpio"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.archive.cpio</span></code></a> Module<a class="headerlink" href="#module-kiwi.archive.cpio" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.archive.cpio.ArchiveCpio">
+<em class="property">class </em><code class="descclassname">kiwi.archive.cpio.</code><code class="descname">ArchiveCpio</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/archive/cpio.html#ArchiveCpio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.archive.cpio.ArchiveCpio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Extraction/Creation of cpio archives</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">filename</span></code></dt>
+<dd><p class="first last">filename to use for archive extraction or creation</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.archive.cpio.ArchiveCpio.create">
+<code class="descname">create</code><span class="sig-paren">(</span><em>source_dir</em>, <em>exclude=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/archive/cpio.html#ArchiveCpio.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.archive.cpio.ArchiveCpio.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create cpio archive</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>source_dir</strong> (<em>string</em>) &#8211; data source directory</li>
+<li><strong>exclude</strong> (<em>list</em>) &#8211; list of excluded items</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.archive.cpio.ArchiveCpio.extract">
+<code class="descname">extract</code><span class="sig-paren">(</span><em>dest_dir</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/archive/cpio.html#ArchiveCpio.extract"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.archive.cpio.ArchiveCpio.extract" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract cpio archive contents</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dest_dir</strong> (<em>string</em>) &#8211; target data directory</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.archive.tar">
+<span id="kiwi-archive-tar-module"></span><h2><a class="reference internal" href="#module-kiwi.archive.tar" title="kiwi.archive.tar"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.archive.tar</span></code></a> Module<a class="headerlink" href="#module-kiwi.archive.tar" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.archive.tar.ArchiveTar">
+<em class="property">class </em><code class="descclassname">kiwi.archive.tar.</code><code class="descname">ArchiveTar</code><span class="sig-paren">(</span><em>filename</em>, <em>create_from_file_list=True</em>, <em>file_list=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/archive/tar.html#ArchiveTar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.archive.tar.ArchiveTar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Extraction/Creation of tar archives</p>
+<p>The tarfile python module is not used by that class,
+since it does not provide support for some relevant features
+in comparison to the GNU tar command (e.g. numeric-owner).
+Moreover tarfile lacks support for xz compression under
+Python v2.7.</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">filename</span></code></dt>
+<dd><p class="first last">filename to use for archive extraction or creation</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">create_from_file_list</span></code></dt>
+<dd><p class="first last">use file list not entire directory to create the archive</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">file_list</span></code></dt>
+<dd><p class="first last">list of files and directories to pack</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.archive.tar.ArchiveTar.append_files">
+<code class="descname">append_files</code><span class="sig-paren">(</span><em>source_dir</em>, <em>files_to_append</em>, <em>options=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/archive/tar.html#ArchiveTar.append_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.archive.tar.ArchiveTar.append_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Append files to an already existing uncompressed tar archive</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>source_dir</strong> (<em>string</em>) &#8211; data source directory</li>
+<li><strong>files_to_append</strong> (<em>list</em>) &#8211; list of items to append</li>
+<li><strong>options</strong> (<em>list</em>) &#8211; custom options</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.archive.tar.ArchiveTar.create">
+<code class="descname">create</code><span class="sig-paren">(</span><em>source_dir</em>, <em>exclude=None</em>, <em>options=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/archive/tar.html#ArchiveTar.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.archive.tar.ArchiveTar.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create uncompressed tar archive</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>source_dir</strong> (<em>string</em>) &#8211; data source directory</li>
+<li><strong>exclude</strong> (<em>list</em>) &#8211; list of excluded items</li>
+<li><strong>options</strong> (<em>list</em>) &#8211; custom creation options</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.archive.tar.ArchiveTar.create_gnu_gzip_compressed">
+<code class="descname">create_gnu_gzip_compressed</code><span class="sig-paren">(</span><em>source_dir</em>, <em>exclude=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/archive/tar.html#ArchiveTar.create_gnu_gzip_compressed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.archive.tar.ArchiveTar.create_gnu_gzip_compressed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create gzip compressed tar archive</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>source_dir</strong> (<em>string</em>) &#8211; data source directory</li>
+<li><strong>exclude</strong> (<em>list</em>) &#8211; list of excluded items</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.archive.tar.ArchiveTar.create_xz_compressed">
+<code class="descname">create_xz_compressed</code><span class="sig-paren">(</span><em>source_dir</em>, <em>exclude=None</em>, <em>options=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/archive/tar.html#ArchiveTar.create_xz_compressed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.archive.tar.ArchiveTar.create_xz_compressed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create XZ compressed tar archive</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>source_dir</strong> (<em>string</em>) &#8211; data source directory</li>
+<li><strong>exclude</strong> (<em>list</em>) &#8211; list of excluded items</li>
+<li><strong>options</strong> (<em>list</em>) &#8211; custom creation options</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.archive.tar.ArchiveTar.extract">
+<code class="descname">extract</code><span class="sig-paren">(</span><em>dest_dir</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/archive/tar.html#ArchiveTar.extract"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.archive.tar.ArchiveTar.extract" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract tar archive contents</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dest_dir</strong> (<em>string</em>) &#8211; target data directory</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.archive">
+<span id="module-contents"></span><h2>Module Contents<a class="headerlink" href="#module-kiwi.archive" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/kiwi-logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">kiwi.archive Package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-kiwi.archive.cpio"><code class="docutils literal"><span class="pre">kiwi.archive.cpio</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.archive.tar"><code class="docutils literal"><span class="pre">kiwi.archive.tar</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.archive">Module Contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="kiwi.html">API Documentation 8.25.5</a><ul>
+      <li>Previous: <a href="kiwi.html" title="previous chapter">API Documentation 8.25.5</a></li>
+      <li>Next: <a href="kiwi.boot.html" title="next chapter">kiwi.boot Package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<h1 class="logo"><a href="../index.html">kiwi</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=SUSE&repo=kiwi&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/SUSE/kiwi">
+    <img
+        alt="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+        src="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Marcus Schäfer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/api/kiwi.archive.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/SUSE/kiwi" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

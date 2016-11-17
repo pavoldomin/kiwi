@@ -1,0 +1,286 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kiwi.system.root_init &#8212; kiwi 8.25.5 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '8.25.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="top" title="kiwi 8.25.5 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for kiwi.system.root_init</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2015 SUSE Linux GmbH.  All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This file is part of kiwi.</span>
+<span class="c1">#</span>
+<span class="c1"># kiwi is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1"># (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># kiwi is distributed in the hope that it will be useful,</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1"># GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with kiwi.  If not, see &lt;http://www.gnu.org/licenses/&gt;</span>
+<span class="c1">#</span>
+<span class="kn">import</span> <span class="nn">stat</span>
+<span class="kn">from</span> <span class="nn">pwd</span> <span class="k">import</span> <span class="n">getpwnam</span>
+<span class="kn">from</span> <span class="nn">tempfile</span> <span class="k">import</span> <span class="n">mkdtemp</span>
+<span class="kn">from</span> <span class="nn">shutil</span> <span class="k">import</span> <span class="n">rmtree</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="c1"># project</span>
+<span class="kn">from</span> <span class="nn">..utils.sync</span> <span class="k">import</span> <span class="n">DataSync</span>
+<span class="kn">from</span> <span class="nn">..command</span> <span class="k">import</span> <span class="n">Command</span>
+<span class="kn">from</span> <span class="nn">..path</span> <span class="k">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">..defaults</span> <span class="k">import</span> <span class="n">Defaults</span>
+
+<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">KiwiRootDirExists</span><span class="p">,</span>
+    <span class="n">KiwiRootInitCreationError</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="RootInit"><a class="viewcode-back" href="../../../api/kiwi.system.html#kiwi.system.root_init.RootInit">[docs]</a><span class="k">class</span> <span class="nc">RootInit</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implements creation of new root directory for a linux system.</span>
+<span class="sd">    Host system independent static default files and device nodes</span>
+<span class="sd">    are created to initialize a new base system</span>
+
+<span class="sd">    Attributes</span>
+
+<span class="sd">    * :attr:`root_dir`</span>
+<span class="sd">        root directory path name</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root_dir</span><span class="p">,</span> <span class="n">allow_existing</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">allow_existing</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">root_dir</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">KiwiRootDirExists</span><span class="p">(</span>
+                <span class="s1">&#39;Root directory </span><span class="si">%s</span><span class="s1"> already exists&#39;</span> <span class="o">%</span> <span class="n">root_dir</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span> <span class="o">=</span> <span class="n">root_dir</span>
+
+<div class="viewcode-block" id="RootInit.delete"><a class="viewcode-back" href="../../../api/kiwi.system.html#kiwi.system.root_init.RootInit.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Force delete root directory and its contents</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Path</span><span class="o">.</span><span class="n">wipe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RootInit.create"><a class="viewcode-back" href="../../../api/kiwi.system.html#kiwi.system.root_init.RootInit.create">[docs]</a>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create new system root directory</span>
+
+<span class="sd">        The method creates a temporary directory and initializes it</span>
+<span class="sd">        for the purpose of building a system image from it. This</span>
+<span class="sd">        includes the following setup:</span>
+
+<span class="sd">        * create static core device nodes</span>
+<span class="sd">        * create core system paths</span>
+
+<span class="sd">        On success the contents of the temporary location are</span>
+<span class="sd">        synced to the specified root_dir and the temporary location</span>
+<span class="sd">        will be deleted. That way we never work on an incomplete</span>
+<span class="sd">        initial setup</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;kiwi_root.&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_create_base_directories</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_create_device_nodes</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_create_base_links</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_setup_config_templates</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">DataSync</span><span class="p">(</span><span class="n">root</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span><span class="p">)</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">sync_data</span><span class="p">(</span>
+                <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;-a&#39;</span><span class="p">,</span> <span class="s1">&#39;--ignore-existing&#39;</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">rmtree</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">ignore_errors</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">rmtree</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">ignore_errors</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">KiwiRootInitCreationError</span><span class="p">(</span>
+                <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="nb">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_setup_config_templates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
+        <span class="n">group_template</span> <span class="o">=</span> <span class="s1">&#39;/var/adm/fillup-templates/group.aaa_base&#39;</span>
+        <span class="n">passwd_template</span> <span class="o">=</span> <span class="s1">&#39;/var/adm/fillup-templates/passwd.aaa_base&#39;</span>
+        <span class="n">proxy_template</span> <span class="o">=</span> <span class="s1">&#39;/var/adm/fillup-templates/sysconfig.proxy&#39;</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">group_template</span><span class="p">):</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;cp&#39;</span><span class="p">,</span> <span class="n">group_template</span><span class="p">,</span> <span class="n">root</span> <span class="o">+</span> <span class="s1">&#39;/etc/group&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">passwd_template</span><span class="p">):</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;cp&#39;</span><span class="p">,</span> <span class="n">passwd_template</span><span class="p">,</span> <span class="n">root</span> <span class="o">+</span> <span class="s1">&#39;/etc/passwd&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">proxy_template</span><span class="p">):</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;cp&#39;</span><span class="p">,</span> <span class="n">proxy_template</span><span class="p">,</span> <span class="n">root</span> <span class="o">+</span> <span class="s1">&#39;/etc/sysconfig/proxy&#39;</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">_create_device_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create minimum set of device nodes for a new root system</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mknod_data</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="mo">0o666</span><span class="p">,</span> <span class="s1">&#39;dev/null&#39;</span><span class="p">,</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IFCHR</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span>
+            <span class="p">(</span><span class="mo">0o666</span><span class="p">,</span> <span class="s1">&#39;dev/zero&#39;</span><span class="p">,</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IFCHR</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)),</span>
+            <span class="p">(</span><span class="mo">0o622</span><span class="p">,</span> <span class="s1">&#39;dev/full&#39;</span><span class="p">,</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IFCHR</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">)),</span>
+            <span class="p">(</span><span class="mo">0o666</span><span class="p">,</span> <span class="s1">&#39;dev/random&#39;</span><span class="p">,</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IFCHR</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">)),</span>
+            <span class="p">(</span><span class="mo">0o644</span><span class="p">,</span> <span class="s1">&#39;dev/urandom&#39;</span><span class="p">,</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IFCHR</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">)),</span>
+            <span class="p">(</span><span class="mo">0o666</span><span class="p">,</span> <span class="s1">&#39;dev/tty&#39;</span><span class="p">,</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IFCHR</span><span class="p">,</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span>
+            <span class="p">(</span><span class="mo">0o666</span><span class="p">,</span> <span class="s1">&#39;dev/ptmx&#39;</span><span class="p">,</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IFCHR</span><span class="p">,</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span>
+            <span class="p">(</span><span class="mo">0o640</span><span class="p">,</span> <span class="s1">&#39;dev/loop0&#39;</span><span class="p">,</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IFBLK</span><span class="p">,</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span>
+            <span class="p">(</span><span class="mo">0o640</span><span class="p">,</span> <span class="s1">&#39;dev/loop1&#39;</span><span class="p">,</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IFBLK</span><span class="p">,</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span>
+            <span class="p">(</span><span class="mo">0o640</span><span class="p">,</span> <span class="s1">&#39;dev/loop2&#39;</span><span class="p">,</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IFBLK</span><span class="p">,</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span>
+            <span class="p">(</span><span class="mo">0o666</span><span class="p">,</span> <span class="s1">&#39;dev/loop3&#39;</span><span class="p">,</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IFBLK</span><span class="p">,</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span>
+            <span class="p">(</span><span class="mo">0o666</span><span class="p">,</span> <span class="s1">&#39;dev/loop4&#39;</span><span class="p">,</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IFBLK</span><span class="p">,</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+        <span class="p">]</span>
+        <span class="k">for</span> <span class="n">d_mode</span><span class="p">,</span> <span class="n">d_path</span><span class="p">,</span> <span class="n">d_type</span><span class="p">,</span> <span class="n">d_dev</span> <span class="ow">in</span> <span class="n">mknod_data</span><span class="p">:</span>
+            <span class="n">root_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">root</span><span class="p">,</span> <span class="n">d_path</span><span class="p">])</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mknod</span><span class="p">(</span><span class="n">root_path</span><span class="p">,</span> <span class="n">d_mode</span> <span class="o">|</span> <span class="n">d_type</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">makedev</span><span class="p">(</span><span class="o">*</span><span class="n">d_dev</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_create_base_directories</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create minimum collection of directories in the new</span>
+<span class="sd">        root system required for kiwi to operate</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">base_system_paths</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">Defaults</span><span class="o">.</span><span class="n">get_shared_cache_location</span><span class="p">(),</span>
+            <span class="s1">&#39;dev/pts&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;proc&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;etc/sysconfig&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;run&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;sys&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;var&#39;</span>
+        <span class="p">)</span>
+        <span class="n">root_uid</span> <span class="o">=</span> <span class="n">getpwnam</span><span class="p">(</span><span class="s1">&#39;root&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">pw_uid</span>
+        <span class="n">root_gid</span> <span class="o">=</span> <span class="n">getpwnam</span><span class="p">(</span><span class="s1">&#39;root&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">pw_gid</span>
+        <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">base_system_paths</span><span class="p">:</span>
+            <span class="n">root_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">root</span><span class="p">,</span> <span class="n">path</span><span class="p">])</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">root_path</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">root_path</span><span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">chown</span><span class="p">(</span><span class="n">root_path</span><span class="p">,</span> <span class="n">root_uid</span><span class="p">,</span> <span class="n">root_gid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_create_base_links</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create minimum collection of file handle and runtime</span>
+<span class="sd">        links which needs to be present prior to any package</span>
+<span class="sd">        installation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">base_system_links</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">(</span><span class="s1">&#39;/proc/self/fd&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/dev/fd&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;fd/2&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/dev/stderr&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;fd/0&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/dev/stdin&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;fd/1&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/dev/stdout&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;/run&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/var/run&#39;</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">src</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">base_system_links</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">symlink</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">target</span> <span class="o">%</span> <span class="n">root</span><span class="p">,</span> <span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/kiwi-logo.png" alt="Logo"/>
+            </a></p><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<h1 class="logo"><a href="../../../index.html">kiwi</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=SUSE&repo=kiwi&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/SUSE/kiwi">
+    <img
+        alt="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+        src="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Marcus Schäfer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/SUSE/kiwi" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

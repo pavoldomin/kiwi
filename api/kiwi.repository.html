@@ -1,0 +1,558 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kiwi.repository Package &#8212; kiwi 8.25.5 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '8.25.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="kiwi 8.25.5 documentation" href="../index.html" />
+    <link rel="up" title="API Documentation 8.25.5" href="kiwi.html" />
+    <link rel="next" title="kiwi.repository.template Package" href="kiwi.repository.template.html" />
+    <link rel="prev" title="kiwi.partitioner Package" href="kiwi.partitioner.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="kiwi-repository-package">
+<h1>kiwi.repository Package<a class="headerlink" href="#kiwi-repository-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="kiwi.repository.template.html">kiwi.repository.template Package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="kiwi.repository.template.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kiwi.repository.template.html#module-kiwi.repository.template.apt"><code class="docutils literal"><span class="pre">kiwi.repository.template.apt</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kiwi.repository.template.html#module-kiwi.repository.template">Module Contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-kiwi.repository.base">
+<span id="kiwi-repository-base-module"></span><h2><a class="reference internal" href="#module-kiwi.repository.base" title="kiwi.repository.base"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.repository.base</span></code></a> Module<a class="headerlink" href="#module-kiwi.repository.base" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.repository.base.RepositoryBase">
+<em class="property">class </em><code class="descclassname">kiwi.repository.base.</code><code class="descname">RepositoryBase</code><span class="sig-paren">(</span><em>root_bind</em>, <em>custom_args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/repository/base.html#RepositoryBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.repository.base.RepositoryBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Implements base class for package manager repository handling</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">root_bind</span></code></dt>
+<dd><p class="first last">Instance of RootBind</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">root_dir</span></code></dt>
+<dd><p class="first last">root directory path name</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">shared_location</span></code></dt>
+<dd><p class="first last">shared directory between image root and build system root</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.repository.base.RepositoryBase.add_repo">
+<code class="descname">add_repo</code><span class="sig-paren">(</span><em>name</em>, <em>uri</em>, <em>repo_type</em>, <em>prio</em>, <em>dist</em>, <em>components</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/repository/base.html#RepositoryBase.add_repo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.repository.base.RepositoryBase.add_repo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add repository</p>
+<p>Implementation in specialized repository class</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> (<em>string</em>) &#8211; unused</li>
+<li><strong>uri</strong> (<em>string</em>) &#8211; unused</li>
+<li><strong>repo_type</strong> &#8211; unused</li>
+<li><strong>prio</strong> (<em>int</em>) &#8211; unused</li>
+<li><strong>dist</strong> &#8211; unused</li>
+<li><strong>components</strong> &#8211; unused</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.repository.base.RepositoryBase.cleanup_unused_repos">
+<code class="descname">cleanup_unused_repos</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/repository/base.html#RepositoryBase.cleanup_unused_repos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.repository.base.RepositoryBase.cleanup_unused_repos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cleanup/Delete unused repositories</p>
+<p>Only configured repositories according to the image configuration
+are allowed to be active when building</p>
+<p>Implementation in specialized repository class</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.repository.base.RepositoryBase.delete_all_repos">
+<code class="descname">delete_all_repos</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/repository/base.html#RepositoryBase.delete_all_repos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.repository.base.RepositoryBase.delete_all_repos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete all repositories</p>
+<p>Implementation in specialized repository class</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.repository.base.RepositoryBase.delete_repo">
+<code class="descname">delete_repo</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/repository/base.html#RepositoryBase.delete_repo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.repository.base.RepositoryBase.delete_repo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete repository</p>
+<p>Implementation in specialized repository class</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<em>string</em>) &#8211; unused</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.repository.base.RepositoryBase.post_init">
+<code class="descname">post_init</code><span class="sig-paren">(</span><em>custom_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/repository/base.html#RepositoryBase.post_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.repository.base.RepositoryBase.post_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Post initialization method</p>
+<p>Implementation in specialized repository class</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>custom_args</strong> (<em>list</em>) &#8211; unused</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.repository.base.RepositoryBase.runtime_config">
+<code class="descname">runtime_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/repository/base.html#RepositoryBase.runtime_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.repository.base.RepositoryBase.runtime_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Repository runtime configuration and environment</p>
+<p>Implementation in specialized repository class</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.repository.base.RepositoryBase.use_default_location">
+<code class="descname">use_default_location</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/repository/base.html#RepositoryBase.use_default_location"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.repository.base.RepositoryBase.use_default_location" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call repository operations with default repository manager setup</p>
+<p>Implementation in specialized repository class</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.repository.yum">
+<span id="kiwi-repository-yum-module"></span><h2><a class="reference internal" href="#module-kiwi.repository.yum" title="kiwi.repository.yum"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.repository.yum</span></code></a> Module<a class="headerlink" href="#module-kiwi.repository.yum" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.repository.yum.RepositoryYum">
+<em class="property">class </em><code class="descclassname">kiwi.repository.yum.</code><code class="descname">RepositoryYum</code><span class="sig-paren">(</span><em>root_bind</em>, <em>custom_args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/repository/yum.html#RepositoryYum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.repository.yum.RepositoryYum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kiwi.repository.base.RepositoryBase" title="kiwi.repository.base.RepositoryBase"><code class="xref py py-class docutils literal"><span class="pre">kiwi.repository.base.RepositoryBase</span></code></a></p>
+<p>Implements repository handling for yum package manager</p>
+<dl class="method">
+<dt id="kiwi.repository.yum.RepositoryYum.add_repo">
+<code class="descname">add_repo</code><span class="sig-paren">(</span><em>name</em>, <em>uri</em>, <em>repo_type='rpm-md'</em>, <em>prio=None</em>, <em>dist=None</em>, <em>components=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/repository/yum.html#RepositoryYum.add_repo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.repository.yum.RepositoryYum.add_repo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add yum repository</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> (<em>string</em>) &#8211; repository base file name</li>
+<li><strong>uri</strong> (<em>string</em>) &#8211; repository URI</li>
+<li><strong>repo_type</strong> &#8211; repostory type name</li>
+<li><strong>prio</strong> (<em>int</em>) &#8211; yum repostory priority</li>
+<li><strong>dist</strong> &#8211; unused</li>
+<li><strong>components</strong> &#8211; unused</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.repository.yum.RepositoryYum.cleanup_unused_repos">
+<code class="descname">cleanup_unused_repos</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/repository/yum.html#RepositoryYum.cleanup_unused_repos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.repository.yum.RepositoryYum.cleanup_unused_repos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete unused yum repositories</p>
+<p>Repository configurations which are not used for this build
+must be removed otherwise they are taken into account for
+the package installations</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.repository.yum.RepositoryYum.delete_all_repos">
+<code class="descname">delete_all_repos</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/repository/yum.html#RepositoryYum.delete_all_repos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.repository.yum.RepositoryYum.delete_all_repos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete all yum repositories</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.repository.yum.RepositoryYum.delete_repo">
+<code class="descname">delete_repo</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/repository/yum.html#RepositoryYum.delete_repo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.repository.yum.RepositoryYum.delete_repo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete yum repository</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<em>string</em>) &#8211; repository base file name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.repository.yum.RepositoryYum.post_init">
+<code class="descname">post_init</code><span class="sig-paren">(</span><em>custom_args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/repository/yum.html#RepositoryYum.post_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.repository.yum.RepositoryYum.post_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Post initialization method</p>
+<p>Store custom yum arguments and create runtime configuration
+and environment</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">shared_yum_dir</span></code></dt>
+<dd><p class="first last">shared directory between image root and build system root</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">runtime_yum_config_file</span></code></dt>
+<dd><p class="first last">yum runtime config file name</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">command_env</span></code></dt>
+<dd><p class="first last">customized os.environ for yum</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">runtime_yum_config</span></code></dt>
+<dd><p class="first last">Instance of ConfigParser</p>
+</dd>
+</dl>
+</li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>custom_args</strong> (<em>list</em>) &#8211; yum arguments</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.repository.yum.RepositoryYum.runtime_config">
+<code class="descname">runtime_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/repository/yum.html#RepositoryYum.runtime_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.repository.yum.RepositoryYum.runtime_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>yum runtime configuration and environment</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.repository.yum.RepositoryYum.use_default_location">
+<code class="descname">use_default_location</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/repository/yum.html#RepositoryYum.use_default_location"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.repository.yum.RepositoryYum.use_default_location" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup yum repository operations to store all data
+in the default places</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.repository.zypper">
+<span id="kiwi-repository-zypper-module"></span><h2><a class="reference internal" href="#module-kiwi.repository.zypper" title="kiwi.repository.zypper"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.repository.zypper</span></code></a> Module<a class="headerlink" href="#module-kiwi.repository.zypper" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.repository.zypper.RepositoryZypper">
+<em class="property">class </em><code class="descclassname">kiwi.repository.zypper.</code><code class="descname">RepositoryZypper</code><span class="sig-paren">(</span><em>root_bind</em>, <em>custom_args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/repository/zypper.html#RepositoryZypper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.repository.zypper.RepositoryZypper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kiwi.repository.base.RepositoryBase" title="kiwi.repository.base.RepositoryBase"><code class="xref py py-class docutils literal"><span class="pre">kiwi.repository.base.RepositoryBase</span></code></a></p>
+<p>Implements repo handling for zypper package manager</p>
+<dl class="method">
+<dt id="kiwi.repository.zypper.RepositoryZypper.add_repo">
+<code class="descname">add_repo</code><span class="sig-paren">(</span><em>name</em>, <em>uri</em>, <em>repo_type='rpm-md'</em>, <em>prio=None</em>, <em>dist=None</em>, <em>components=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/repository/zypper.html#RepositoryZypper.add_repo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.repository.zypper.RepositoryZypper.add_repo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add zypper repository</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> (<em>string</em>) &#8211; repository name</li>
+<li><strong>uri</strong> (<em>string</em>) &#8211; repository URI</li>
+<li><strong>repo_type</strong> &#8211; repostory type name</li>
+<li><strong>prio</strong> (<em>int</em>) &#8211; yum repostory priority</li>
+<li><strong>dist</strong> &#8211; unused</li>
+<li><strong>components</strong> &#8211; unused</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.repository.zypper.RepositoryZypper.cleanup_unused_repos">
+<code class="descname">cleanup_unused_repos</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/repository/zypper.html#RepositoryZypper.cleanup_unused_repos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.repository.zypper.RepositoryZypper.cleanup_unused_repos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete unused zypper repositories</p>
+<p>zypper creates a system solvable which is unwanted for the
+purpose of building images. In addition zypper fails with
+an error message &#8216;Failed to cache rpm database&#8217; if such a
+system solvable exists and a new root system is created</p>
+<p>All other repository configurations which are not used for
+this build must be removed too, otherwise they are taken into
+account for the package installations</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.repository.zypper.RepositoryZypper.delete_all_repos">
+<code class="descname">delete_all_repos</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/repository/zypper.html#RepositoryZypper.delete_all_repos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.repository.zypper.RepositoryZypper.delete_all_repos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete all zypper repositories</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.repository.zypper.RepositoryZypper.delete_repo">
+<code class="descname">delete_repo</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/repository/zypper.html#RepositoryZypper.delete_repo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.repository.zypper.RepositoryZypper.delete_repo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete zypper repository</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<em>string</em>) &#8211; repository name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.repository.zypper.RepositoryZypper.post_init">
+<code class="descname">post_init</code><span class="sig-paren">(</span><em>custom_args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/repository/zypper.html#RepositoryZypper.post_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.repository.zypper.RepositoryZypper.post_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Post initialization method</p>
+<p>Store custom zypper arguments and create runtime configuration
+and environment</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">shared_zypper_dir</span></code></dt>
+<dd><p class="first last">shared directory between image root and build system root</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">runtime_zypper_config_file</span></code></dt>
+<dd><p class="first last">zypper runtime config file name</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">runtime_zypp_config_file</span></code></dt>
+<dd><p class="first last">libzypp runtime config file name</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">zypper_args</span></code></dt>
+<dd><p class="first last">zypper caller args plus additional custom args</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">command_env</span></code></dt>
+<dd><p class="first last">customized os.environ for zypper</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">runtime_zypper_config</span></code></dt>
+<dd><p class="first last">Instance of ConfigParser</p>
+</dd>
+</dl>
+</li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>custom_args</strong> (<em>list</em>) &#8211; zypper arguments</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.repository.zypper.RepositoryZypper.runtime_config">
+<code class="descname">runtime_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/repository/zypper.html#RepositoryZypper.runtime_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.repository.zypper.RepositoryZypper.runtime_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>zypper runtime configuration and environment</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.repository.zypper.RepositoryZypper.use_default_location">
+<code class="descname">use_default_location</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/repository/zypper.html#RepositoryZypper.use_default_location"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.repository.zypper.RepositoryZypper.use_default_location" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup zypper repository operations to store all data
+in the default places</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.repository">
+<span id="module-contents"></span><h2>Module Contents<a class="headerlink" href="#module-kiwi.repository" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.repository.Repository">
+<em class="property">class </em><code class="descclassname">kiwi.repository.</code><code class="descname">Repository</code><a class="reference internal" href="../_modules/kiwi/repository.html#Repository"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.repository.Repository" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Repository factory</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">root_bind</span></code></dt>
+<dd><p class="first last">Instance of RootBind</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">package_manager</span></code></dt>
+<dd><p class="first last">package manager name</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">custom_args</span></code></dt>
+<dd><p class="first last">list of custom package manager arguments
+to setup the repository</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/kiwi-logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">kiwi.repository Package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-kiwi.repository.base"><code class="docutils literal"><span class="pre">kiwi.repository.base</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.repository.yum"><code class="docutils literal"><span class="pre">kiwi.repository.yum</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.repository.zypper"><code class="docutils literal"><span class="pre">kiwi.repository.zypper</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.repository">Module Contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="kiwi.html">API Documentation 8.25.5</a><ul>
+      <li>Previous: <a href="kiwi.partitioner.html" title="previous chapter">kiwi.partitioner Package</a></li>
+      <li>Next: <a href="kiwi.repository.template.html" title="next chapter">kiwi.repository.template Package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<h1 class="logo"><a href="../index.html">kiwi</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=SUSE&repo=kiwi&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/SUSE/kiwi">
+    <img
+        alt="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+        src="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Marcus Schäfer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/api/kiwi.repository.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/SUSE/kiwi" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

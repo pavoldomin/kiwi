@@ -1,0 +1,273 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kiwi.boot.image.kiwi &#8212; kiwi 8.25.5 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '8.25.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="top" title="kiwi 8.25.5 documentation" href="../../../../index.html" />
+    <link rel="up" title="kiwi.boot.image" href="../image.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for kiwi.boot.image.kiwi</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2015 SUSE Linux GmbH.  All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This file is part of kiwi.</span>
+<span class="c1">#</span>
+<span class="c1"># kiwi is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1"># (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># kiwi is distributed in the hope that it will be useful,</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1"># GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with kiwi.  If not, see &lt;http://www.gnu.org/licenses/&gt;</span>
+<span class="c1">#</span>
+<span class="kn">from</span> <span class="nn">tempfile</span> <span class="k">import</span> <span class="n">mkdtemp</span>
+
+<span class="kn">from</span> <span class="nn">...defaults</span> <span class="k">import</span> <span class="n">Defaults</span>
+<span class="kn">from</span> <span class="nn">...utils.sync</span> <span class="k">import</span> <span class="n">DataSync</span>
+<span class="kn">from</span> <span class="nn">...system.prepare</span> <span class="k">import</span> <span class="n">SystemPrepare</span>
+<span class="kn">from</span> <span class="nn">...system.profile</span> <span class="k">import</span> <span class="n">Profile</span>
+<span class="kn">from</span> <span class="nn">...system.setup</span> <span class="k">import</span> <span class="n">SystemSetup</span>
+<span class="kn">from</span> <span class="nn">...logger</span> <span class="k">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">...archive.cpio</span> <span class="k">import</span> <span class="n">ArchiveCpio</span>
+<span class="kn">from</span> <span class="nn">...utils.compress</span> <span class="k">import</span> <span class="n">Compress</span>
+<span class="kn">from</span> <span class="nn">...path</span> <span class="k">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">BootImageBase</span>
+
+
+<div class="viewcode-block" id="BootImageKiwi"><a class="viewcode-back" href="../../../../api/kiwi.boot.image.html#kiwi.boot.image.kiwi.BootImageKiwi">[docs]</a><span class="k">class</span> <span class="nc">BootImageKiwi</span><span class="p">(</span><span class="n">BootImageBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implements preparation and creation of kiwi boot(initrd) images</span>
+<span class="sd">    The kiwi initrd is a customized first boot initrd which allows</span>
+<span class="sd">    to control the first boot an appliance. The kiwi initrd replaces</span>
+<span class="sd">    itself after first boot by the result of dracut.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="BootImageKiwi.prepare"><a class="viewcode-back" href="../../../../api/kiwi.boot.image.html#kiwi.boot.image.kiwi.BootImageKiwi.prepare">[docs]</a>    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prepare new root system suitable to create a kiwi initrd from it</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">load_boot_xml_description</span><span class="p">()</span>
+        <span class="n">boot_image_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">boot_xml_state</span><span class="o">.</span><span class="n">xml_data</span><span class="o">.</span><span class="n">get_name</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">import_system_description_elements</span><span class="p">()</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Preparing boot image&#39;</span><span class="p">)</span>
+        <span class="n">system</span> <span class="o">=</span> <span class="n">SystemPrepare</span><span class="p">(</span>
+            <span class="n">xml_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">boot_xml_state</span><span class="p">,</span>
+            <span class="n">root_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">boot_root_directory</span><span class="p">,</span>
+            <span class="n">allow_existing</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="n">manager</span> <span class="o">=</span> <span class="n">system</span><span class="o">.</span><span class="n">setup_repositories</span><span class="p">()</span>
+        <span class="n">system</span><span class="o">.</span><span class="n">install_bootstrap</span><span class="p">(</span>
+            <span class="n">manager</span>
+        <span class="p">)</span>
+        <span class="n">system</span><span class="o">.</span><span class="n">install_system</span><span class="p">(</span>
+            <span class="n">manager</span>
+        <span class="p">)</span>
+
+        <span class="n">profile</span> <span class="o">=</span> <span class="n">Profile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">boot_xml_state</span><span class="p">)</span>
+        <span class="n">profile</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;kiwi_initrdname&#39;</span><span class="p">,</span> <span class="n">boot_image_name</span><span class="p">)</span>
+
+        <span class="n">defaults</span> <span class="o">=</span> <span class="n">Defaults</span><span class="p">()</span>
+        <span class="n">defaults</span><span class="o">.</span><span class="n">to_profile</span><span class="p">(</span><span class="n">profile</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup</span> <span class="o">=</span> <span class="n">SystemSetup</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boot_xml_state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">boot_root_directory</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup</span><span class="o">.</span><span class="n">import_shell_environment</span><span class="p">(</span><span class="n">profile</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup</span><span class="o">.</span><span class="n">import_description</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup</span><span class="o">.</span><span class="n">import_overlay_files</span><span class="p">(</span>
+            <span class="n">follow_links</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup</span><span class="o">.</span><span class="n">call_config_script</span><span class="p">()</span>
+
+        <span class="n">system</span><span class="o">.</span><span class="n">pinch_system</span><span class="p">(</span>
+            <span class="n">manager</span><span class="o">=</span><span class="n">manager</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="c1"># make sure system instance is cleaned up before setting up</span>
+        <span class="k">del</span> <span class="n">system</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup</span><span class="o">.</span><span class="n">call_image_script</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup</span><span class="o">.</span><span class="n">create_init_link_from_linuxrc</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="BootImageKiwi.create_initrd"><a class="viewcode-back" href="../../../../api/kiwi.boot.image.html#kiwi.boot.image.kiwi.BootImageKiwi.create_initrd">[docs]</a>    <span class="k">def</span> <span class="nf">create_initrd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mbrid</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create initrd from prepared boot system tree and compress the result</span>
+
+<span class="sd">        :param object mbrid: instance of ImageIdentifier</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_prepared</span><span class="p">():</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Creating initrd cpio archive&#39;</span><span class="p">)</span>
+            <span class="c1"># we can&#39;t simply exclude boot when building the archive</span>
+            <span class="c1"># because the file boot/mbrid must be preserved. Because of</span>
+            <span class="c1"># that we create a copy of the boot directory and remove</span>
+            <span class="c1"># everything in boot/ except for boot/mbrid. The original</span>
+            <span class="c1"># boot directory should not be changed because we rely</span>
+            <span class="c1"># on other data in boot/ e.g the kernel to be available</span>
+            <span class="c1"># for the entire image building process</span>
+            <span class="n">temp_boot_root_directory</span> <span class="o">=</span> <span class="n">mkdtemp</span><span class="p">(</span>
+                <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;kiwi_boot_root_copy.&#39;</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">temp_directories</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">temp_boot_root_directory</span>
+            <span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">DataSync</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">boot_root_directory</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span>
+                <span class="n">temp_boot_root_directory</span>
+            <span class="p">)</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">sync_data</span><span class="p">(</span>
+                <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;-z&#39;</span><span class="p">,</span> <span class="s1">&#39;-a&#39;</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">boot_directory</span> <span class="o">=</span> <span class="n">temp_boot_root_directory</span> <span class="o">+</span> <span class="s1">&#39;/boot&#39;</span>
+            <span class="n">Path</span><span class="o">.</span><span class="n">wipe</span><span class="p">(</span><span class="n">boot_directory</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">mbrid</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="s1">&#39;--&gt; Importing mbrid: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">mbrid</span><span class="o">.</span><span class="n">get_id</span><span class="p">()</span>
+                <span class="p">)</span>
+                <span class="n">Path</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">boot_directory</span><span class="p">)</span>
+                <span class="n">image_identifier</span> <span class="o">=</span> <span class="n">boot_directory</span> <span class="o">+</span> <span class="s1">&#39;/mbrid&#39;</span>
+                <span class="n">mbrid</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">image_identifier</span><span class="p">)</span>
+
+            <span class="n">cpio</span> <span class="o">=</span> <span class="n">ArchiveCpio</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">initrd_file_name</span><span class="p">)</span>
+            <span class="c1"># the following is a list of directories which were needed</span>
+            <span class="c1"># during the process of creating an image but not when the</span>
+            <span class="c1"># image is actually booting with this initrd</span>
+            <span class="n">exclude_from_archive</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">Defaults</span><span class="o">.</span><span class="n">get_shared_cache_location</span><span class="p">(),</span>
+                <span class="s1">&#39;/image&#39;</span><span class="p">,</span> <span class="s1">&#39;/usr/lib/grub*&#39;</span>
+            <span class="p">]</span>
+            <span class="c1"># the following is a list of directories to exclude which</span>
+            <span class="c1"># are not needed inside of the initrd</span>
+            <span class="n">exclude_from_archive</span> <span class="o">+=</span> <span class="p">[</span>
+                <span class="s1">&#39;/usr/share/doc&#39;</span><span class="p">,</span> <span class="s1">&#39;/usr/share/man&#39;</span><span class="p">,</span> <span class="s1">&#39;/home&#39;</span><span class="p">,</span> <span class="s1">&#39;/media&#39;</span><span class="p">,</span> <span class="s1">&#39;/srv&#39;</span>
+            <span class="p">]</span>
+            <span class="n">cpio</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+                <span class="n">source_dir</span><span class="o">=</span><span class="n">temp_boot_root_directory</span><span class="p">,</span>
+                <span class="n">exclude</span><span class="o">=</span><span class="n">exclude_from_archive</span>
+            <span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s1">&#39;--&gt; xz compressing archive&#39;</span>
+            <span class="p">)</span>
+            <span class="n">compress</span> <span class="o">=</span> <span class="n">Compress</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">initrd_file_name</span><span class="p">)</span>
+            <span class="n">compress</span><span class="o">.</span><span class="n">xz</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">initrd_filename</span> <span class="o">=</span> <span class="n">compress</span><span class="o">.</span><span class="n">compressed_filename</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../index.html">
+              <img class="logo" src="../../../../_static/kiwi-logo.png" alt="Logo"/>
+            </a></p><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  <li><a href="../image.html">kiwi.boot.image</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<h1 class="logo"><a href="../../../../index.html">kiwi</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=SUSE&repo=kiwi&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/SUSE/kiwi">
+    <img
+        alt="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+        src="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Marcus Schäfer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/SUSE/kiwi" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,1009 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kiwi.builder Package &#8212; kiwi 8.25.5 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '8.25.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="kiwi 8.25.5 documentation" href="../index.html" />
+    <link rel="up" title="API Documentation 8.25.5" href="kiwi.html" />
+    <link rel="next" title="kiwi.container Package" href="kiwi.container.html" />
+    <link rel="prev" title="kiwi.bootloader.template Package" href="kiwi.bootloader.template.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="kiwi-builder-package">
+<h1>kiwi.builder Package<a class="headerlink" href="#kiwi-builder-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-kiwi.builder.archive">
+<span id="kiwi-builder-archive-module"></span><h2><a class="reference internal" href="#module-kiwi.builder.archive" title="kiwi.builder.archive"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.builder.archive</span></code></a> Module<a class="headerlink" href="#module-kiwi.builder.archive" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.builder.archive.ArchiveBuilder">
+<em class="property">class </em><code class="descclassname">kiwi.builder.archive.</code><code class="descname">ArchiveBuilder</code><span class="sig-paren">(</span><em>xml_state</em>, <em>target_dir</em>, <em>root_dir</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/builder/archive.html#ArchiveBuilder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.builder.archive.ArchiveBuilder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Root archive image builder</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">root_dir</span></code></dt>
+<dd><p class="first last">root directory path name</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">target_dir</span></code></dt>
+<dd><p class="first last">target directory path name</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">xml_state</span></code></dt>
+<dd><p class="first last">Instance of XMLState</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">requested_archive_type</span></code></dt>
+<dd><p class="first last">Configured archive type</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">result</span></code></dt>
+<dd><p class="first last">Instance of Result</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">system_setup</span></code></dt>
+<dd><p class="first last">Instance of SystemSetup</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">filename</span></code></dt>
+<dd><p class="first last">File name of the archive file</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">checksum</span></code></dt>
+<dd><p class="first last">File name of the checksum file</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.builder.archive.ArchiveBuilder.create">
+<code class="descname">create</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/builder/archive.html#ArchiveBuilder.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.builder.archive.ArchiveBuilder.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a root archive tarball</p>
+<p>Build a simple XZ compressed root tarball from the image root tree</p>
+<p>Image types which triggers this builder are:</p>
+<ul class="simple">
+<li>image=&#8221;tbz&#8221;</li>
+</ul>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.builder.container">
+<span id="kiwi-builder-container-module"></span><h2><a class="reference internal" href="#module-kiwi.builder.container" title="kiwi.builder.container"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.builder.container</span></code></a> Module<a class="headerlink" href="#module-kiwi.builder.container" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.builder.container.ContainerBuilder">
+<em class="property">class </em><code class="descclassname">kiwi.builder.container.</code><code class="descname">ContainerBuilder</code><span class="sig-paren">(</span><em>xml_state</em>, <em>target_dir</em>, <em>root_dir</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/builder/container.html#ContainerBuilder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.builder.container.ContainerBuilder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Container image builder</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">root_dir</span></code></dt>
+<dd><p class="first last">root directory path name</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">target_dir</span></code></dt>
+<dd><p class="first last">target directory path name</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">requested_container_name</span></code></dt>
+<dd><p class="first last">Configured container name or default</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">requested_container_type</span></code></dt>
+<dd><p class="first last">Configured container type</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">system_setup</span></code></dt>
+<dd><p class="first last">Instance of SystemSetup</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">filename</span></code></dt>
+<dd><p class="first last">File name of the container image</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">result</span></code></dt>
+<dd><p class="first last">Instance of Result</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.builder.container.ContainerBuilder.create">
+<code class="descname">create</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/builder/container.html#ContainerBuilder.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.builder.container.ContainerBuilder.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds a container image which is usually a tarball including
+container specific metadata.</p>
+<p>Image types which triggers this builder are:</p>
+<ul class="simple">
+<li>image=&#8221;docker&#8221;</li>
+</ul>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.builder.disk">
+<span id="kiwi-builder-disk-module"></span><h2><a class="reference internal" href="#module-kiwi.builder.disk" title="kiwi.builder.disk"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.builder.disk</span></code></a> Module<a class="headerlink" href="#module-kiwi.builder.disk" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.builder.disk.DiskBuilder">
+<em class="property">class </em><code class="descclassname">kiwi.builder.disk.</code><code class="descname">DiskBuilder</code><span class="sig-paren">(</span><em>xml_state</em>, <em>target_dir</em>, <em>root_dir</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/builder/disk.html#DiskBuilder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.builder.disk.DiskBuilder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Disk image builder</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">arch</span></code></dt>
+<dd><p class="first last">platform.machine</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">root_dir</span></code></dt>
+<dd><p class="first last">root directory path name</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">target_dir</span></code></dt>
+<dd><p class="first last">target directory path name</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">xml_state</span></code></dt>
+<dd><p class="first last">Instance of XMLState</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">custom_root_mount_args</span></code></dt>
+<dd><p class="first last">Configured custom root mount arguments</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">build_type_name</span></code></dt>
+<dd><p class="first last">Configured build type name, oem or vmx</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">image_format</span></code></dt>
+<dd><p class="first last">Configured disk image format</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">install_iso</span></code></dt>
+<dd><p class="first last">Request for install ISO image</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">install_stick</span></code></dt>
+<dd><p class="first last">Request for install Stick image, converts into a request
+for the install ISO image because it can handle both cases
+by the hybrid ISO setup</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">install_pxe</span></code></dt>
+<dd><p class="first last">Request for install PXE archive</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">blocksize</span></code></dt>
+<dd><p class="first last">Configured disk blocksize</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">volume_manager_name</span></code></dt>
+<dd><p class="first last">Configured volume manager</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">volumes</span></code></dt>
+<dd><p class="first last">Configured disk volumes</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">volume_group_name</span></code></dt>
+<dd><p class="first last">Configured volume group name</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">mdraid</span></code></dt>
+<dd><p class="first last">Request for md raid, degraded setup</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">hybrid_mbr</span></code></dt>
+<dd><p class="first last">Request to convert partition table to hybrid GPT/MBR&#8217;</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">luks</span></code></dt>
+<dd><p class="first last">LUKS encryption credentials, also triggers to
+encrypt the disk</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">luks_os</span></code></dt>
+<dd><p class="first last">Target operating system name for LUKS encryption</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">machine</span></code></dt>
+<dd><p class="first last">Configured build type machine section</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">requested_filesystem</span></code></dt>
+<dd><p class="first last">Configured root filesystem</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">requested_boot_filesystem</span></code></dt>
+<dd><p class="first last">Configured boot filesystem</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">bootloader</span></code></dt>
+<dd><p class="first last">Configured boot loader</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">initrd_system</span></code></dt>
+<dd><p class="first last">Configured initrd system</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">disk_setup</span></code></dt>
+<dd><p class="first last">Instance of DiskSetup</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">boot_image</span></code></dt>
+<dd><p class="first last">Instance of BootImage</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">firmware</span></code></dt>
+<dd><p class="first last">Instance of FirmWare</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">system_setup</span></code></dt>
+<dd><p class="first last">Instance of SystemSetup</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">diskname</span></code></dt>
+<dd><p class="first last">File name of the disk image</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">install_media</span></code></dt>
+<dd><p class="first last">Build of install media requested true|false</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">system</span></code></dt>
+<dd><p class="first last">Instance of a class with the sync_data capability
+representing the entire image system except for the boot/ area
+which could live on other parts of the disk</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">system_boot</span></code></dt>
+<dd><p class="first last">Instance of a class with the sync_data capability
+representing the boot/ area of the disk if not part of
+system</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">system_efi</span></code></dt>
+<dd><p class="first last">Instance of a class with the sync_data capability
+representing the boot/efi area of the disk</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">generic_fstab_entries</span></code></dt>
+<dd><p class="first last">List of generic/persistent fstab entries</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">result</span></code></dt>
+<dd><p class="first last">Instance of Result</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.builder.disk.DiskBuilder.create">
+<code class="descname">create</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/builder/disk.html#DiskBuilder.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.builder.disk.DiskBuilder.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a bootable disk image and optional installation image
+The installation image is a bootable hybrid ISO image which
+embeds the disk image and an image installer</p>
+<p>Image types which triggers this builder are:</p>
+<ul class="simple">
+<li>image=&#8221;oem&#8221;</li>
+<li>image=&#8221;vmx&#8221;</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.builder.disk.DiskBuilder.create_disk">
+<code class="descname">create_disk</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/builder/disk.html#DiskBuilder.create_disk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.builder.disk.DiskBuilder.create_disk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a bootable raw disk image</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.builder.disk.DiskBuilder.create_disk_format">
+<code class="descname">create_disk_format</code><span class="sig-paren">(</span><em>result_instance</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/builder/disk.html#DiskBuilder.create_disk_format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.builder.disk.DiskBuilder.create_disk_format" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a bootable disk format from a previously
+created raw disk image</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.builder.disk.DiskBuilder.create_install_media">
+<code class="descname">create_install_media</code><span class="sig-paren">(</span><em>result_instance</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/builder/disk.html#DiskBuilder.create_install_media"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.builder.disk.DiskBuilder.create_install_media" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build an installation image. The installation image is a
+bootable hybrid ISO image which embeds the raw disk image
+and an image installer</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.builder.filesystem">
+<span id="kiwi-builder-filesystem-module"></span><h2><a class="reference internal" href="#module-kiwi.builder.filesystem" title="kiwi.builder.filesystem"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.builder.filesystem</span></code></a> Module<a class="headerlink" href="#module-kiwi.builder.filesystem" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.builder.filesystem.FileSystemBuilder">
+<em class="property">class </em><code class="descclassname">kiwi.builder.filesystem.</code><code class="descname">FileSystemBuilder</code><span class="sig-paren">(</span><em>xml_state</em>, <em>target_dir</em>, <em>root_dir</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/builder/filesystem.html#FileSystemBuilder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.builder.filesystem.FileSystemBuilder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Filesystem image builder</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">label</span></code></dt>
+<dd><p class="first last">filesystem label</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">root_dir</span></code></dt>
+<dd><p class="first last">root directory path name</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">target_dir</span></code></dt>
+<dd><p class="first last">target directory path name</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">requested_image_type</span></code></dt>
+<dd><p class="first last">Configured image type</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">requested_filesystem</span></code></dt>
+<dd><p class="first last">Requested filesystem name</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">system_setup</span></code></dt>
+<dd><p class="first last">Instance of SystemSetup</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">filename</span></code></dt>
+<dd><p class="first last">File name of the filesystem image</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">blocksize</span></code></dt>
+<dd><p class="first last">Configured disk blocksize</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">filesystem_setup</span></code></dt>
+<dd><p class="first last">Instance of FileSystemSetup</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">filesystems_no_device_node</span></code></dt>
+<dd><p class="first last">List of filesystems which are created from a data tree
+and do not require a block device e.g loop</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">filesystem_custom_parameters</span></code></dt>
+<dd><p class="first last">Configured custom filesystem mount and creation arguments</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">result</span></code></dt>
+<dd><p class="first last">Instance of Result</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.builder.filesystem.FileSystemBuilder.create">
+<code class="descname">create</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/builder/filesystem.html#FileSystemBuilder.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.builder.filesystem.FileSystemBuilder.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a mountable filesystem image</p>
+<p>Image types which triggers this builder are:</p>
+<ul class="simple">
+<li>image=&#8221;ext2&#8221;</li>
+<li>image=&#8221;ext3&#8221;</li>
+<li>image=&#8221;ext4&#8221;</li>
+<li>image=&#8221;btrfs&#8221;</li>
+<li>image=&#8221;xfs&#8221;</li>
+</ul>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.builder.install">
+<span id="kiwi-builder-install-module"></span><h2><a class="reference internal" href="#module-kiwi.builder.install" title="kiwi.builder.install"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.builder.install</span></code></a> Module<a class="headerlink" href="#module-kiwi.builder.install" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.builder.install.InstallImageBuilder">
+<em class="property">class </em><code class="descclassname">kiwi.builder.install.</code><code class="descname">InstallImageBuilder</code><span class="sig-paren">(</span><em>xml_state</em>, <em>target_dir</em>, <em>boot_image_task</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/builder/install.html#InstallImageBuilder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.builder.install.InstallImageBuilder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Installation image builder</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">arch</span></code></dt>
+<dd><p class="first last">platform.machine</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">target_dir</span></code></dt>
+<dd><p class="first last">target directory path name</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">machine</span></code></dt>
+<dd><p class="first last">Configured build type machine section</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">boot_image</span></code></dt>
+<dd><p class="first last">Instance of BootImage</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">xml_state</span></code></dt>
+<dd><p class="first last">Instance of XMLState</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">diskname</span></code></dt>
+<dd><p class="first last">File name of the disk image</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">isoname</span></code></dt>
+<dd><p class="first last">File name of the install ISO image</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">pxename</span></code></dt>
+<dd><p class="first last">File name of the install PXE archive</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">squashed_diskname</span></code></dt>
+<dd><p class="first last">File name of the squahsfs compressed disk image</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">md5name</span></code></dt>
+<dd><p class="first last">File name of the disk checksum file</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">mbrid</span></code></dt>
+<dd><p class="first last">Instance of SystemIdentifier</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">media_dir</span></code></dt>
+<dd><p class="first last">Temporary directory to collect the install ISO contents</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">pxe_dir</span></code></dt>
+<dd><p class="first last">Temporary directory to collect the PXE install Archive contents</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">squashed_contents</span></code></dt>
+<dd><p class="first last">Temporary directory to collect the contents of the squashfs
+compressed disk image. These are the disk image file itself
+and the checksum file</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">custom_iso_args</span></code></dt>
+<dd><p class="first last">Additional custom ISO creation arguments</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.builder.install.InstallImageBuilder.create_install_iso">
+<code class="descname">create_install_iso</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/builder/install.html#InstallImageBuilder.create_install_iso"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.builder.install.InstallImageBuilder.create_install_iso" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an install ISO from the disk_image as hybrid ISO
+bootable via legacy BIOS, EFI and as disk from Stick</p>
+<p>Image types which triggers this builder are:</p>
+<ul class="simple">
+<li>installiso=&#8221;true|false&#8221;</li>
+<li>installstick=&#8221;true|false&#8221;</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.builder.install.InstallImageBuilder.create_install_pxe_archive">
+<code class="descname">create_install_pxe_archive</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/builder/install.html#InstallImageBuilder.create_install_pxe_archive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.builder.install.InstallImageBuilder.create_install_pxe_archive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an oem install tar archive suitable for installing a
+disk image via the network using the PXE boot protocol.
+The archive contains the raw disk image and its checksum
+as well as an install initrd and kernel plus the required
+kernel commandline information which needs to be added
+as append line in the pxelinux config file on the boot
+server</p>
+<p>Image types which triggers this builder are:</p>
+<ul class="simple">
+<li>installpxe=&#8221;true|false&#8221;</li>
+</ul>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.builder.live">
+<span id="kiwi-builder-live-module"></span><h2><a class="reference internal" href="#module-kiwi.builder.live" title="kiwi.builder.live"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.builder.live</span></code></a> Module<a class="headerlink" href="#module-kiwi.builder.live" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.builder.live.LiveImageBuilder">
+<em class="property">class </em><code class="descclassname">kiwi.builder.live.</code><code class="descname">LiveImageBuilder</code><span class="sig-paren">(</span><em>xml_state</em>, <em>target_dir</em>, <em>root_dir</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/builder/live.html#LiveImageBuilder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.builder.live.LiveImageBuilder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Live image builder</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">media_dir</span></code></dt>
+<dd><p class="first last">Temporary directory to collect the install ISO contents</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">arch</span></code></dt>
+<dd><p class="first last">platform.machine</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">root_dir</span></code></dt>
+<dd><p class="first last">root directory path name</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">target_dir</span></code></dt>
+<dd><p class="first last">target directory path name</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">xml_state</span></code></dt>
+<dd><p class="first last">Instance of XMLState</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">live_type</span></code></dt>
+<dd><p class="first last">Configured live ISO type name</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">types</span></code></dt>
+<dd><p class="first last">List of supported live ISO types</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">hybrid</span></code></dt>
+<dd><p class="first last">Request for hybrid ISO: true|false</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">volume_id</span></code></dt>
+<dd><p class="first last">Configured ISO volume ID or default</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">mbrid</span></code></dt>
+<dd><p class="first last">Instance of SystemIdentifier</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">filesystem_custom_parameters</span></code></dt>
+<dd><p class="first last">Configured custom filesystem mount and creation arguments</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">boot_image_task</span></code></dt>
+<dd><p class="first last">Instance of BootImage</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">firmware</span></code></dt>
+<dd><p class="first last">Instance of FirmWare</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">system_setup</span></code></dt>
+<dd><p class="first last">Instance of SystemSetup</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">isoname</span></code></dt>
+<dd><p class="first last">File name of the live ISO image</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">live_image_file</span></code></dt>
+<dd><p class="first last">File name of compressed image on the ISO</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">result</span></code></dt>
+<dd><p class="first last">Instance of Result</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.builder.live.LiveImageBuilder.create">
+<code class="descname">create</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/builder/live.html#LiveImageBuilder.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.builder.live.LiveImageBuilder.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a bootable hybrid live ISO image</p>
+<p>Image types which triggers this builder are:</p>
+<ul class="simple">
+<li>image=&#8221;iso&#8221;</li>
+</ul>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.builder.pxe">
+<span id="kiwi-builder-pxe-module"></span><h2><a class="reference internal" href="#module-kiwi.builder.pxe" title="kiwi.builder.pxe"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.builder.pxe</span></code></a> Module<a class="headerlink" href="#module-kiwi.builder.pxe" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.builder.pxe.PxeBuilder">
+<em class="property">class </em><code class="descclassname">kiwi.builder.pxe.</code><code class="descname">PxeBuilder</code><span class="sig-paren">(</span><em>xml_state</em>, <em>target_dir</em>, <em>root_dir</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/builder/pxe.html#PxeBuilder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.builder.pxe.PxeBuilder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Filesystem based PXE image builder.</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">target_dir</span></code></dt>
+<dd><p class="first last">target directory path name</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">compressed</span></code></dt>
+<dd><p class="first last">Request to XZ compress filesystem image</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">machine</span></code></dt>
+<dd><p class="first last">Configured build type machine section</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">pxedeploy</span></code></dt>
+<dd><p class="first last">Configured build type pxedeploy section</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">filesystem</span></code></dt>
+<dd><p class="first last">Instance of FileSystemBuilder</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">system_setup</span></code></dt>
+<dd><p class="first last">Instance of SystemSetup</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">boot_image_task</span></code></dt>
+<dd><p class="first last">Instance of BootImage</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">image_name</span></code></dt>
+<dd><p class="first last">File name of the filesystem image</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">kernel_filename</span></code></dt>
+<dd><p class="first last">File name of the kernel image</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">hypervisor_filename</span></code></dt>
+<dd><p class="first last">File name of the hypervisor image</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">result</span></code></dt>
+<dd><p class="first last">Instance of Result</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.builder.pxe.PxeBuilder.create">
+<code class="descname">create</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/builder/pxe.html#PxeBuilder.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.builder.pxe.PxeBuilder.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a pxe image set consisting out of a boot image(initrd)
+plus its appropriate kernel files and the root filesystem
+image with a checksum. The result can be used within the kiwi
+PXE boot infrastructure</p>
+<p>Image types which triggers this builder are:</p>
+<ul class="simple">
+<li>image=&#8221;pxe&#8221;</li>
+</ul>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.builder">
+<span id="module-contents"></span><h2>Module Contents<a class="headerlink" href="#module-kiwi.builder" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.builder.ImageBuilder">
+<em class="property">class </em><code class="descclassname">kiwi.builder.</code><code class="descname">ImageBuilder</code><a class="reference internal" href="../_modules/kiwi/builder.html#ImageBuilder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.builder.ImageBuilder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>image builder factory</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/kiwi-logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">kiwi.builder Package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-kiwi.builder.archive"><code class="docutils literal"><span class="pre">kiwi.builder.archive</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.builder.container"><code class="docutils literal"><span class="pre">kiwi.builder.container</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.builder.disk"><code class="docutils literal"><span class="pre">kiwi.builder.disk</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.builder.filesystem"><code class="docutils literal"><span class="pre">kiwi.builder.filesystem</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.builder.install"><code class="docutils literal"><span class="pre">kiwi.builder.install</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.builder.live"><code class="docutils literal"><span class="pre">kiwi.builder.live</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.builder.pxe"><code class="docutils literal"><span class="pre">kiwi.builder.pxe</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.builder">Module Contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="kiwi.html">API Documentation 8.25.5</a><ul>
+      <li>Previous: <a href="kiwi.bootloader.template.html" title="previous chapter">kiwi.bootloader.template Package</a></li>
+      <li>Next: <a href="kiwi.container.html" title="next chapter">kiwi.container Package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<h1 class="logo"><a href="../index.html">kiwi</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=SUSE&repo=kiwi&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/SUSE/kiwi">
+    <img
+        alt="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+        src="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Marcus Schäfer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/api/kiwi.builder.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/SUSE/kiwi" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kiwi system prepare &#8212; kiwi 8.25.5 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '8.25.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="kiwi 8.25.5 documentation" href="../index.html" />
+    <link rel="up" title="Manual Pages" href="kiwi.html" />
+    <link rel="next" title="kiwi system create" href="system_create.html" />
+    <link rel="prev" title="kiwi result bundle" href="result_bundle.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="kiwi-system-prepare">
+<h1>kiwi system prepare<a class="headerlink" href="#kiwi-system-prepare" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="synopsis">
+<h2>SYNOPSIS<a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>kiwi <span class="o">[</span>global options<span class="o">]</span> service &lt;command&gt; <span class="o">[</span>&lt;args&gt;<span class="o">]</span>
+
+kiwi system prepare -h <span class="p">|</span> --help
+kiwi system prepare --description<span class="o">=</span>&lt;directory&gt; --root<span class="o">=</span>&lt;directory&gt;
+    <span class="o">[</span>--allow-existing-root<span class="o">]</span>
+    <span class="o">[</span>--ignore-repos<span class="o">]</span>
+    <span class="o">[</span>--set-repo<span class="o">=</span>&lt;source,type,alias,priority&gt;<span class="o">]</span>
+    <span class="o">[</span>--add-repo<span class="o">=</span>&lt;source,type,alias,priority&gt;...<span class="o">]</span>
+    <span class="o">[</span>--obs-repo-internal<span class="o">]</span>
+    <span class="o">[</span>--add-package<span class="o">=</span>&lt;name&gt;...<span class="o">]</span>
+    <span class="o">[</span>--delete-package<span class="o">=</span>&lt;name&gt;...<span class="o">]</span>
+kiwi system prepare <span class="nb">help</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="description">
+<h2>DESCRIPTION<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
+<p>Create a new image root directory. The prepare step builds a new image
+root directory from the specified XML description. The specified
+root directory is the root directory of the new image root system.
+As the root user you can enter this system via chroot as follows:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$ chroot &lt;directory&gt; bash
+</pre></div>
+</div>
+</div>
+<div class="section" id="options">
+<h2>OPTIONS<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--add-package=<var>&lt;name&gt;</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>specify package to add(install). The option can be specified
+multiple times</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--add-repo=<var>&lt;source,type,alias,priority&gt;</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>See the kiwi::system::build manual page for further details</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--allow-existing-root</span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>allow to re-use an existing image root directory</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--delete-package=<var>&lt;name&gt;</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>specify package to delete. The option can be specified
+multiple times</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--description=<var>&lt;directory&gt;</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>Path to the kiwi XML description. Inside of that directory there
+must be at least a config.xml of *.kiwi XML description.</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--obs-repo-internal</span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>See the kiwi::system::build manual page for further details</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--root=<var>&lt;directory&gt;</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>Path to create the new root system.</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--set-repo=<var>&lt;source,type,alias,priority&gt;</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>See the kiwi::system::build manual page for further details</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/kiwi-logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">kiwi system prepare</a><ul>
+<li><a class="reference internal" href="#synopsis">SYNOPSIS</a></li>
+<li><a class="reference internal" href="#description">DESCRIPTION</a></li>
+<li><a class="reference internal" href="#options">OPTIONS</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="kiwi.html">Manual Pages</a><ul>
+      <li>Previous: <a href="result_bundle.html" title="previous chapter">kiwi result bundle</a></li>
+      <li>Next: <a href="system_create.html" title="next chapter">kiwi system create</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<h1 class="logo"><a href="../index.html">kiwi</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=SUSE&repo=kiwi&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/SUSE/kiwi">
+    <img
+        alt="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+        src="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Marcus Schäfer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/manual/system_prepare.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/SUSE/kiwi" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

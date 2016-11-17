@@ -1,0 +1,228 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kiwi.tasks.system_create &#8212; kiwi 8.25.5 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '8.25.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="top" title="kiwi 8.25.5 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for kiwi.tasks.system_create</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2015 SUSE Linux GmbH.  All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This file is part of kiwi.</span>
+<span class="c1">#</span>
+<span class="c1"># kiwi is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1"># (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># kiwi is distributed in the hope that it will be useful,</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1"># GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with kiwi.  If not, see &lt;http://www.gnu.org/licenses/&gt;</span>
+<span class="c1">#</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">usage: kiwi system create -h | --help</span>
+<span class="sd">       kiwi system create --root=&lt;directory&gt; --target-dir=&lt;directory&gt;</span>
+<span class="sd">       kiwi system create help</span>
+
+<span class="sd">commands:</span>
+<span class="sd">    create</span>
+<span class="sd">        create a system image from the specified root directory</span>
+<span class="sd">        the root directory is the result of a system prepare</span>
+<span class="sd">        command</span>
+<span class="sd">    create help</span>
+<span class="sd">        show manual page for create command</span>
+
+<span class="sd">options:</span>
+<span class="sd">    --root=&lt;directory&gt;</span>
+<span class="sd">        the path to the root directory, usually the result of</span>
+<span class="sd">        a former system prepare call</span>
+<span class="sd">    --target-dir=&lt;directory&gt;</span>
+<span class="sd">        the target directory to store the system image file(s)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="c1"># project</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">CliTask</span>
+<span class="kn">from</span> <span class="nn">..help</span> <span class="k">import</span> <span class="n">Help</span>
+<span class="kn">from</span> <span class="nn">..builder</span> <span class="k">import</span> <span class="n">ImageBuilder</span>
+<span class="kn">from</span> <span class="nn">..system.setup</span> <span class="k">import</span> <span class="n">SystemSetup</span>
+<span class="kn">from</span> <span class="nn">..privileges</span> <span class="k">import</span> <span class="n">Privileges</span>
+<span class="kn">from</span> <span class="nn">..path</span> <span class="k">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">..logger</span> <span class="k">import</span> <span class="n">log</span>
+
+
+<div class="viewcode-block" id="SystemCreateTask"><a class="viewcode-back" href="../../../api/kiwi.tasks.html#kiwi.tasks.system_create.SystemCreateTask">[docs]</a><span class="k">class</span> <span class="nc">SystemCreateTask</span><span class="p">(</span><span class="n">CliTask</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implements creation of system images</span>
+
+<span class="sd">    Attributes</span>
+
+<span class="sd">    * :attr:`manual`</span>
+<span class="sd">        Instance of Help</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="SystemCreateTask.process"><a class="viewcode-back" href="../../../api/kiwi.tasks.html#kiwi.tasks.system_create.SystemCreateTask.process">[docs]</a>    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a system image from the specified root directory</span>
+<span class="sd">        the root directory is the result of a system prepare</span>
+<span class="sd">        command</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">manual</span> <span class="o">=</span> <span class="n">Help</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_help</span><span class="p">():</span>
+            <span class="k">return</span>
+
+        <span class="n">Privileges</span><span class="o">.</span><span class="n">check_for_root_permissions</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">load_xml_description</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">command_args</span><span class="p">[</span><span class="s1">&#39;--root&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">runtime_checker</span><span class="o">.</span><span class="n">check_target_directory_not_in_shared_cache</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">command_args</span><span class="p">[</span><span class="s1">&#39;--target-dir&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Creating system image&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">command_args</span><span class="p">[</span><span class="s1">&#39;--target-dir&#39;</span><span class="p">]):</span>
+            <span class="n">Path</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">command_args</span><span class="p">[</span><span class="s1">&#39;--target-dir&#39;</span><span class="p">])</span>
+
+        <span class="n">setup</span> <span class="o">=</span> <span class="n">SystemSetup</span><span class="p">(</span>
+            <span class="n">xml_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="p">,</span>
+            <span class="n">root_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">command_args</span><span class="p">[</span><span class="s1">&#39;--root&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">setup</span><span class="o">.</span><span class="n">call_image_script</span><span class="p">()</span>
+
+        <span class="n">image_builder</span> <span class="o">=</span> <span class="n">ImageBuilder</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">xml_state</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">command_args</span><span class="p">[</span><span class="s1">&#39;--target-dir&#39;</span><span class="p">],</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">command_args</span><span class="p">[</span><span class="s1">&#39;--root&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">image_builder</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">print_results</span><span class="p">()</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">command_args</span><span class="p">[</span><span class="s1">&#39;--target-dir&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;/kiwi.result&#39;</span>
+        <span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_help</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">command_args</span><span class="p">[</span><span class="s1">&#39;help&#39;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">manual</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="s1">&#39;kiwi::system::create&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">manual</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/kiwi-logo.png" alt="Logo"/>
+            </a></p><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<h1 class="logo"><a href="../../../index.html">kiwi</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=SUSE&repo=kiwi&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/SUSE/kiwi">
+    <img
+        alt="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+        src="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Marcus Schäfer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/SUSE/kiwi" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,369 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kiwi.cli &#8212; kiwi 8.25.5 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '8.25.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="top" title="kiwi 8.25.5 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for kiwi.cli</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2015 SUSE Linux GmbH.  All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This file is part of kiwi.</span>
+<span class="c1">#</span>
+<span class="c1"># kiwi is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1"># (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># kiwi is distributed in the hope that it will be useful,</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1"># GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with kiwi.  If not, see &lt;http://www.gnu.org/licenses/&gt;</span>
+<span class="c1">#</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">usage: kiwi -h | --help</span>
+<span class="sd">       kiwi [--profile=&lt;name&gt;...]</span>
+<span class="sd">            [--type=&lt;build_type&gt;]</span>
+<span class="sd">            [--logfile=&lt;filename&gt;]</span>
+<span class="sd">            [--debug]</span>
+<span class="sd">            [--color-output]</span>
+<span class="sd">           image &lt;command&gt; [&lt;args&gt;...]</span>
+<span class="sd">       kiwi [--debug]</span>
+<span class="sd">            [--color-output]</span>
+<span class="sd">           result &lt;command&gt; [&lt;args&gt;...]</span>
+<span class="sd">       kiwi [--profile=&lt;name&gt;...]</span>
+<span class="sd">            [--shared-cache-dir=&lt;directory&gt;]</span>
+<span class="sd">            [--type=&lt;build_type&gt;]</span>
+<span class="sd">            [--logfile=&lt;filename&gt;]</span>
+<span class="sd">            [--debug]</span>
+<span class="sd">            [--color-output]</span>
+<span class="sd">           system &lt;command&gt; [&lt;args&gt;...]</span>
+<span class="sd">       kiwi --compat &lt;legacy_args&gt;...</span>
+<span class="sd">       kiwi -v | --version</span>
+<span class="sd">       kiwi help</span>
+
+<span class="sd">global options:</span>
+<span class="sd">    --color-output</span>
+<span class="sd">        use colors for warning and error messages</span>
+<span class="sd">    --compat</span>
+<span class="sd">        support legacy kiwi commandline, e.g</span>
+<span class="sd">        kiwi --compat -- --build /my/description --type vmx -d /my/dest</span>
+<span class="sd">    --debug</span>
+<span class="sd">        print debug information</span>
+<span class="sd">    -v --version</span>
+<span class="sd">        show program version</span>
+<span class="sd">    help</span>
+<span class="sd">        show manual page</span>
+
+<span class="sd">global options for services: image, system</span>
+<span class="sd">    --logfile=&lt;filename&gt;</span>
+<span class="sd">        create a log file containing all log information including</span>
+<span class="sd">        debug information even if this is was not requested by the</span>
+<span class="sd">        debug switch</span>
+<span class="sd">    --profile=&lt;name&gt;</span>
+<span class="sd">        profile name, multiple profiles can be selected by passing</span>
+<span class="sd">        this option multiple times</span>
+<span class="sd">    --shared-cache-dir=&lt;directory&gt;</span>
+<span class="sd">        specify an alternative shared cache directory. The directory</span>
+<span class="sd">        is shared via bind mount between the build host and image</span>
+<span class="sd">        root system and contains information about package repositories</span>
+<span class="sd">        and their cache and meta data. [default: /var/cache/kiwi]</span>
+<span class="sd">    --type=&lt;build_type&gt;</span>
+<span class="sd">        image build type. If not set the default XML specified</span>
+<span class="sd">        build type will be used</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">importlib</span>
+<span class="kn">from</span> <span class="nn">docopt</span> <span class="k">import</span> <span class="n">docopt</span>
+
+<span class="c1"># project</span>
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">KiwiUnknownServiceName</span><span class="p">,</span>
+    <span class="n">KiwiCommandNotLoaded</span><span class="p">,</span>
+    <span class="n">KiwiLoadCommandUndefined</span><span class="p">,</span>
+    <span class="n">KiwiCompatError</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.defaults</span> <span class="k">import</span> <span class="n">Defaults</span>
+<span class="kn">from</span> <span class="nn">.version</span> <span class="k">import</span> <span class="n">__version__</span>
+<span class="kn">from</span> <span class="nn">.help</span> <span class="k">import</span> <span class="n">Help</span>
+
+
+<div class="viewcode-block" id="Cli"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.cli.Cli">[docs]</a><span class="k">class</span> <span class="nc">Cli</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implements the main command line interface</span>
+
+<span class="sd">    An instance of the Cli class builds the entry point for the</span>
+<span class="sd">    application and implements methods to load further command plugins</span>
+<span class="sd">    which itself provides their own command line interface</span>
+
+<span class="sd">    Attributes</span>
+
+<span class="sd">    * :attr:`all_args`</span>
+<span class="sd">        docopt parse result, all arguments dict</span>
+
+<span class="sd">    * :attr:`command_args`</span>
+<span class="sd">        subset of docopt argument dict for selected command</span>
+
+<span class="sd">    * :attr:`command_loaded`</span>
+<span class="sd">        result of importlib command load operation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">all_args</span> <span class="o">=</span> <span class="n">docopt</span><span class="p">(</span>
+            <span class="n">__doc__</span><span class="p">,</span>
+            <span class="n">version</span><span class="o">=</span><span class="s1">&#39;KIWI (next generation) version &#39;</span> <span class="o">+</span> <span class="n">__version__</span><span class="p">,</span>
+            <span class="n">options_first</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">command_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_args</span><span class="p">[</span><span class="s1">&#39;&lt;args&gt;&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">command_loaded</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="Cli.show_and_exit_on_help_request"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.cli.Cli.show_and_exit_on_help_request">[docs]</a>    <span class="k">def</span> <span class="nf">show_and_exit_on_help_request</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Execute man to show the selected manual page</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_args</span><span class="p">[</span><span class="s1">&#39;help&#39;</span><span class="p">]:</span>
+            <span class="n">manual</span> <span class="o">=</span> <span class="n">Help</span><span class="p">()</span>
+            <span class="n">manual</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="s1">&#39;kiwi&#39;</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Cli.get_servicename"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.cli.Cli.get_servicename">[docs]</a>    <span class="k">def</span> <span class="nf">get_servicename</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract service name from argument parse result</span>
+
+<span class="sd">        :return: service name</span>
+<span class="sd">        :rtype: string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;image&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;image&#39;</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;system&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;system&#39;</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;result&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;result&#39;</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;--compat&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;compat&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">KiwiUnknownServiceName</span><span class="p">(</span>
+                <span class="s1">&#39;Unknown/Invalid Servicename&#39;</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Cli.invoke_kiwicompat"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.cli.Cli.invoke_kiwicompat">[docs]</a>    <span class="k">def</span> <span class="nf">invoke_kiwicompat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compat_args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Execute kiwicompat with provided command line arguments</span>
+
+<span class="sd">        :param list compat_args: raw arguments</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">execvp</span><span class="p">(</span><span class="s1">&#39;kiwicompat&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;kiwicompat&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">compat_args</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">KiwiCompatError</span><span class="p">(</span>
+                <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="nb">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Cli.get_command"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.cli.Cli.get_command">[docs]</a>    <span class="k">def</span> <span class="nf">get_command</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract selected command name</span>
+
+<span class="sd">        :return: command name</span>
+<span class="sd">        :rtype: string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_args</span><span class="p">[</span><span class="s1">&#39;&lt;command&gt;&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Cli.get_command_args"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.cli.Cli.get_command_args">[docs]</a>    <span class="k">def</span> <span class="nf">get_command_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract argument dict for selected command</span>
+
+<span class="sd">        :return: command arguments</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_command_args</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Cli.get_global_args"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.cli.Cli.get_global_args">[docs]</a>    <span class="k">def</span> <span class="nf">get_global_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract argument dict for global arguments</span>
+
+<span class="sd">        :return: global arguments</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">arg</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">all_args</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">arg</span> <span class="o">==</span> <span class="s1">&#39;&lt;command&gt;&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">arg</span> <span class="o">==</span> <span class="s1">&#39;&lt;args&gt;&#39;</span><span class="p">:</span>
+                <span class="n">result</span><span class="p">[</span><span class="n">arg</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="Cli.load_command"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.cli.Cli.load_command">[docs]</a>    <span class="k">def</span> <span class="nf">load_command</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Loads task class plugin according to service and command name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_command</span><span class="p">()</span>
+        <span class="n">service</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_servicename</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">service</span> <span class="o">==</span> <span class="s1">&#39;compat&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">invoke_kiwicompat</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">all_args</span><span class="p">[</span><span class="s1">&#39;&lt;legacy_args&gt;&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">command</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">KiwiLoadCommandUndefined</span><span class="p">(</span>
+                <span class="s1">&#39;No command specified for </span><span class="si">%s</span><span class="s1"> service&#39;</span> <span class="o">%</span> <span class="n">service</span>
+            <span class="p">)</span>
+        <span class="n">command_source_file</span> <span class="o">=</span> <span class="n">Defaults</span><span class="o">.</span><span class="n">project_file</span><span class="p">(</span>
+            <span class="s1">&#39;tasks/&#39;</span> <span class="o">+</span> <span class="n">service</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">command</span> <span class="o">+</span> <span class="s1">&#39;.py&#39;</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">command_source_file</span><span class="p">):</span>
+            <span class="n">prefix</span> <span class="o">=</span> <span class="s1">&#39;usage:&#39;</span>
+            <span class="k">for</span> <span class="n">service_command</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_command_implementations</span><span class="p">(</span><span class="n">service</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> kiwi </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">service_command</span><span class="p">))</span>
+                <span class="n">prefix</span> <span class="o">=</span> <span class="s1">&#39;      &#39;</span>
+            <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">command_loaded</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span>
+            <span class="s1">&#39;kiwi.tasks.&#39;</span> <span class="o">+</span> <span class="n">service</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">command</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">command_loaded</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_command_implementations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service</span><span class="p">):</span>
+        <span class="n">command_implementations</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">glob_match</span> <span class="o">=</span> <span class="n">Defaults</span><span class="o">.</span><span class="n">project_file</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;tasks/*.py&#39;</span>
+        <span class="k">for</span> <span class="n">source_file</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">iglob</span><span class="p">(</span><span class="n">glob_match</span><span class="p">):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">source_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">source</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">source</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;usage: (.*)&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+                        <span class="n">command_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span>
+                            <span class="n">source_file</span>
+                        <span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.py&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">command_path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">service</span><span class="p">:</span>
+                            <span class="n">command_implementations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                                <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">command_path</span><span class="p">)</span>
+                            <span class="p">)</span>
+                        <span class="k">break</span>
+        <span class="k">return</span> <span class="n">command_implementations</span>
+
+    <span class="k">def</span> <span class="nf">_load_command_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">argv</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">get_servicename</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_command</span><span class="p">()</span>
+            <span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">command_args</span>
+            <span class="k">return</span> <span class="n">docopt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">command_loaded</span><span class="o">.</span><span class="n">__doc__</span><span class="p">,</span> <span class="n">argv</span><span class="o">=</span><span class="n">argv</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">KiwiCommandNotLoaded</span><span class="p">(</span>
+                <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> command not loaded&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_command</span><span class="p">()</span>
+            <span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/kiwi-logo.png" alt="Logo"/>
+            </a></p><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<h1 class="logo"><a href="../../index.html">kiwi</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=SUSE&repo=kiwi&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/SUSE/kiwi">
+    <img
+        alt="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+        src="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Marcus Schäfer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/SUSE/kiwi" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

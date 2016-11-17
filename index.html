@@ -1,0 +1,264 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>KIWI Appliance Builder 8.25.5 &#8212; kiwi 8.25.5 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '8.25.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="kiwi 8.25.5 documentation" href="#" />
+    <link rel="next" title="Quick Start" href="quickstart.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="kiwi-appliance-builder-version">
+<h1>KIWI Appliance Builder 8.25.5<a class="headerlink" href="#kiwi-appliance-builder-version" title="Permalink to this headline">¶</a></h1>
+<p>The Next Generation of the KIWI project.</p>
+<div class="sidebar">
+<p class="first sidebar-title">Links</p>
+<ul class="last simple">
+<li><a class="reference external" href="https://github.com/SUSE/kiwi">GitHub Project</a></li>
+<li><a class="reference external" href="https://github.com/SUSE/kiwi/releases">Sources</a></li>
+<li><a class="reference external" href="http://download.opensuse.org/repositories/Virtualization:/Appliances:/Builder">RPM Packages</a></li>
+<li><a class="reference external" href="https://ci.opensuse.org/view/kiwi/">Build Tests</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="container_builder.html">Building in a Self-Contained Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="legacy_kiwi.html">Legacy KIWI vs. Next Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Development and Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manual/kiwi.html">Manual Pages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/kiwi.html">API Documentation 8.25.5</a></li>
+<li class="toctree-l1"><a class="reference internal" href="schema.html">Schema Documentation 6.4</a></li>
+</ul>
+</div>
+<div class="section" id="what-is-kiwi">
+<h2>What is KIWI?<a class="headerlink" href="#what-is-kiwi" title="Permalink to this headline">¶</a></h2>
+<p>KIWI is an OS appliance builder.</p>
+<p>An appliance is a ready to use image of an operating system including
+a preconfigured application for a specific use case. The appliance is
+provided as an image file and needs to be deployed to, or activated in
+the target system or service.</p>
+<p>The appliance is specified by a collection of human readable files in a
+directory, also called as the <code class="xref py py-obj docutils literal"><span class="pre">image</span> <span class="pre">description</span></code>. At least one XML
+file <code class="file docutils literal"><span class="pre">config.xml</span></code> or <code class="file docutils literal"><span class="pre">.kiwi</span></code> is required. In addition
+there may be as well other files like scripts or configuration data.</p>
+</div>
+<div class="section" id="motivation">
+<h2>Motivation<a class="headerlink" href="#motivation" title="Permalink to this headline">¶</a></h2>
+<p>The idea of KIWI is simple: Provide a human readable image
+description and build the system for any kind of target or service.</p>
+<p>Since the early days the project was well received and within SUSE all
+product appliances, product media, appliances for private and public
+cloud as well as on top projects like SUSE Studio uses KIWI. New
+opportunities with partners, other distribution vendors and technologies
+are ahead.</p>
+<p>We are looking forward to address the challenges in the private
+and public cloud space as well as the deployment for SoC (System on Chip)
+platforms like we see them today for the Arm and PowerPC landscape.</p>
+</div>
+<div class="section" id="feature-highlights">
+<h2>Feature Highlights<a class="headerlink" href="#feature-highlights" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>GPL v2 license</li>
+<li>Distribution independent design</li>
+<li>Module extension for python projects</li>
+<li>Supports Python 2.7 and 3</li>
+<li>Build images for private and public clouds, e.g OpenStack,
+Amazon EC2, Google Compute Engine, Microsoft Azure</li>
+<li>Build images for data center deployment</li>
+<li>Supported architectures: x86/x86_64, s390/s390x, ppc/ppc64, arm/aarch64</li>
+<li>Help on mailinglist and IRC</li>
+<li>and many more</li>
+</ul>
+</div>
+<div class="section" id="supported-image-types">
+<h2>Supported Image Types<a class="headerlink" href="#supported-image-types" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>ISO Hybrid Live Systems</li>
+<li>Virtual Disk for e.g cloud frameworks</li>
+<li>OEM Expandable Disk for system deployment from ISO or the network</li>
+<li>File system images for deployment in a pxe boot environment</li>
+<li>Container images for e.g. docker</li>
+</ul>
+</div>
+<div class="section" id="supported-distributions">
+<span id="id1"></span><h2>Supported Distributions<a class="headerlink" href="#supported-distributions" title="Permalink to this headline">¶</a></h2>
+<p>&#8220;KIWI NG (Next Generation)&#8221; can build appliances for distributions
+which are equal or newer compared to the following list:</p>
+<ul class="simple">
+<li>SUSE Linux Enterprise 12</li>
+<li>Red Hat Enterprise 7</li>
+<li>CentOS 7</li>
+<li>openSUSE Leap, Tumbleweed</li>
+<li>Ubuntu Xenial</li>
+</ul>
+<p>For anything older please consider to use the legacy KIWI version <em>v7.x</em>
+For more details on the legacy kiwi, see: <a class="reference internal" href="legacy_kiwi.html#legacy-kiwi"><span class="std std-ref">Legacy KIWI vs. Next Generation</span></a>.</p>
+</div>
+<div class="section" id="example-descriptions">
+<h2>Example Descriptions<a class="headerlink" href="#example-descriptions" title="Permalink to this headline">¶</a></h2>
+<p>A collection of example image descriptions can be found on the GitHub
+repository here: <a class="reference external" href="https://github.com/SUSE/kiwi-descriptions">https://github.com/SUSE/kiwi-descriptions</a>.</p>
+<p>Most of the descriptions provide a so called &#8220;JeOS image&#8221; (&#8220;Just enough
+Operating System&#8221;). A JeOS is a small, text only based image including a
+predefined remote source setup to allow installation of missing
+software components at a later point in time.</p>
+</div>
+<div class="section" id="concept">
+<h2>Concept<a class="headerlink" href="#concept" title="Permalink to this headline">¶</a></h2>
+<p>KIWI operates in two steps. The system build command combines
+both steps into one to make it easier to start with KIWI.</p>
+<p>The first step is the <em>preparation step</em> and if that step was successful, a
+<em>creation step</em> follows which is able to create different image output
+types:</p>
+<ol class="arabic simple">
+<li>In the <em>preparation step</em>, you prepare a directory including the
+contents of your new filesystem based on one or more software
+package source(s).</li>
+<li>The <em>creation step</em> is based on the result of the preparation step and
+uses the contents of the new image root tree to create the output image.</li>
+</ol>
+</div>
+<div class="section" id="help">
+<h2>Help<a class="headerlink" href="#help" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first">Mailing list: <a class="reference external" href="https://groups.google.com/forum/#!forum/kiwi-images">https://groups.google.com/forum/#!forum/kiwi-images</a></p>
+<p>The <code class="xref py py-obj docutils literal"><span class="pre">kiwi-images</span></code> group is an open group and anyone can subscribe, even
+if you do not have a Google account.</p>
+<p>Send mail to <a class="reference external" href="mailto:kiwi-images+subscribe&#37;&#52;&#48;googlegroups&#46;com">kiwi-images+subscribe<span>&#64;</span>googlegroups<span>&#46;</span>com</a>.</p>
+</li>
+<li><p class="first">IRC: <code class="xref py py-obj docutils literal"><span class="pre">#opensuse-kiwi</span></code> on irc.freenode.net</p>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="#">
+              <img class="logo" src="_static/kiwi-logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">KIWI Appliance Builder 8.25.5</a><ul>
+<li><a class="reference internal" href="#what-is-kiwi">What is KIWI?</a></li>
+<li><a class="reference internal" href="#motivation">Motivation</a></li>
+<li><a class="reference internal" href="#feature-highlights">Feature Highlights</a></li>
+<li><a class="reference internal" href="#supported-image-types">Supported Image Types</a></li>
+<li><a class="reference internal" href="#supported-distributions">Supported Distributions</a></li>
+<li><a class="reference internal" href="#example-descriptions">Example Descriptions</a></li>
+<li><a class="reference internal" href="#concept">Concept</a></li>
+<li><a class="reference internal" href="#help">Help</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="quickstart.html" title="next chapter">Quick Start</a></li>
+  </ul></li>
+</ul>
+</div>
+<h1 class="logo"><a href="#">kiwi</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=SUSE&repo=kiwi&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/SUSE/kiwi">
+    <img
+        alt="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+        src="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Marcus Schäfer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/index.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/SUSE/kiwi" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

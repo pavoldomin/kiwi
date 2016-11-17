@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kiwi.storage.subformat.template Package &#8212; kiwi 8.25.5 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '8.25.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="kiwi 8.25.5 documentation" href="../index.html" />
+    <link rel="up" title="kiwi.storage.subformat Package" href="kiwi.storage.subformat.html" />
+    <link rel="next" title="kiwi.system Package" href="kiwi.system.html" />
+    <link rel="prev" title="kiwi.storage.subformat Package" href="kiwi.storage.subformat.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="kiwi-storage-subformat-template-package">
+<h1>kiwi.storage.subformat.template Package<a class="headerlink" href="#kiwi-storage-subformat-template-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-kiwi.storage.subformat.template.vmware_settings">
+<span id="kiwi-storage-subformat-template-vmware-settings-module"></span><h2><a class="reference internal" href="#module-kiwi.storage.subformat.template.vmware_settings" title="kiwi.storage.subformat.template.vmware_settings"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.storage.subformat.template.vmware_settings</span></code></a> Module<a class="headerlink" href="#module-kiwi.storage.subformat.template.vmware_settings" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.storage.subformat.template.vmware_settings.VmwareSettingsTemplate">
+<em class="property">class </em><code class="descclassname">kiwi.storage.subformat.template.vmware_settings.</code><code class="descname">VmwareSettingsTemplate</code><a class="reference internal" href="../_modules/kiwi/storage/subformat/template/vmware_settings.html#VmwareSettingsTemplate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.subformat.template.vmware_settings.VmwareSettingsTemplate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>VMware machine settings template</p>
+<dl class="method">
+<dt id="kiwi.storage.subformat.template.vmware_settings.VmwareSettingsTemplate.get_template">
+<code class="descname">get_template</code><span class="sig-paren">(</span><em>memory_setup=False</em>, <em>cpu_setup=False</em>, <em>network_setup=False</em>, <em>iso_setup=False</em>, <em>disk_controller='ide'</em>, <em>iso_controller='ide'</em>, <em>network_mac='generated'</em>, <em>network_driver=None</em>, <em>network_connection_type=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/subformat/template/vmware_settings.html#VmwareSettingsTemplate.get_template"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.subformat.template.vmware_settings.VmwareSettingsTemplate.get_template" title="Permalink to this definition">¶</a></dt>
+<dd><p>VMware machine configuration template</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>memory_setup</strong> (<em>bool</em>) &#8211; with main memory setup true|false</li>
+<li><strong>cpu_setup</strong> (<em>bool</em>) &#8211; with number of CPU&#8217;s setup true|false</li>
+<li><strong>network_setup</strong> (<em>bool</em>) &#8211; with network emulation true|false</li>
+<li><strong>iso_setup</strong> (<em>bool</em>) &#8211; with CD/DVD drive emulation true|false</li>
+<li><strong>disk_controller</strong> (<em>string</em>) &#8211; add disk controller setup to template</li>
+<li><strong>iso_controller</strong> (<em>string</em>) &#8211; add CD/DVD controller setup to template</li>
+<li><strong>network_mac</strong> (<em>string</em>) &#8211; add static MAC address setup to template</li>
+<li><strong>network_driver</strong> (<em>string</em>) &#8211; add network driver setup to template</li>
+<li><strong>network_connection_type</strong> (<em>string</em>) &#8211; add connection type to template</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Template</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.storage.subformat.template">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-kiwi.storage.subformat.template" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/kiwi-logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">kiwi.storage.subformat.template Package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-kiwi.storage.subformat.template.vmware_settings"><code class="docutils literal"><span class="pre">kiwi.storage.subformat.template.vmware_settings</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.storage.subformat.template">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="kiwi.html">API Documentation 8.25.5</a><ul>
+  <li><a href="kiwi.storage.html">kiwi.storage Package</a><ul>
+  <li><a href="kiwi.storage.subformat.html">kiwi.storage.subformat Package</a><ul>
+      <li>Previous: <a href="kiwi.storage.subformat.html" title="previous chapter">kiwi.storage.subformat Package</a></li>
+      <li>Next: <a href="kiwi.system.html" title="next chapter">kiwi.system Package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<h1 class="logo"><a href="../index.html">kiwi</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=SUSE&repo=kiwi&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/SUSE/kiwi">
+    <img
+        alt="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+        src="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Marcus Schäfer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/api/kiwi.storage.subformat.template.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/SUSE/kiwi" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

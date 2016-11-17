@@ -1,0 +1,1411 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kiwi.xml_state &#8212; kiwi 8.25.5 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '8.25.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="top" title="kiwi 8.25.5 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for kiwi.xml_state</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2015 SUSE Linux GmbH.  All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This file is part of kiwi.</span>
+<span class="c1">#</span>
+<span class="c1"># kiwi is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1"># (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># kiwi is distributed in the hope that it will be useful,</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1"># GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with kiwi.  If not, see &lt;http://www.gnu.org/licenses/&gt;</span>
+<span class="c1">#</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span>
+
+<span class="c1"># project</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">xml_parse</span>
+<span class="kn">from</span> <span class="nn">.defaults</span> <span class="k">import</span> <span class="n">Defaults</span>
+
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">KiwiProfileNotFound</span><span class="p">,</span>
+    <span class="n">KiwiTypeNotFound</span><span class="p">,</span>
+    <span class="n">KiwiDistributionNameError</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="XMLState"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState">[docs]</a><span class="k">class</span> <span class="nc">XMLState</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implements methods to get stateful information from the XML data</span>
+
+<span class="sd">    Attributes</span>
+
+<span class="sd">    * :attr:`host_architecture`</span>
+<span class="sd">        system architecture, result from platform.machine</span>
+
+<span class="sd">    * :attr:`xml_data`</span>
+<span class="sd">        instance of XMLDescription</span>
+
+<span class="sd">    * :attr:`profiles`</span>
+<span class="sd">        list of used profiles</span>
+
+<span class="sd">    * :attr:`build_type`</span>
+<span class="sd">        build type section reference</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xml_data</span><span class="p">,</span> <span class="n">profiles</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">build_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">host_architecture</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">machine</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xml_data</span> <span class="o">=</span> <span class="n">xml_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_used_profiles</span><span class="p">(</span>
+            <span class="n">profiles</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">build_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_type_section</span><span class="p">(</span>
+            <span class="n">build_type</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="XMLState.get_preferences_sections"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_preferences_sections">[docs]</a>    <span class="k">def</span> <span class="nf">get_preferences_sections</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        All preferences sections for the selected profiles</span>
+
+<span class="sd">        :return: &lt;preferences&gt;</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_profiled</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">xml_data</span><span class="o">.</span><span class="n">get_preferences</span><span class="p">()</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="XMLState.get_users_sections"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_users_sections">[docs]</a>    <span class="k">def</span> <span class="nf">get_users_sections</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        All users sections for the selected profiles</span>
+
+<span class="sd">        :return: &lt;users&gt;</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_profiled</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">xml_data</span><span class="o">.</span><span class="n">get_users</span><span class="p">()</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="XMLState.get_build_type_name"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_build_type_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_build_type_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Default build type name</span>
+
+<span class="sd">        :return: image attribute from build type</span>
+<span class="sd">        :rtype: string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_type</span><span class="o">.</span><span class="n">get_image</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="XMLState.get_image_version"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_image_version">[docs]</a>    <span class="k">def</span> <span class="nf">get_image_version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Image version from preferences section.</span>
+
+<span class="sd">        Multiple occurences of version in preferences sections are not</span>
+<span class="sd">        forbidden, however only the first version found defines the</span>
+<span class="sd">        final image version</span>
+
+<span class="sd">        :return: &lt;version&gt;</span>
+<span class="sd">        :rtype: string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">preferences</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_preferences_sections</span><span class="p">():</span>
+            <span class="n">version</span> <span class="o">=</span> <span class="n">preferences</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">version</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">version</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="XMLState.get_rpm_excludedocs"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_rpm_excludedocs">[docs]</a>    <span class="k">def</span> <span class="nf">get_rpm_excludedocs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the rpm-excludedocs configuration flag. Returns</span>
+<span class="sd">        False if not present.</span>
+
+<span class="sd">        :return: excludedocs flag</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">preferences</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_preferences_sections</span><span class="p">():</span>
+            <span class="n">exclude_docs</span> <span class="o">=</span> <span class="n">preferences</span><span class="o">.</span><span class="n">get_rpm_excludedocs</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">exclude_docs</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">exclude_docs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="XMLState.get_package_manager"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_package_manager">[docs]</a>    <span class="k">def</span> <span class="nf">get_package_manager</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Configured package manager</span>
+
+<span class="sd">        :return: &lt;packagemanager&gt;</span>
+<span class="sd">        :rtype: string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">preferences</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_preferences_sections</span><span class="p">():</span>
+            <span class="n">package_manager</span> <span class="o">=</span> <span class="n">preferences</span><span class="o">.</span><span class="n">get_packagemanager</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">package_manager</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">package_manager</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="XMLState.get_packages_sections"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_packages_sections">[docs]</a>    <span class="k">def</span> <span class="nf">get_packages_sections</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section_types</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List of packages sections matching given section type(s)</span>
+
+<span class="sd">        :param list section_types: type name(s) from packages sections</span>
+
+<span class="sd">        :return: &lt;packages&gt;</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">packages_sections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_profiled</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">xml_data</span><span class="o">.</span><span class="n">get_packages</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">packages</span> <span class="ow">in</span> <span class="n">packages_sections</span><span class="p">:</span>
+            <span class="n">packages_type</span> <span class="o">=</span> <span class="n">packages</span><span class="o">.</span><span class="n">get_type</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">packages_type</span> <span class="ow">in</span> <span class="n">section_types</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">packages</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="XMLState.get_package_sections"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_package_sections">[docs]</a>    <span class="k">def</span> <span class="nf">get_package_sections</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">packages_sections</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List of package sections from the given packages sections.</span>
+<span class="sd">        Each list element contains a tuple with the &lt;package&gt; section</span>
+<span class="sd">        reference and the &lt;packages&gt; section this package belongs to</span>
+
+<span class="sd">        If a package entry specfies an architecture, it is only taken if</span>
+<span class="sd">        the host architecture matches the configured architecture</span>
+
+<span class="sd">        :param list packages_sections: &lt;packages&gt;</span>
+
+<span class="sd">        :return: package_type tuple list</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">package_type</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span>
+            <span class="s1">&#39;package_type&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;packages_section&#39;</span><span class="p">,</span> <span class="s1">&#39;package_section&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">packages_sections</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">packages_section</span> <span class="ow">in</span> <span class="n">packages_sections</span><span class="p">:</span>
+                <span class="n">package_list</span> <span class="o">=</span> <span class="n">packages_section</span><span class="o">.</span><span class="n">get_package</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">package_list</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">package</span> <span class="ow">in</span> <span class="n">package_list</span><span class="p">:</span>
+                        <span class="n">package_architecture</span> <span class="o">=</span> <span class="n">package</span><span class="o">.</span><span class="n">get_arch</span><span class="p">()</span>
+                        <span class="k">if</span> <span class="n">package_architecture</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">package_architecture</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">host_architecture</span><span class="p">:</span>
+                                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                                    <span class="n">package_type</span><span class="p">(</span>
+                                        <span class="n">packages_section</span><span class="o">=</span><span class="n">packages_section</span><span class="p">,</span>
+                                        <span class="n">package_section</span><span class="o">=</span><span class="n">package</span>
+                                    <span class="p">)</span>
+                                <span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                                <span class="n">package_type</span><span class="p">(</span>
+                                    <span class="n">packages_section</span><span class="o">=</span><span class="n">packages_section</span><span class="p">,</span>
+                                    <span class="n">package_section</span><span class="o">=</span><span class="n">package</span>
+                                <span class="p">)</span>
+                            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="XMLState.get_to_become_deleted_packages"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_to_become_deleted_packages">[docs]</a>    <span class="k">def</span> <span class="nf">get_to_become_deleted_packages</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List of packages from the type=&quot;delete&quot; packages section(s)</span>
+
+<span class="sd">        :return: package names</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">to_become_deleted_packages_sections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_packages_sections</span><span class="p">(</span>
+            <span class="p">[</span><span class="s1">&#39;delete&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">package_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_package_sections</span><span class="p">(</span>
+            <span class="n">to_become_deleted_packages_sections</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">package_list</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">package</span> <span class="ow">in</span> <span class="n">package_list</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">package</span><span class="o">.</span><span class="n">package_section</span><span class="o">.</span><span class="n">get_name</span><span class="p">())</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">result</span><span class="p">)))</span></div>
+
+<div class="viewcode-block" id="XMLState.get_bootstrap_packages_sections"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_bootstrap_packages_sections">[docs]</a>    <span class="k">def</span> <span class="nf">get_bootstrap_packages_sections</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List of packages sections matching type=&quot;bootstrap&quot;</span>
+
+<span class="sd">        :return: &lt;packages&gt;</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_packages_sections</span><span class="p">([</span><span class="s1">&#39;bootstrap&#39;</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="XMLState.get_bootstrap_packages"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_bootstrap_packages">[docs]</a>    <span class="k">def</span> <span class="nf">get_bootstrap_packages</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List of packages from the type=&quot;bootstrap&quot; packages section(s)</span>
+
+<span class="sd">        :return: package names</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">bootstrap_packages_sections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_bootstrap_packages_sections</span><span class="p">()</span>
+        <span class="n">package_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_package_sections</span><span class="p">(</span>
+            <span class="n">bootstrap_packages_sections</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">package_list</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">package</span> <span class="ow">in</span> <span class="n">package_list</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">package</span><span class="o">.</span><span class="n">package_section</span><span class="o">.</span><span class="n">get_name</span><span class="p">())</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">result</span><span class="p">)))</span></div>
+
+<div class="viewcode-block" id="XMLState.get_system_packages"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_system_packages">[docs]</a>    <span class="k">def</span> <span class="nf">get_system_packages</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List of packages from the packages sections matching</span>
+<span class="sd">        type=&quot;image&quot; and type=build_type</span>
+
+<span class="sd">        :return: package names</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">image_packages_sections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_packages_sections</span><span class="p">(</span>
+            <span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_build_type_name</span><span class="p">()]</span>
+        <span class="p">)</span>
+        <span class="n">package_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_package_sections</span><span class="p">(</span>
+            <span class="n">image_packages_sections</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">package_list</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">package</span> <span class="ow">in</span> <span class="n">package_list</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">package</span><span class="o">.</span><span class="n">package_section</span><span class="o">.</span><span class="n">get_name</span><span class="p">())</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">result</span><span class="p">)))</span></div>
+
+<div class="viewcode-block" id="XMLState.get_bootstrap_archives"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_bootstrap_archives">[docs]</a>    <span class="k">def</span> <span class="nf">get_bootstrap_archives</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List of archives from the type=&quot;bootstrap&quot; packages section(s)</span>
+
+<span class="sd">        :return: archive names</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">bootstrap_packages_sections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_bootstrap_packages_sections</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">bootstrap_packages_sections</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">bootstrap_packages_section</span> <span class="ow">in</span> <span class="n">bootstrap_packages_sections</span><span class="p">:</span>
+                <span class="n">archive_list</span> <span class="o">=</span> <span class="n">bootstrap_packages_section</span><span class="o">.</span><span class="n">get_archive</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">archive_list</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">archive</span> <span class="ow">in</span> <span class="n">archive_list</span><span class="p">:</span>
+                        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">archive</span><span class="o">.</span><span class="n">get_name</span><span class="p">())</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="XMLState.get_system_archives"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_system_archives">[docs]</a>    <span class="k">def</span> <span class="nf">get_system_archives</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List of archives from the packages sections matching</span>
+<span class="sd">        type=&quot;image&quot; and type=build_type</span>
+
+<span class="sd">        :return: archive names</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">image_packages_sections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_packages_sections</span><span class="p">(</span>
+            <span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_build_type_name</span><span class="p">()]</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">packages</span> <span class="ow">in</span> <span class="n">image_packages_sections</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">archive</span> <span class="ow">in</span> <span class="n">packages</span><span class="o">.</span><span class="n">get_archive</span><span class="p">():</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">archive</span><span class="o">.</span><span class="n">get_name</span><span class="p">())</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="XMLState.get_collection_type"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_collection_type">[docs]</a>    <span class="k">def</span> <span class="nf">get_collection_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section_type</span><span class="o">=</span><span class="s1">&#39;image&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Collection type from packages sections matching given section</span>
+<span class="sd">        type.</span>
+
+<span class="sd">        If no collection type is specified the default collection</span>
+<span class="sd">        type is set to: onlyRequired</span>
+
+<span class="sd">        :param string section_type: type name from packages section</span>
+
+<span class="sd">        :return: collection type name</span>
+<span class="sd">        :rtype: string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">typed_packages_sections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_packages_sections</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">section_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_build_type_name</span><span class="p">()]</span>
+        <span class="p">)</span>
+        <span class="n">collection_type</span> <span class="o">=</span> <span class="s1">&#39;onlyRequired&#39;</span>
+        <span class="k">for</span> <span class="n">packages</span> <span class="ow">in</span> <span class="n">typed_packages_sections</span><span class="p">:</span>
+            <span class="n">packages_collection_type</span> <span class="o">=</span> <span class="n">packages</span><span class="o">.</span><span class="n">get_patternType</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">packages_collection_type</span><span class="p">:</span>
+                <span class="n">collection_type</span> <span class="o">=</span> <span class="n">packages_collection_type</span>
+                <span class="k">break</span>
+        <span class="k">return</span> <span class="n">collection_type</span></div>
+
+<div class="viewcode-block" id="XMLState.get_bootstrap_collection_type"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_bootstrap_collection_type">[docs]</a>    <span class="k">def</span> <span class="nf">get_bootstrap_collection_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Collection type for packages sections matching type=&quot;bootstrap&quot;</span>
+
+<span class="sd">        :return: collection type name</span>
+<span class="sd">        :rtype: string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_collection_type</span><span class="p">(</span><span class="s1">&#39;bootstrap&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="XMLState.get_system_collection_type"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_system_collection_type">[docs]</a>    <span class="k">def</span> <span class="nf">get_system_collection_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Collection type for packages sections matching type=&quot;image&quot;</span>
+
+<span class="sd">        :return: collection type name</span>
+<span class="sd">        :rtype: string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_collection_type</span><span class="p">(</span><span class="s1">&#39;image&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="XMLState.get_collections"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_collections">[docs]</a>    <span class="k">def</span> <span class="nf">get_collections</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section_type</span><span class="o">=</span><span class="s1">&#39;image&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List of collection names from the packages sections matching</span>
+<span class="sd">        type=section_type and type=build_type</span>
+
+<span class="sd">        :return: collection names</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">typed_packages_sections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_packages_sections</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">section_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_build_type_name</span><span class="p">()]</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">packages</span> <span class="ow">in</span> <span class="n">typed_packages_sections</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">collection</span> <span class="ow">in</span> <span class="n">packages</span><span class="o">.</span><span class="n">get_namedCollection</span><span class="p">():</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">collection</span><span class="o">.</span><span class="n">get_name</span><span class="p">())</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">result</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="XMLState.get_bootstrap_collections"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_bootstrap_collections">[docs]</a>    <span class="k">def</span> <span class="nf">get_bootstrap_collections</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List of collection names from the packages sections</span>
+<span class="sd">        matching type=&quot;bootstrap&quot;</span>
+
+<span class="sd">        :return: collection names</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_collections</span><span class="p">(</span><span class="s1">&#39;bootstrap&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="XMLState.get_system_collections"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_system_collections">[docs]</a>    <span class="k">def</span> <span class="nf">get_system_collections</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List of collection names from the packages sections</span>
+<span class="sd">        matching type=&quot;image&quot;</span>
+
+<span class="sd">        :return: collection names</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_collections</span><span class="p">(</span><span class="s1">&#39;image&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="XMLState.get_products"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_products">[docs]</a>    <span class="k">def</span> <span class="nf">get_products</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section_type</span><span class="o">=</span><span class="s1">&#39;image&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List of product names from the packages sections matching</span>
+<span class="sd">        type=section_type and type=build_type</span>
+
+<span class="sd">        :param string section_type: type name from packages section</span>
+
+<span class="sd">        :return: product names</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">typed_packages_sections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_packages_sections</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">section_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_build_type_name</span><span class="p">()]</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">packages</span> <span class="ow">in</span> <span class="n">typed_packages_sections</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">product</span> <span class="ow">in</span> <span class="n">packages</span><span class="o">.</span><span class="n">get_product</span><span class="p">():</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">get_name</span><span class="p">())</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">result</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="XMLState.get_bootstrap_products"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_bootstrap_products">[docs]</a>    <span class="k">def</span> <span class="nf">get_bootstrap_products</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List of product names from the packages sections</span>
+<span class="sd">        matching type=&quot;bootstrap&quot;</span>
+
+<span class="sd">        :return: product names</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_products</span><span class="p">(</span><span class="s1">&#39;bootstrap&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="XMLState.get_system_products"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_system_products">[docs]</a>    <span class="k">def</span> <span class="nf">get_system_products</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List of product names from the packages sections</span>
+<span class="sd">        matching type=&quot;image&quot;</span>
+
+<span class="sd">        :return: product names</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_products</span><span class="p">(</span><span class="s1">&#39;image&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="XMLState.get_build_type_system_disk_section"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_build_type_system_disk_section">[docs]</a>    <span class="k">def</span> <span class="nf">get_build_type_system_disk_section</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        First system disk section from the build type section</span>
+
+<span class="sd">        :return: &lt;systemdisk&gt;</span>
+<span class="sd">        :rtype: xml_parse::systemdisk instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">systemdisk_sections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_type</span><span class="o">.</span><span class="n">get_systemdisk</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">systemdisk_sections</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">systemdisk_sections</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="XMLState.get_build_type_pxedeploy_section"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_build_type_pxedeploy_section">[docs]</a>    <span class="k">def</span> <span class="nf">get_build_type_pxedeploy_section</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        First pxedeploy section from the build type section</span>
+
+<span class="sd">        :return: &lt;pxedeploy&gt;</span>
+<span class="sd">        :rtype: xml_parse::pxedeploy instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pxedeploy_sections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_type</span><span class="o">.</span><span class="n">get_pxedeploy</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">pxedeploy_sections</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pxedeploy_sections</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="XMLState.get_build_type_machine_section"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_build_type_machine_section">[docs]</a>    <span class="k">def</span> <span class="nf">get_build_type_machine_section</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        First machine section from the build type section</span>
+
+<span class="sd">        :return: &lt;machine&gt;</span>
+<span class="sd">        :rtype: xml_parse::machine instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">machine_sections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_type</span><span class="o">.</span><span class="n">get_machine</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">machine_sections</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">machine_sections</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="XMLState.get_build_type_vmdisk_section"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_build_type_vmdisk_section">[docs]</a>    <span class="k">def</span> <span class="nf">get_build_type_vmdisk_section</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        First vmdisk section from the first machine section in the</span>
+<span class="sd">        build type section</span>
+
+<span class="sd">        :return: &lt;vmdisk&gt;</span>
+<span class="sd">        :rtype: xml_parse::vmdisk instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">machine_section</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_build_type_machine_section</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">machine_section</span><span class="p">:</span>
+            <span class="n">vmdisk_sections</span> <span class="o">=</span> <span class="n">machine_section</span><span class="o">.</span><span class="n">get_vmdisk</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">vmdisk_sections</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">vmdisk_sections</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="XMLState.get_build_type_vmnic_section"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_build_type_vmnic_section">[docs]</a>    <span class="k">def</span> <span class="nf">get_build_type_vmnic_section</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        First vmnic section from the first machine section in the</span>
+<span class="sd">        build type section</span>
+
+<span class="sd">        :return: &lt;vmnic&gt;</span>
+<span class="sd">        :rtype: xml_parse::vmnic instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">machine_section</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_build_type_machine_section</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">machine_section</span><span class="p">:</span>
+            <span class="n">vmnic_sections</span> <span class="o">=</span> <span class="n">machine_section</span><span class="o">.</span><span class="n">get_vmnic</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">vmnic_sections</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">vmnic_sections</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="XMLState.get_build_type_vmdvd_section"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_build_type_vmdvd_section">[docs]</a>    <span class="k">def</span> <span class="nf">get_build_type_vmdvd_section</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        First vmdvd section from the first machine section in the</span>
+<span class="sd">        build type section</span>
+
+<span class="sd">        :return: &lt;vmdvd&gt;</span>
+<span class="sd">        :rtype: xml_parse::vmdvd instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">machine_section</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_build_type_machine_section</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">machine_section</span><span class="p">:</span>
+            <span class="n">vmdvd_sections</span> <span class="o">=</span> <span class="n">machine_section</span><span class="o">.</span><span class="n">get_vmdvd</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">vmdvd_sections</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">vmdvd_sections</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="XMLState.get_build_type_vmconfig_entries"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_build_type_vmconfig_entries">[docs]</a>    <span class="k">def</span> <span class="nf">get_build_type_vmconfig_entries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List of vmconfig-entry section values from the first</span>
+<span class="sd">        machine section in the build type section</span>
+
+<span class="sd">        :return: vmconfig_entry values</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">machine_section</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_build_type_machine_section</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">machine_section</span><span class="p">:</span>
+            <span class="n">vmconfig_entries</span> <span class="o">=</span> <span class="n">machine_section</span><span class="o">.</span><span class="n">get_vmconfig_entry</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">vmconfig_entries</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">vmconfig_entries</span>
+
+        <span class="k">return</span> <span class="p">[]</span></div>
+
+<div class="viewcode-block" id="XMLState.get_build_type_oemconfig_section"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_build_type_oemconfig_section">[docs]</a>    <span class="k">def</span> <span class="nf">get_build_type_oemconfig_section</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        First oemconfig section from the build type section</span>
+
+<span class="sd">        :return: &lt;oemconfig&gt;</span>
+<span class="sd">        :rtype: xml_parse::oemconfig instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">oemconfig_sections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_type</span><span class="o">.</span><span class="n">get_oemconfig</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">oemconfig_sections</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">oemconfig_sections</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="XMLState.get_build_type_size"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_build_type_size">[docs]</a>    <span class="k">def</span> <span class="nf">get_build_type_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Size information from the build type section.</span>
+<span class="sd">        If no unit is set the value is treated as mbytes</span>
+
+<span class="sd">        :return: mbytes</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">size_section</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_type</span><span class="o">.</span><span class="n">get_size</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">size_section</span><span class="p">:</span>
+            <span class="n">unit</span> <span class="o">=</span> <span class="n">size_section</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_unit</span><span class="p">()</span>
+            <span class="n">additive</span> <span class="o">=</span> <span class="n">size_section</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_additive</span><span class="p">()</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">size_section</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_valueOf_</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;G&#39;</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">*=</span> <span class="mi">1024</span>
+            <span class="n">size_type</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span>
+                <span class="s1">&#39;size_type&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;mbytes&#39;</span><span class="p">,</span> <span class="s1">&#39;additive&#39;</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">size_type</span><span class="p">(</span>
+                <span class="n">mbytes</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">additive</span><span class="o">=</span><span class="n">additive</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="XMLState.get_volume_group_name"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_volume_group_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_volume_group_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Volume group name from systemdisk section</span>
+
+<span class="sd">        :return: volume group name</span>
+<span class="sd">        :rtype: string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">systemdisk_section</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_build_type_system_disk_section</span><span class="p">()</span>
+        <span class="n">volume_group_name</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">systemdisk_section</span><span class="p">:</span>
+            <span class="n">volume_group_name</span> <span class="o">=</span> <span class="n">systemdisk_section</span><span class="o">.</span><span class="n">get_name</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">volume_group_name</span><span class="p">:</span>
+            <span class="n">volume_group_name</span> <span class="o">=</span> <span class="n">Defaults</span><span class="o">.</span><span class="n">get_default_volume_group_name</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">volume_group_name</span></div>
+
+<div class="viewcode-block" id="XMLState.get_users"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_users">[docs]</a>    <span class="k">def</span> <span class="nf">get_users</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List of configured users.</span>
+
+<span class="sd">        Each entry in the list is a single xml_parse::user instance.</span>
+
+<span class="sd">        :return: user data</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">users_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">users_names_added</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">users_section</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_users_sections</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">users_section</span><span class="o">.</span><span class="n">get_user</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">get_name</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">users_names_added</span><span class="p">:</span>
+                    <span class="n">users_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+                    <span class="n">users_names_added</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">get_name</span><span class="p">())</span>
+
+        <span class="k">return</span> <span class="n">users_list</span></div>
+
+<div class="viewcode-block" id="XMLState.get_user_groups"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_user_groups">[docs]</a>    <span class="k">def</span> <span class="nf">get_user_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List of group names matching specified user</span>
+
+<span class="sd">        Each entry in the list is the name of a group that the specified</span>
+<span class="sd">        user belongs to. The first item in the list is the login or primary</span>
+<span class="sd">        group. The list will be empty if no groups are specified in the</span>
+<span class="sd">        description file.</span>
+
+<span class="sd">        :return: groups data for the given user</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">groups_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">users_section</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_users_sections</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">users_section</span><span class="o">.</span><span class="n">get_user</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">get_name</span><span class="p">()</span> <span class="o">==</span> <span class="n">user_name</span><span class="p">:</span>
+                    <span class="n">user_groups</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">get_groups</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">user_groups</span><span class="p">:</span>
+                        <span class="n">groups_list</span> <span class="o">+=</span> <span class="n">user</span><span class="o">.</span><span class="n">get_groups</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+
+        <span class="c1"># order of list items matter, thus we don&#39;t use set() here</span>
+        <span class="c1"># better faster, nicer solutions welcome :)</span>
+        <span class="n">result_group_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">groups_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">item</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">result_group_list</span><span class="p">:</span>
+                <span class="n">result_group_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result_group_list</span></div>
+
+<div class="viewcode-block" id="XMLState.get_volumes"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_volumes">[docs]</a>    <span class="k">def</span> <span class="nf">get_volumes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List of configured systemdisk volumes.</span>
+
+<span class="sd">        Each entry in the list is a tuple with the following information</span>
+
+<span class="sd">        * name: name of the volume</span>
+<span class="sd">        * size: size of the volume</span>
+<span class="sd">        * realpath: system path to lookup volume data. If no mountpoint</span>
+<span class="sd">          is set the volume name is used as data path.</span>
+<span class="sd">        * mountpoint: volume mount point and volume data path</span>
+<span class="sd">        * fullsize: takes all space true|false</span>
+
+<span class="sd">        :return: volume data</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">volume_type_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">systemdisk_section</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_build_type_system_disk_section</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">systemdisk_section</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">volume_type_list</span>
+
+        <span class="n">volume_type</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span>
+            <span class="s1">&#39;volume_type&#39;</span><span class="p">,</span> <span class="p">[</span>
+                <span class="s1">&#39;name&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;size&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;realpath&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;mountpoint&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;fullsize&#39;</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="n">volumes</span> <span class="o">=</span> <span class="n">systemdisk_section</span><span class="o">.</span><span class="n">get_volume</span><span class="p">()</span>
+        <span class="n">have_root_volume_setup</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">have_full_size_volume</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">volumes</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">volume</span> <span class="ow">in</span> <span class="n">volumes</span><span class="p">:</span>
+                <span class="c1"># volume setup for a full qualified volume with name and</span>
+                <span class="c1"># mountpoint information. See below for exceptions</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">volume</span><span class="o">.</span><span class="n">get_name</span><span class="p">()</span>
+                <span class="n">mountpoint</span> <span class="o">=</span> <span class="n">volume</span><span class="o">.</span><span class="n">get_mountpoint</span><span class="p">()</span>
+                <span class="n">realpath</span> <span class="o">=</span> <span class="n">mountpoint</span>
+                <span class="n">size</span> <span class="o">=</span> <span class="n">volume</span><span class="o">.</span><span class="n">get_size</span><span class="p">()</span>
+                <span class="n">freespace</span> <span class="o">=</span> <span class="n">volume</span><span class="o">.</span><span class="n">get_freespace</span><span class="p">()</span>
+                <span class="n">fullsize</span> <span class="o">=</span> <span class="kc">False</span>
+
+                <span class="k">if</span> <span class="s1">&#39;@root&#39;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+                    <span class="c1"># setup root volume, it takes a fixed volume name and</span>
+                    <span class="c1"># has no specific mountpoint</span>
+                    <span class="n">mountpoint</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">realpath</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span>
+                    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;LVRoot&#39;</span>
+                    <span class="n">have_root_volume_setup</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">elif</span> <span class="ow">not</span> <span class="n">mountpoint</span><span class="p">:</span>
+                    <span class="c1"># setup volume without mountpoint. In this case the name</span>
+                    <span class="c1"># attribute is used as mountpoint path and a name for the</span>
+                    <span class="c1"># volume is created from that path information</span>
+                    <span class="n">mountpoint</span> <span class="o">=</span> <span class="n">name</span>
+                    <span class="n">realpath</span> <span class="o">=</span> <span class="n">mountpoint</span>
+                    <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_volume_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">size</span><span class="p">:</span>
+                    <span class="n">size</span> <span class="o">=</span> <span class="s1">&#39;size:&#39;</span> <span class="o">+</span> <span class="nb">format</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_to_mega_byte</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="k">elif</span> <span class="n">freespace</span><span class="p">:</span>
+                    <span class="n">size</span> <span class="o">=</span> <span class="s1">&#39;freespace:&#39;</span> <span class="o">+</span> <span class="nb">format</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_to_mega_byte</span><span class="p">(</span><span class="n">freespace</span><span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">size</span> <span class="o">=</span> <span class="s1">&#39;freespace:&#39;</span> <span class="o">+</span> <span class="nb">format</span><span class="p">(</span>
+                        <span class="n">Defaults</span><span class="o">.</span><span class="n">get_min_volume_mbytes</span><span class="p">()</span>
+                    <span class="p">)</span>
+
+                <span class="k">if</span> <span class="s1">&#39;:all&#39;</span> <span class="ow">in</span> <span class="n">size</span><span class="p">:</span>
+                    <span class="n">size</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">fullsize</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="n">have_full_size_volume</span> <span class="o">=</span> <span class="kc">True</span>
+
+                <span class="n">volume_type_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">volume_type</span><span class="p">(</span>
+                        <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                        <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">,</span>
+                        <span class="n">fullsize</span><span class="o">=</span><span class="n">fullsize</span><span class="p">,</span>
+                        <span class="n">mountpoint</span><span class="o">=</span><span class="n">mountpoint</span><span class="p">,</span>
+                        <span class="n">realpath</span><span class="o">=</span><span class="n">realpath</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">have_root_volume_setup</span><span class="p">:</span>
+            <span class="c1"># There must always be a root volume setup. It will be the</span>
+            <span class="c1"># full size volume if no other volume has this setup</span>
+            <span class="k">if</span> <span class="n">have_full_size_volume</span><span class="p">:</span>
+                <span class="n">size</span> <span class="o">=</span> <span class="s1">&#39;freespace:&#39;</span> <span class="o">+</span> <span class="nb">format</span><span class="p">(</span>
+                    <span class="n">Defaults</span><span class="o">.</span><span class="n">get_min_volume_mbytes</span><span class="p">()</span>
+                <span class="p">)</span>
+                <span class="n">fullsize</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">size</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">fullsize</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">volume_type_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">volume_type</span><span class="p">(</span>
+                    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;LVRoot&#39;</span><span class="p">,</span>
+                    <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">,</span>
+                    <span class="n">fullsize</span><span class="o">=</span><span class="n">fullsize</span><span class="p">,</span>
+                    <span class="n">mountpoint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">realpath</span><span class="o">=</span><span class="s1">&#39;/&#39;</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">volume_type_list</span></div>
+
+<div class="viewcode-block" id="XMLState.get_volume_management"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_volume_management">[docs]</a>    <span class="k">def</span> <span class="nf">get_volume_management</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Provides information which volume management system is used</span>
+
+<span class="sd">        :return: name of volume manager</span>
+<span class="sd">        :rtype: string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">volume_filesystems</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;btrfs&#39;</span><span class="p">]</span>
+        <span class="n">selected_filesystem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_type</span><span class="o">.</span><span class="n">get_filesystem</span><span class="p">()</span>
+        <span class="n">selected_system_disk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_build_type_system_disk_section</span><span class="p">()</span>
+        <span class="n">volume_management</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">selected_system_disk</span><span class="p">:</span>
+            <span class="c1"># no systemdisk section exists, no volume management requested</span>
+            <span class="k">pass</span>
+        <span class="k">elif</span> <span class="n">selected_system_disk</span><span class="o">.</span><span class="n">get_preferlvm</span><span class="p">():</span>
+            <span class="c1"># LVM volume management is preferred, use it</span>
+            <span class="n">volume_management</span> <span class="o">=</span> <span class="s1">&#39;lvm&#39;</span>
+        <span class="k">elif</span> <span class="n">selected_filesystem</span> <span class="ow">in</span> <span class="n">volume_filesystems</span><span class="p">:</span>
+            <span class="c1"># specified filesystem has its own volume management system</span>
+            <span class="n">volume_management</span> <span class="o">=</span> <span class="n">selected_filesystem</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># systemdisk section is specified with non volume capable</span>
+            <span class="c1"># filesystem and no volume management preference. So let&#39;s</span>
+            <span class="c1"># use LVM by default</span>
+            <span class="n">volume_management</span> <span class="o">=</span> <span class="s1">&#39;lvm&#39;</span>
+        <span class="k">return</span> <span class="n">volume_management</span></div>
+
+<div class="viewcode-block" id="XMLState.get_drivers_list"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_drivers_list">[docs]</a>    <span class="k">def</span> <span class="nf">get_drivers_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List of driver names from all drivers sections matching</span>
+<span class="sd">        configured profiles</span>
+
+<span class="sd">        :return: driver names</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">drivers_sections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_profiled</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">xml_data</span><span class="o">.</span><span class="n">get_drivers</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">drivers_sections</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">driver</span> <span class="ow">in</span> <span class="n">drivers_sections</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">file_section</span> <span class="ow">in</span> <span class="n">driver</span><span class="o">.</span><span class="n">get_file</span><span class="p">():</span>
+                    <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">file_section</span><span class="o">.</span><span class="n">get_name</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="XMLState.get_strip_list"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_strip_list">[docs]</a>    <span class="k">def</span> <span class="nf">get_strip_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section_type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List of strip names matching the given section type</span>
+<span class="sd">        and profiles</span>
+
+<span class="sd">        :param string section_type: type name from packages section</span>
+
+<span class="sd">        :return: strip names</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">strip_sections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_profiled</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">xml_data</span><span class="o">.</span><span class="n">get_strip</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">strip_sections</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">strip</span> <span class="ow">in</span> <span class="n">strip_sections</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">strip</span><span class="o">.</span><span class="n">get_type</span><span class="p">()</span> <span class="o">==</span> <span class="n">section_type</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">file_section</span> <span class="ow">in</span> <span class="n">strip</span><span class="o">.</span><span class="n">get_file</span><span class="p">():</span>
+                        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">file_section</span><span class="o">.</span><span class="n">get_name</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="XMLState.get_strip_files_to_delete"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_strip_files_to_delete">[docs]</a>    <span class="k">def</span> <span class="nf">get_strip_files_to_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Items to delete from strip section</span>
+
+<span class="sd">        :return: items to delete</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_strip_list</span><span class="p">(</span><span class="s1">&#39;delete&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="XMLState.get_strip_tools_to_keep"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_strip_tools_to_keep">[docs]</a>    <span class="k">def</span> <span class="nf">get_strip_tools_to_keep</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Tools to keep from strip section</span>
+
+<span class="sd">        :return: tools to keep</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_strip_list</span><span class="p">(</span><span class="s1">&#39;tools&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="XMLState.get_strip_libraries_to_keep"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_strip_libraries_to_keep">[docs]</a>    <span class="k">def</span> <span class="nf">get_strip_libraries_to_keep</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Libraries to keep from strip section</span>
+
+<span class="sd">        :return: libraries to keep</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_strip_list</span><span class="p">(</span><span class="s1">&#39;libs&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="XMLState.get_repository_sections"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_repository_sections">[docs]</a>    <span class="k">def</span> <span class="nf">get_repository_sections</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List of all repository sections matching configured profiles</span>
+
+<span class="sd">        :return: &lt;repository&gt;</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_profiled</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">xml_data</span><span class="o">.</span><span class="n">get_repository</span><span class="p">()</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="XMLState.has_repositories_marked_as_imageinclude"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.has_repositories_marked_as_imageinclude">[docs]</a>    <span class="k">def</span> <span class="nf">has_repositories_marked_as_imageinclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return true if has one or more repository section</span>
+<span class="sd">        marked as imageinclude.</span>
+
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">repos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_repository_sections</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">repo</span> <span class="k">for</span> <span class="n">repo</span> <span class="ow">in</span> <span class="n">repos</span> <span class="k">if</span> <span class="n">repo</span><span class="o">.</span><span class="n">get_imageinclude</span><span class="p">()))</span></div>
+
+<div class="viewcode-block" id="XMLState.delete_repository_sections"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.delete_repository_sections">[docs]</a>    <span class="k">def</span> <span class="nf">delete_repository_sections</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Delete all repository sections matching configured profiles</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xml_data</span><span class="o">.</span><span class="n">set_repository</span><span class="p">([])</span></div>
+
+<div class="viewcode-block" id="XMLState.translate_obs_to_ibs_repositories"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.translate_obs_to_ibs_repositories">[docs]</a>    <span class="k">def</span> <span class="nf">translate_obs_to_ibs_repositories</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Change obs:// repotype to ibs:// type</span>
+
+<span class="sd">        This will result in pointing to build.suse.de instead of</span>
+<span class="sd">        build.opensuse.org</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">repository</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_repository_sections</span><span class="p">():</span>
+            <span class="n">source_path</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="n">get_source</span><span class="p">()</span>
+            <span class="k">if</span> <span class="s1">&#39;obs://&#39;</span> <span class="ow">in</span> <span class="n">source_path</span><span class="o">.</span><span class="n">get_path</span><span class="p">():</span>
+                <span class="n">source_path</span><span class="o">.</span><span class="n">set_path</span><span class="p">(</span>
+                    <span class="n">source_path</span><span class="o">.</span><span class="n">get_path</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;obs://&#39;</span><span class="p">,</span> <span class="s1">&#39;ibs://&#39;</span><span class="p">)</span>
+                <span class="p">)</span></div>
+
+<div class="viewcode-block" id="XMLState.translate_obs_to_suse_repositories"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.translate_obs_to_suse_repositories">[docs]</a>    <span class="k">def</span> <span class="nf">translate_obs_to_suse_repositories</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Change obs:// repotype to suse:// type</span>
+
+<span class="sd">        This will result in a local repo path suitable for a</span>
+<span class="sd">        buildservice worker instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">repository</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_repository_sections</span><span class="p">():</span>
+            <span class="n">source_path</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="n">get_source</span><span class="p">()</span>
+            <span class="k">if</span> <span class="s1">&#39;obs://&#39;</span> <span class="ow">in</span> <span class="n">source_path</span><span class="o">.</span><span class="n">get_path</span><span class="p">():</span>
+                <span class="n">source_path</span><span class="o">.</span><span class="n">set_path</span><span class="p">(</span>
+                    <span class="n">source_path</span><span class="o">.</span><span class="n">get_path</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;obs://&#39;</span><span class="p">,</span> <span class="s1">&#39;suse://&#39;</span><span class="p">)</span>
+                <span class="p">)</span></div>
+
+<div class="viewcode-block" id="XMLState.set_repository"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.set_repository">[docs]</a>    <span class="k">def</span> <span class="nf">set_repository</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">repo_source</span><span class="p">,</span> <span class="n">repo_type</span><span class="p">,</span> <span class="n">repo_alias</span><span class="p">,</span> <span class="n">repo_prio</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overwrite repository data of the first repository</span>
+
+<span class="sd">        :param string repo_source: repository URI</span>
+<span class="sd">        :param string repo_type: type name defined by schema</span>
+<span class="sd">        :param string repo_alias: alias name</span>
+<span class="sd">        :param string repo_prio: priority number, package manager specific</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">repository_sections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_repository_sections</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">repository_sections</span><span class="p">:</span>
+            <span class="n">repository</span> <span class="o">=</span> <span class="n">repository_sections</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">repo_alias</span><span class="p">:</span>
+                <span class="n">repository</span><span class="o">.</span><span class="n">set_alias</span><span class="p">(</span><span class="n">repo_alias</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">repo_type</span><span class="p">:</span>
+                <span class="n">repository</span><span class="o">.</span><span class="n">set_type</span><span class="p">(</span><span class="n">repo_type</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">repo_source</span><span class="p">:</span>
+                <span class="n">repository</span><span class="o">.</span><span class="n">get_source</span><span class="p">()</span><span class="o">.</span><span class="n">set_path</span><span class="p">(</span><span class="n">repo_source</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">repo_prio</span><span class="p">:</span>
+                <span class="n">repository</span><span class="o">.</span><span class="n">set_priority</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">repo_prio</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="XMLState.add_repository"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.add_repository">[docs]</a>    <span class="k">def</span> <span class="nf">add_repository</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">repo_source</span><span class="p">,</span> <span class="n">repo_type</span><span class="p">,</span> <span class="n">repo_alias</span><span class="p">,</span> <span class="n">repo_prio</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a new repository section at the end of the list</span>
+
+<span class="sd">        :param string repo_source: repository URI</span>
+<span class="sd">        :param string repo_type: type name defined by schema</span>
+<span class="sd">        :param string repo_alias: alias name</span>
+<span class="sd">        :param string repo_prio: priority number, package manager specific</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xml_data</span><span class="o">.</span><span class="n">add_repository</span><span class="p">(</span>
+            <span class="n">xml_parse</span><span class="o">.</span><span class="n">repository</span><span class="p">(</span>
+                <span class="n">type_</span><span class="o">=</span><span class="n">repo_type</span><span class="p">,</span>
+                <span class="n">alias</span><span class="o">=</span><span class="n">repo_alias</span><span class="p">,</span>
+                <span class="n">priority</span><span class="o">=</span><span class="n">repo_prio</span><span class="p">,</span>
+                <span class="n">source</span><span class="o">=</span><span class="n">xml_parse</span><span class="o">.</span><span class="n">source</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">repo_source</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="XMLState.copy_displayname"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.copy_displayname">[docs]</a>    <span class="k">def</span> <span class="nf">copy_displayname</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_state</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Copy image displayname from this xml state to the target xml state</span>
+
+<span class="sd">        :param object target_state: XMLState instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">displayname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xml_data</span><span class="o">.</span><span class="n">get_displayname</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">displayname</span><span class="p">:</span>
+            <span class="n">target_state</span><span class="o">.</span><span class="n">xml_data</span><span class="o">.</span><span class="n">set_displayname</span><span class="p">(</span><span class="n">displayname</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="XMLState.copy_name"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.copy_name">[docs]</a>    <span class="k">def</span> <span class="nf">copy_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_state</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Copy image name from this xml state to the target xml state</span>
+
+<span class="sd">        :param object target_state: XMLState instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">target_state</span><span class="o">.</span><span class="n">xml_data</span><span class="o">.</span><span class="n">set_name</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">xml_data</span><span class="o">.</span><span class="n">get_name</span><span class="p">()</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="XMLState.copy_drivers_sections"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.copy_drivers_sections">[docs]</a>    <span class="k">def</span> <span class="nf">copy_drivers_sections</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_state</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Copy drivers sections from this xml state to the target xml state</span>
+
+<span class="sd">        :param object target_state: XMLState instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">drivers_sections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_profiled</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">xml_data</span><span class="o">.</span><span class="n">get_drivers</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">drivers_sections</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">drivers_section</span> <span class="ow">in</span> <span class="n">drivers_sections</span><span class="p">:</span>
+                <span class="n">target_state</span><span class="o">.</span><span class="n">xml_data</span><span class="o">.</span><span class="n">add_drivers</span><span class="p">(</span><span class="n">drivers_section</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="XMLState.copy_systemdisk_section"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.copy_systemdisk_section">[docs]</a>    <span class="k">def</span> <span class="nf">copy_systemdisk_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_state</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Copy systemdisk sections from this xml state to the target xml state</span>
+
+<span class="sd">        :param object target_state: XMLState instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">systemdisk_section</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_build_type_system_disk_section</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">systemdisk_section</span><span class="p">:</span>
+            <span class="n">target_state</span><span class="o">.</span><span class="n">build_type</span><span class="o">.</span><span class="n">set_systemdisk</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">systemdisk_section</span><span class="p">]</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="XMLState.copy_strip_sections"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.copy_strip_sections">[docs]</a>    <span class="k">def</span> <span class="nf">copy_strip_sections</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_state</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Copy strip sections from this xml state to the target xml state</span>
+
+<span class="sd">        :param object target_state: XMLState instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">strip_sections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_profiled</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">xml_data</span><span class="o">.</span><span class="n">get_strip</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">strip_sections</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">strip_section</span> <span class="ow">in</span> <span class="n">strip_sections</span><span class="p">:</span>
+                <span class="n">target_state</span><span class="o">.</span><span class="n">xml_data</span><span class="o">.</span><span class="n">add_strip</span><span class="p">(</span><span class="n">strip_section</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="XMLState.copy_machine_section"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.copy_machine_section">[docs]</a>    <span class="k">def</span> <span class="nf">copy_machine_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_state</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Copy machine sections from this xml state to the target xml state</span>
+
+<span class="sd">        :param object target_state: XMLState instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">machine_section</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_build_type_machine_section</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">machine_section</span><span class="p">:</span>
+            <span class="n">target_state</span><span class="o">.</span><span class="n">build_type</span><span class="o">.</span><span class="n">set_machine</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">machine_section</span><span class="p">]</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="XMLState.copy_oemconfig_section"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.copy_oemconfig_section">[docs]</a>    <span class="k">def</span> <span class="nf">copy_oemconfig_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_state</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Copy oemconfig sections from this xml state to the target xml state</span>
+
+<span class="sd">        :param object target_state: XMLState instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">oemconfig_section</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_build_type_oemconfig_section</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">oemconfig_section</span><span class="p">:</span>
+            <span class="n">target_state</span><span class="o">.</span><span class="n">build_type</span><span class="o">.</span><span class="n">set_oemconfig</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">oemconfig_section</span><span class="p">]</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="XMLState.copy_repository_sections"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.copy_repository_sections">[docs]</a>    <span class="k">def</span> <span class="nf">copy_repository_sections</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_state</span><span class="p">,</span> <span class="n">wipe</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Copy repository sections from this xml state to the target xml state</span>
+
+<span class="sd">        :param object target_state: XMLState instance</span>
+<span class="sd">        :param bool wipe: delete all repos in target prior to copy</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">repository_sections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_profiled</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">xml_data</span><span class="o">.</span><span class="n">get_repository</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">repository_sections</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">wipe</span><span class="p">:</span>
+                <span class="n">target_state</span><span class="o">.</span><span class="n">xml_data</span><span class="o">.</span><span class="n">set_repository</span><span class="p">([])</span>
+            <span class="k">for</span> <span class="n">repository_section</span> <span class="ow">in</span> <span class="n">repository_sections</span><span class="p">:</span>
+                <span class="n">repository_copy</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">repository_section</span><span class="p">)</span>
+                <span class="c1"># profiles are not copied because they might not exist</span>
+                <span class="c1"># in the target description</span>
+                <span class="n">repository_copy</span><span class="o">.</span><span class="n">set_profiles</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                <span class="n">target_state</span><span class="o">.</span><span class="n">xml_data</span><span class="o">.</span><span class="n">add_repository</span><span class="p">(</span><span class="n">repository_copy</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="XMLState.copy_preferences_subsections"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.copy_preferences_subsections">[docs]</a>    <span class="k">def</span> <span class="nf">copy_preferences_subsections</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section_names</span><span class="p">,</span> <span class="n">target_state</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Copy subsections of the preferences sections, matching given</span>
+<span class="sd">        section names, from this xml state to the target xml state</span>
+
+<span class="sd">        :param list section_names: preferences subsection names</span>
+<span class="sd">        :param object target_state: XMLState instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">target_preferences_sections</span> <span class="o">=</span> <span class="n">target_state</span><span class="o">.</span><span class="n">get_preferences_sections</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">target_preferences_sections</span><span class="p">:</span>
+            <span class="n">target_preferences_section</span> <span class="o">=</span> <span class="n">target_preferences_sections</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">preferences_section</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_preferences_sections</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">section_name</span> <span class="ow">in</span> <span class="n">section_names</span><span class="p">:</span>
+                    <span class="n">get_section_method</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span>
+                        <span class="n">preferences_section</span><span class="p">,</span> <span class="s1">&#39;get_&#39;</span> <span class="o">+</span> <span class="n">section_name</span>
+                    <span class="p">)</span>
+                    <span class="n">section</span> <span class="o">=</span> <span class="n">get_section_method</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">section</span><span class="p">:</span>
+                        <span class="n">set_section_method</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span>
+                            <span class="n">target_preferences_section</span><span class="p">,</span> <span class="s1">&#39;set_&#39;</span> <span class="o">+</span> <span class="n">section_name</span>
+                        <span class="p">)</span>
+                        <span class="n">set_section_method</span><span class="p">(</span><span class="n">section</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="XMLState.copy_build_type_attributes"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.copy_build_type_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">copy_build_type_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute_names</span><span class="p">,</span> <span class="n">target_state</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Copy specified attributes from this build type section to the</span>
+<span class="sd">        target xml state build type section</span>
+
+<span class="sd">        :param list attribute_names: type section attributes</span>
+<span class="sd">        :param object target_state: XMLState instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">attribute_names</span><span class="p">:</span>
+            <span class="n">get_type_method</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">build_type</span><span class="p">,</span> <span class="s1">&#39;get_&#39;</span> <span class="o">+</span> <span class="n">attribute</span>
+            <span class="p">)</span>
+            <span class="n">attribute_value</span> <span class="o">=</span> <span class="n">get_type_method</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">attribute_value</span><span class="p">:</span>
+                <span class="n">set_type_method</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span>
+                    <span class="n">target_state</span><span class="o">.</span><span class="n">build_type</span><span class="p">,</span> <span class="s1">&#39;set_&#39;</span> <span class="o">+</span> <span class="n">attribute</span>
+                <span class="p">)</span>
+                <span class="n">set_type_method</span><span class="p">(</span><span class="n">attribute_value</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="XMLState.copy_bootincluded_packages"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.copy_bootincluded_packages">[docs]</a>    <span class="k">def</span> <span class="nf">copy_bootincluded_packages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_state</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Copy packages marked as bootinclude to the packages type=bootstrap</span>
+<span class="sd">        section in the target xml state. The package will also be removed</span>
+<span class="sd">        from the packages type=delete section in the target xml state</span>
+<span class="sd">        if present there</span>
+
+<span class="sd">        :param object target_state: XMLState instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">target_bootstrap_packages_sections</span> <span class="o">=</span> \
+            <span class="n">target_state</span><span class="o">.</span><span class="n">get_bootstrap_packages_sections</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">target_bootstrap_packages_sections</span><span class="p">:</span>
+            <span class="n">target_bootstrap_packages_section</span> <span class="o">=</span> \
+                <span class="n">target_bootstrap_packages_sections</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">package_names_added</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">packages_sections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_packages_sections</span><span class="p">(</span>
+                <span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">,</span> <span class="s1">&#39;bootstrap&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_build_type_name</span><span class="p">()]</span>
+            <span class="p">)</span>
+            <span class="n">package_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_package_sections</span><span class="p">(</span>
+                <span class="n">packages_sections</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">package_list</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">package</span> <span class="ow">in</span> <span class="n">package_list</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">package</span><span class="o">.</span><span class="n">package_section</span><span class="o">.</span><span class="n">get_bootinclude</span><span class="p">():</span>
+                        <span class="n">target_bootstrap_packages_section</span><span class="o">.</span><span class="n">add_package</span><span class="p">(</span>
+                            <span class="n">xml_parse</span><span class="o">.</span><span class="n">package</span><span class="p">(</span>
+                                <span class="n">name</span><span class="o">=</span><span class="n">package</span><span class="o">.</span><span class="n">package_section</span><span class="o">.</span><span class="n">get_name</span><span class="p">()</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
+                        <span class="n">package_names_added</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                            <span class="n">package</span><span class="o">.</span><span class="n">package_section</span><span class="o">.</span><span class="n">get_name</span><span class="p">()</span>
+                        <span class="p">)</span>
+            <span class="n">delete_packages_sections</span> <span class="o">=</span> <span class="n">target_state</span><span class="o">.</span><span class="n">get_packages_sections</span><span class="p">(</span>
+                <span class="p">[</span><span class="s1">&#39;delete&#39;</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">package_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_package_sections</span><span class="p">(</span>
+                <span class="n">delete_packages_sections</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">package_list</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">package</span> <span class="ow">in</span> <span class="n">package_list</span><span class="p">:</span>
+                    <span class="n">package_name</span> <span class="o">=</span> <span class="n">package</span><span class="o">.</span><span class="n">package_section</span><span class="o">.</span><span class="n">get_name</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">package_name</span> <span class="ow">in</span> <span class="n">package_names_added</span><span class="p">:</span>
+                        <span class="n">package</span><span class="o">.</span><span class="n">packages_section</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span>
+                            <span class="n">package</span><span class="o">.</span><span class="n">package_section</span>
+                        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="XMLState.copy_bootincluded_archives"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.copy_bootincluded_archives">[docs]</a>    <span class="k">def</span> <span class="nf">copy_bootincluded_archives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_state</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Copy archives marked as bootinclude to the packages type=bootstrap</span>
+<span class="sd">        section in the target xml state</span>
+
+<span class="sd">        :param object target_state: XMLState instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">target_bootstrap_packages_sections</span> <span class="o">=</span> \
+            <span class="n">target_state</span><span class="o">.</span><span class="n">get_bootstrap_packages_sections</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">target_bootstrap_packages_sections</span><span class="p">:</span>
+            <span class="n">target_bootstrap_packages_section</span> <span class="o">=</span> \
+                <span class="n">target_bootstrap_packages_sections</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">packages_sections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_packages_sections</span><span class="p">(</span>
+                <span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">,</span> <span class="s1">&#39;bootstrap&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_build_type_name</span><span class="p">()]</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">packages_section</span> <span class="ow">in</span> <span class="n">packages_sections</span><span class="p">:</span>
+                <span class="n">archive_list</span> <span class="o">=</span> <span class="n">packages_section</span><span class="o">.</span><span class="n">get_archive</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">archive_list</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">archive</span> <span class="ow">in</span> <span class="n">archive_list</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">archive</span><span class="o">.</span><span class="n">get_bootinclude</span><span class="p">():</span>
+                            <span class="n">target_bootstrap_packages_section</span><span class="o">.</span><span class="n">add_archive</span><span class="p">(</span>
+                                <span class="n">xml_parse</span><span class="o">.</span><span class="n">archive</span><span class="p">(</span>
+                                    <span class="n">name</span><span class="o">=</span><span class="n">archive</span><span class="o">.</span><span class="n">get_name</span><span class="p">()</span>
+                                <span class="p">)</span>
+                            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="XMLState.copy_bootdelete_packages"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.copy_bootdelete_packages">[docs]</a>    <span class="k">def</span> <span class="nf">copy_bootdelete_packages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_state</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Copy packages marked as bootdelete to the packages type=delete</span>
+<span class="sd">        section in the target xml state</span>
+
+<span class="sd">        :param object target_state: XMLState instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">target_delete_packages_sections</span> <span class="o">=</span> <span class="n">target_state</span><span class="o">.</span><span class="n">get_packages_sections</span><span class="p">(</span>
+            <span class="p">[</span><span class="s1">&#39;delete&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">target_delete_packages_sections</span><span class="p">:</span>
+            <span class="n">target_delete_packages_sections</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">xml_parse</span><span class="o">.</span><span class="n">packages</span><span class="p">(</span><span class="n">type_</span><span class="o">=</span><span class="s1">&#39;delete&#39;</span><span class="p">)</span>
+            <span class="p">]</span>
+            <span class="n">target_state</span><span class="o">.</span><span class="n">xml_data</span><span class="o">.</span><span class="n">add_packages</span><span class="p">(</span>
+                <span class="n">target_delete_packages_sections</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="p">)</span>
+
+        <span class="n">target_delete_packages_section</span> <span class="o">=</span> \
+            <span class="n">target_delete_packages_sections</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">packages_sections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_packages_sections</span><span class="p">(</span>
+            <span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">,</span> <span class="s1">&#39;bootstrap&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_build_type_name</span><span class="p">()]</span>
+        <span class="p">)</span>
+        <span class="n">package_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_package_sections</span><span class="p">(</span>
+            <span class="n">packages_sections</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">package_list</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">package</span> <span class="ow">in</span> <span class="n">package_list</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">package</span><span class="o">.</span><span class="n">package_section</span><span class="o">.</span><span class="n">get_bootdelete</span><span class="p">():</span>
+                    <span class="n">target_delete_packages_section</span><span class="o">.</span><span class="n">add_package</span><span class="p">(</span>
+                        <span class="n">xml_parse</span><span class="o">.</span><span class="n">package</span><span class="p">(</span>
+                            <span class="n">name</span><span class="o">=</span><span class="n">package</span><span class="o">.</span><span class="n">package_section</span><span class="o">.</span><span class="n">get_name</span><span class="p">()</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="XMLState.get_distribution_name_from_boot_attribute"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_distribution_name_from_boot_attribute">[docs]</a>    <span class="k">def</span> <span class="nf">get_distribution_name_from_boot_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract the distribution name from the boot attribute of the</span>
+<span class="sd">        build type section.</span>
+
+<span class="sd">        If no boot attribute is configured or the contents does not</span>
+<span class="sd">        match the kiwi defined naming schema for boot image descriptions,</span>
+<span class="sd">        an exception is thrown</span>
+
+<span class="sd">        :return: lowercase distribution name</span>
+<span class="sd">        :rtype: string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">boot_attribute</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_type</span><span class="o">.</span><span class="n">get_boot</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">boot_attribute</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">KiwiDistributionNameError</span><span class="p">(</span>
+                <span class="s1">&#39;No boot attribute to extract distribution name from found&#39;</span>
+            <span class="p">)</span>
+        <span class="n">boot_attribute_format</span> <span class="o">=</span> <span class="s1">&#39;^.*-(.*)$&#39;</span>
+        <span class="n">boot_attribute_expression</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span>
+            <span class="n">boot_attribute_format</span><span class="p">,</span> <span class="n">boot_attribute</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">boot_attribute_expression</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">KiwiDistributionNameError</span><span class="p">(</span>
+                <span class="s1">&#39;Boot attribute &quot;</span><span class="si">%s</span><span class="s1">&quot; does not match expected format </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
+                <span class="p">(</span><span class="n">boot_attribute</span><span class="p">,</span> <span class="n">boot_attribute_format</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">boot_attribute_expression</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="XMLState.get_fs_mount_option_list"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_state.XMLState.get_fs_mount_option_list">[docs]</a>    <span class="k">def</span> <span class="nf">get_fs_mount_option_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List of root filesystem mount options</span>
+
+<span class="sd">        The list contains one element with the information from the</span>
+<span class="sd">        fsmountoptions attribute. The value there is passed along to</span>
+<span class="sd">        the -o mount option</span>
+
+<span class="sd">        :return: max one element list with mount option string</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">option_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">mount_options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_type</span><span class="o">.</span><span class="n">get_fsmountoptions</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">mount_options</span><span class="p">:</span>
+            <span class="n">option_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">mount_options</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">option_list</span></div>
+
+    <span class="k">def</span> <span class="nf">_used_profiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profiles</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            return list of profiles to use. The method looks up the</span>
+<span class="sd">            profiles section in the XML description and searches for</span>
+<span class="sd">            profiles marked with import=true. Profiles specified in</span>
+<span class="sd">            the argument list of this method will take the highest</span>
+<span class="sd">            priority and causes to skip the lookup of import profiles</span>
+<span class="sd">            in the XML description</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">profile_names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">import_profiles</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">profiles_section</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xml_data</span><span class="o">.</span><span class="n">get_profiles</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">profiles_section</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">profile</span> <span class="ow">in</span> <span class="n">profiles_section</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_profile</span><span class="p">():</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">get_name</span><span class="p">()</span>
+                <span class="n">profile_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">profile</span><span class="o">.</span><span class="n">get_import</span><span class="p">():</span>
+                    <span class="n">import_profiles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">profiles</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">import_profiles</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">profile</span> <span class="ow">in</span> <span class="n">profiles</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">profile</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">profile_names</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">KiwiProfileNotFound</span><span class="p">(</span>
+                        <span class="s1">&#39;profile </span><span class="si">%s</span><span class="s1"> not found&#39;</span> <span class="o">%</span> <span class="n">profile</span>
+                    <span class="p">)</span>
+            <span class="k">return</span> <span class="n">profiles</span>
+
+    <span class="k">def</span> <span class="nf">_build_type_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">build_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            find type section matching build type and profiles or default</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># lookup all preferences sections for selected profiles</span>
+        <span class="n">image_type_sections</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">preferences</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_preferences_sections</span><span class="p">():</span>
+            <span class="n">image_type_sections</span> <span class="o">+=</span> <span class="n">preferences</span><span class="o">.</span><span class="n">get_type</span><span class="p">()</span>
+
+        <span class="c1"># lookup if build type matches provided type</span>
+        <span class="k">if</span> <span class="n">build_type</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">image_type</span> <span class="ow">in</span> <span class="n">image_type_sections</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">build_type</span> <span class="o">==</span> <span class="n">image_type</span><span class="o">.</span><span class="n">get_image</span><span class="p">():</span>
+                    <span class="k">return</span> <span class="n">image_type</span>
+            <span class="k">raise</span> <span class="n">KiwiTypeNotFound</span><span class="p">(</span>
+                <span class="s1">&#39;build type </span><span class="si">%s</span><span class="s1"> not found&#39;</span> <span class="o">%</span> <span class="n">build_type</span>
+            <span class="p">)</span>
+
+        <span class="c1"># lookup if build type matches primary type</span>
+        <span class="k">for</span> <span class="n">image_type</span> <span class="ow">in</span> <span class="n">image_type_sections</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">image_type</span><span class="o">.</span><span class="n">get_primary</span><span class="p">():</span>
+                <span class="k">return</span> <span class="n">image_type</span>
+
+        <span class="c1"># build type is first type section in XML sequence</span>
+        <span class="k">if</span> <span class="n">image_type_sections</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">image_type_sections</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_profiled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xml_abstract</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            return only those sections matching the instance stored</span>
+<span class="sd">            profile list from the given XML abstract. Sections without</span>
+<span class="sd">            a profile are wildcard sections and will be used in any</span>
+<span class="sd">            case</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">xml_abstract</span><span class="p">:</span>
+            <span class="n">profiles</span> <span class="o">=</span> <span class="n">section</span><span class="o">.</span><span class="n">get_profiles</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">profiles</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">profile</span> <span class="ow">in</span> <span class="n">profiles</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span> <span class="ow">and</span> <span class="n">profile</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">:</span>
+                        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">section</span><span class="p">)</span>
+                        <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">section</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">def</span> <span class="nf">_to_volume_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            build a valid volume name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">r&#39;^\/+&#39;</span><span class="p">,</span> <span class="s1">r&#39;&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">name</span>
+
+    <span class="k">def</span> <span class="nf">_to_mega_byte</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;(\d+)([MG]*)&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="p">(</span><span class="n">size</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
+            <span class="n">number</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">unit</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;G&#39;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">number</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1024</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">size</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/kiwi-logo.png" alt="Logo"/>
+            </a></p><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<h1 class="logo"><a href="../../index.html">kiwi</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=SUSE&repo=kiwi&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/SUSE/kiwi">
+    <img
+        alt="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+        src="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Marcus Schäfer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/SUSE/kiwi" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

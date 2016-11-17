@@ -1,0 +1,368 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Development and Contributing &#8212; kiwi 8.25.5 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '8.25.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="kiwi 8.25.5 documentation" href="index.html" />
+    <link rel="next" title="Manual Pages" href="manual/kiwi.html" />
+    <link rel="prev" title="Legacy KIWI vs. Next Generation" href="legacy_kiwi.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="development-and-contributing">
+<h1>Development and Contributing<a class="headerlink" href="#development-and-contributing" title="Permalink to this headline">¶</a></h1>
+<div class="topic">
+<p class="topic-title first">Abstract</p>
+<p>This document describes the development process of KIWI.
+This description applies for version 8.25.5.</p>
+</div>
+<p>The core appliance builder is developed in Python and follows the test
+driven development rules.</p>
+<div class="section" id="runtime-requirements">
+<h2>Runtime Requirements<a class="headerlink" href="#runtime-requirements" title="Permalink to this headline">¶</a></h2>
+<p>KIWI requires the following Python modules to run:</p>
+<ul class="simple">
+<li><code class="xref py py-mod docutils literal"><span class="pre">lxml</span></code></li>
+<li><code class="xref py py-mod docutils literal"><span class="pre">docopt</span></code></li>
+<li><code class="xref py py-mod docutils literal"><span class="pre">xattr</span></code></li>
+</ul>
+</div>
+<div class="section" id="development-requirements">
+<h2>Development Requirements<a class="headerlink" href="#development-requirements" title="Permalink to this headline">¶</a></h2>
+<p>The Python project uses <strong class="command">pyvenv</strong> to setup a development environment
+for the desired Python version. The script <strong class="command">pyvenv</strong> is already
+installed when using Python 3.3 and higher (see
+<a class="reference external" href="https://docs.python.org/3.3/whatsnew/3.3.html#pep-405-virtual-environments">https://docs.python.org/3.3/whatsnew/3.3.html#pep-405-virtual-environments</a>
+for details). For Python 2.7 use <strong class="command">virtualenv</strong>.</p>
+<p>However, for setting up a Python virtual development environment the
+following additional include, header files and compilers are required
+in order to allow for compiling the C parts of the runtime required
+Python modules listed above:</p>
+<ul class="simple">
+<li>XML processing with libxml2 and libxslt (for <code class="xref py py-mod docutils literal"><span class="pre">lxml</span></code>)</li>
+<li>Foreign function interface library (libffi48)</li>
+<li>Python header files (for <code class="xref py py-mod docutils literal"><span class="pre">xattr</span></code>)</li>
+<li>GCC compiler and glibc-devel header files</li>
+</ul>
+<p>The required components can be installed with the following command:</p>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span>$ zypper in python3-devel libxml2-devel libxslt-devel libffi48-devel glibc-devel gcc
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The command above is only valid for SUSE systems.
+Package names and install command might be different
+on other systems.</p>
+</div>
+<p>For development, KIWI also takes the following additional
+Python modules from <a class="reference external" href="https://github.com/SUSE/kiwi/blob/master/.virtualenv.dev-requirements.txt">.virtualenv.dev-requirements.txt</a>
+into account.</p>
+</div>
+<div class="section" id="contributing">
+<h2>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h2>
+<p>The following procedure describes how to create a Python3 virtual
+development environment:</p>
+<ol class="arabic">
+<li><p class="first">Create the virtual environment:</p>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span>$ python3 -m venv .env3
+</pre></div>
+</div>
+</li>
+<li><p class="first">Activate the virtual environment:</p>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span>$ source .env3/bin/activate
+</pre></div>
+</div>
+</li>
+<li><p class="first">Install KIWI requirements inside the virtual environment:</p>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span>$ pip3.4 install -r .virtualenv.dev-requirements.txt
+</pre></div>
+</div>
+</li>
+<li><p class="first">Install KIWI in &#8220;development mode&#8221;:</p>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span>$ ./setup.py develop
+</pre></div>
+</div>
+</li>
+</ol>
+<p>Once the development environment is activated and initialized with the
+project required Python modules, you are ready to work.</p>
+<p>The <strong class="command">develop</strong> target of the <strong class="command">setup.py</strong> script
+automatically creates the application entry point called <strong class="command">kiwi-ng</strong>,
+which allows to simply call the application from the current code base:</p>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span>$ kiwi-ng --help
+</pre></div>
+</div>
+<p>In order to leave the development mode just call:</p>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span>$ deactivate
+</pre></div>
+</div>
+<p>To resume your work, change into your local Git repository and recall:</p>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span>$ source .env3/bin/activate
+</pre></div>
+</div>
+<p>If the version has changed by <strong class="command">bumpversion</strong>, this
+causes the current entry point to become invalid. Reconstruct the
+entry point after a version change by recalling:</p>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span>$ ./setup.py develop
+</pre></div>
+</div>
+<div class="section" id="running-test-cases">
+<h3>Running Test Cases<a class="headerlink" href="#running-test-cases" title="Permalink to this headline">¶</a></h3>
+<p>For running test cases, the preferred method is to use Tox. The Tox
+execution environment can be used to run any kind of target, tests are
+just one, documentation is another one. Refer to <code class="file docutils literal"><span class="pre">tox.ini</span></code> for more
+details.</p>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span>$ tox
+</pre></div>
+</div>
+<p>The previous call would run <strong class="command">tox</strong> for different Python versions,
+checks the source code for errors, and builds the documentation.</p>
+<p>If you want to see the target, use the option <code class="xref py py-obj docutils literal"><span class="pre">-l</span></code> to print a list:</p>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span>$ tox -l
+</pre></div>
+</div>
+<p>To only run a special target, use the <code class="xref py py-obj docutils literal"><span class="pre">-e</span></code> option. The following
+example runs the test cases for the 3.4 interpreter only:</p>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span>$ tox -e 3.4
+</pre></div>
+</div>
+</div>
+<div class="section" id="working-with-branches">
+<h3>Working with Branches<a class="headerlink" href="#working-with-branches" title="Permalink to this headline">¶</a></h3>
+<p>Code changes should be done in an extra git branch of the origin or
+a forked git repository. This allows for creating github pull requests
+in a clean way. Also See <a class="reference external" href="https://help.github.com/categories/collaborating-on-projects-using-issues-and-pull-requests">Github Issues and Pull Requests</a></p>
+</div>
+<div class="section" id="signing-git-patches">
+<h3>Signing Git Patches<a class="headerlink" href="#signing-git-patches" title="Permalink to this headline">¶</a></h3>
+<p>With ssh keys being widely available and the increasing compute power
+available to many people refactoring of SSH keys is in the range of
+possibilities. Therefore SSH keys as used by GitHub as a
+&#8220;login/authentication&#8221; mechanism no longer provide the security they
+once did. In an effort to ensure the integrity of the repository and
+the code base patches sent for inclusion must be GPG signed.</p>
+<p>To prepare Git to sign commits, follow these one-time instructions:</p>
+<ol class="arabic">
+<li><p class="first">Create a key suitable for signing (its not recommended to use
+existing keys to not mix it up with your email environment etc):</p>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span>$ gpg --gen-key
+</pre></div>
+</div>
+</li>
+<li><p class="first">Choose a DSA key (3) with a key size of 2048 bits (default) and a
+validation of 3 years (3y). Enter your name/email and GPG will
+generate a DSA key for you.</p>
+<p>You can also choose to use an empty passphrase, despite GPG&#8217;s warning,
+because you are only going to sign your public git commits with it and
+don&#8217;t need it for protecting any of your secrets. That might ease later
+use if you are not using an <strong class="command">gpg-agent</strong> that caches your passphrase
+between multiple signed Git commits.</p>
+</li>
+<li><p class="first">Add the key ID to your git config</p>
+<p>In above case, the ID is 11223344 so you add it to either your global
+<code class="file docutils literal"><span class="pre">~/.gitconfig</span></code> or even better to your <code class="file docutils literal"><span class="pre">.git/config</span></code>
+inside your repo:</p>
+<div class="code ini highlight-default"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">user</span><span class="p">]</span>
+<span class="n">name</span> <span class="o">=</span> <span class="n">Joe</span> <span class="n">Developer</span>
+<span class="n">email</span> <span class="o">=</span> <span class="n">developer</span><span class="nd">@foo</span><span class="o">.</span><span class="n">bar</span>
+<span class="n">signingkey</span> <span class="o">=</span> <span class="mi">11223344</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p>Once you have done the previous steps, use the following command to sign
+your commit:</p>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span>$ git commit -S -a
+</pre></div>
+</div>
+<p>The signatures created by this can later be verified using the
+following command:</p>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span>$ git log --show-signature
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="raising-versions">
+<h2>Raising Versions<a class="headerlink" href="#raising-versions" title="Permalink to this headline">¶</a></h2>
+<p>The KIWI project follows the <a class="reference external" href="http://semver.org">Semantic Versioning</a>
+method. To make it easier to follow this method, <strong class="command">bumpversion</strong> is
+used as a tool.</p>
+<p>Follow these instructions to raise the major, minor, or patch part of a
+version:</p>
+<ul>
+<li><p class="first">For backwards-compatible bug fixes:</p>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span>$ bumpversion patch
+</pre></div>
+</div>
+</li>
+<li><p class="first">For additional functionality in a backwards-compatible manner. When
+changed, the patch level is set back to zero:</p>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span>$ bumpversion minor
+</pre></div>
+</div>
+</li>
+<li><p class="first">For incompatible API changes. When changed, the patch and minor
+levels are set back to zero:</p>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span>$ bumpversion major
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="creating-a-package">
+<h2>Creating a Package<a class="headerlink" href="#creating-a-package" title="Permalink to this headline">¶</a></h2>
+<p>The creation of RPM package sources has to be done by calling the
+following make target:</p>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span>$ make build
+</pre></div>
+</div>
+<p>The sources are collected below the <code class="file docutils literal"><span class="pre">dist/</span></code> directory. In there you
+will find all required files to submit a package to the Open Build
+Service or just build it with <strong class="command">rpmbuild</strong>.</p>
+</div>
+<div class="section" id="building-documentation">
+<h2>Building Documentation<a class="headerlink" href="#building-documentation" title="Permalink to this headline">¶</a></h2>
+<p>The documentation is implemented using Sphinx with the ReST markup. In
+order to build the documentation just call:</p>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span><span class="n">tox</span> <span class="o">-</span><span class="n">e</span> <span class="n">doc</span>
+</pre></div>
+</div>
+<p>Whenever a change in the documentation is pushed to the git, it will be
+automatically updated via <strong class="command">travis-sphinx</strong> and is available at:</p>
+<p><a class="reference external" href="http://suse.github.io/kiwi">http://suse.github.io/kiwi</a></p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/kiwi-logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Development and Contributing</a><ul>
+<li><a class="reference internal" href="#runtime-requirements">Runtime Requirements</a></li>
+<li><a class="reference internal" href="#development-requirements">Development Requirements</a></li>
+<li><a class="reference internal" href="#contributing">Contributing</a><ul>
+<li><a class="reference internal" href="#running-test-cases">Running Test Cases</a></li>
+<li><a class="reference internal" href="#working-with-branches">Working with Branches</a></li>
+<li><a class="reference internal" href="#signing-git-patches">Signing Git Patches</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#raising-versions">Raising Versions</a></li>
+<li><a class="reference internal" href="#creating-a-package">Creating a Package</a></li>
+<li><a class="reference internal" href="#building-documentation">Building Documentation</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="legacy_kiwi.html" title="previous chapter">Legacy KIWI vs. Next Generation</a></li>
+      <li>Next: <a href="manual/kiwi.html" title="next chapter">Manual Pages</a></li>
+  </ul></li>
+</ul>
+</div>
+<h1 class="logo"><a href="index.html">kiwi</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=SUSE&repo=kiwi&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/SUSE/kiwi">
+    <img
+        alt="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+        src="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Marcus Schäfer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/contributing.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/SUSE/kiwi" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,319 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kiwi.container.setup Package &#8212; kiwi 8.25.5 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '8.25.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="kiwi 8.25.5 documentation" href="../index.html" />
+    <link rel="up" title="kiwi.container Package" href="kiwi.container.html" />
+    <link rel="next" title="kiwi.filesystem Package" href="kiwi.filesystem.html" />
+    <link rel="prev" title="kiwi.container Package" href="kiwi.container.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="kiwi-container-setup-package">
+<h1>kiwi.container.setup Package<a class="headerlink" href="#kiwi-container-setup-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-kiwi.container.setup.base">
+<span id="kiwi-container-setup-base-module"></span><h2><a class="reference internal" href="#module-kiwi.container.setup.base" title="kiwi.container.setup.base"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.container.setup.base</span></code></a> Module<a class="headerlink" href="#module-kiwi.container.setup.base" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.container.setup.base.ContainerSetupBase">
+<em class="property">class </em><code class="descclassname">kiwi.container.setup.base.</code><code class="descname">ContainerSetupBase</code><span class="sig-paren">(</span><em>root_dir</em>, <em>custom_args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/container/setup/base.html#ContainerSetupBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.container.setup.base.ContainerSetupBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Base class for setting up the root system to create
+a container image from for e.g docker. The methods here
+are generic to linux systems following the FHS standard
+and modern enough e.g based on systemd</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">root_dir</span></code></dt>
+<dd><p class="first last">root directory path name</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">custom_args</span></code></dt>
+<dd><p class="first last">dict of custom arguments</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.container.setup.base.ContainerSetupBase.create_fstab">
+<code class="descname">create_fstab</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/container/setup/base.html#ContainerSetupBase.create_fstab"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.container.setup.base.ContainerSetupBase.create_fstab" title="Permalink to this definition">¶</a></dt>
+<dd><p>Container boot mount setup</p>
+<p>Initialize an empty fstab file, mount processes in a
+container are controlled by the container infrastructure</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.container.setup.base.ContainerSetupBase.deactivate_bootloader_setup">
+<code class="descname">deactivate_bootloader_setup</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/container/setup/base.html#ContainerSetupBase.deactivate_bootloader_setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.container.setup.base.ContainerSetupBase.deactivate_bootloader_setup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Container bootloader setup</p>
+<p>Tell the system there is no bootloader configuration
+it needs to care for. A container does not boot</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.container.setup.base.ContainerSetupBase.deactivate_root_filesystem_check">
+<code class="descname">deactivate_root_filesystem_check</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/container/setup/base.html#ContainerSetupBase.deactivate_root_filesystem_check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.container.setup.base.ContainerSetupBase.deactivate_root_filesystem_check" title="Permalink to this definition">¶</a></dt>
+<dd><p>Container filesystem check setup</p>
+<p>The root filesystem of a container could be an overlay
+or a mapped device. In any case it should not be checked
+for consistency as this is should be done by the container
+infrastructure</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.container.setup.base.ContainerSetupBase.deactivate_systemd_service">
+<code class="descname">deactivate_systemd_service</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/container/setup/base.html#ContainerSetupBase.deactivate_systemd_service"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.container.setup.base.ContainerSetupBase.deactivate_systemd_service" title="Permalink to this definition">¶</a></dt>
+<dd><p>Container system services setup</p>
+<p>Init systems among others also controls services which
+starts at boot time. A container does not really boot.
+Thus some services needs to be deactivated</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<em>string</em>) &#8211; systemd service name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.container.setup.base.ContainerSetupBase.get_container_name">
+<code class="descname">get_container_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/container/setup/base.html#ContainerSetupBase.get_container_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.container.setup.base.ContainerSetupBase.get_container_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Container name</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">name</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.container.setup.base.ContainerSetupBase.post_init">
+<code class="descname">post_init</code><span class="sig-paren">(</span><em>custom_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/container/setup/base.html#ContainerSetupBase.post_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.container.setup.base.ContainerSetupBase.post_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Post initialization method</p>
+<p>Implementation in specialized container setup class</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>custom_args</strong> (<em>list</em>) &#8211; unused</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.container.setup.base.ContainerSetupBase.setup">
+<code class="descname">setup</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/container/setup/base.html#ContainerSetupBase.setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.container.setup.base.ContainerSetupBase.setup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup container metadata</p>
+<p>Implementation in specialized bootloader class required</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.container.setup.base.ContainerSetupBase.setup_root_console">
+<code class="descname">setup_root_console</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/container/setup/base.html#ContainerSetupBase.setup_root_console"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.container.setup.base.ContainerSetupBase.setup_root_console" title="Permalink to this definition">¶</a></dt>
+<dd><p>Container console setup</p>
+<p>/dev/console should be allowed to login by root</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.container.setup.base.ContainerSetupBase.setup_static_device_nodes">
+<code class="descname">setup_static_device_nodes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/container/setup/base.html#ContainerSetupBase.setup_static_device_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.container.setup.base.ContainerSetupBase.setup_static_device_nodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Container device node setup</p>
+<p>Without subsystems like udev running in a container it is
+required to provide a set of device nodes to let the
+system in the container function correctly. This is
+done by syncing the host system nodes to the container.
+That this will also create device nodes which are not
+necessarily present in the container later is a know
+limitation of this method and considered harmless</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.container.setup.docker">
+<span id="kiwi-container-setup-docker-module"></span><h2><a class="reference internal" href="#module-kiwi.container.setup.docker" title="kiwi.container.setup.docker"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.container.setup.docker</span></code></a> Module<a class="headerlink" href="#module-kiwi.container.setup.docker" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.container.setup.docker.ContainerSetupDocker">
+<em class="property">class </em><code class="descclassname">kiwi.container.setup.docker.</code><code class="descname">ContainerSetupDocker</code><span class="sig-paren">(</span><em>root_dir</em>, <em>custom_args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/container/setup/docker.html#ContainerSetupDocker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.container.setup.docker.ContainerSetupDocker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kiwi.container.setup.base.ContainerSetupBase" title="kiwi.container.setup.base.ContainerSetupBase"><code class="xref py py-class docutils literal"><span class="pre">kiwi.container.setup.base.ContainerSetupBase</span></code></a></p>
+<p>Docker container setup</p>
+<dl class="method">
+<dt id="kiwi.container.setup.docker.ContainerSetupDocker.post_init">
+<code class="descname">post_init</code><span class="sig-paren">(</span><em>custom_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/container/setup/docker.html#ContainerSetupDocker.post_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.container.setup.docker.ContainerSetupDocker.post_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Post initialization method</p>
+<p>Store custom arguments</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>custom_args</strong> (<em>list</em>) &#8211; custom bootloader arguments</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.container.setup.docker.ContainerSetupDocker.setup">
+<code class="descname">setup</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/container/setup/docker.html#ContainerSetupDocker.setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.container.setup.docker.ContainerSetupDocker.setup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup system for use with docker</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.container.setup">
+<span id="module-contents"></span><h2>Module Contents<a class="headerlink" href="#module-kiwi.container.setup" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.container.setup.ContainerSetup">
+<em class="property">class </em><code class="descclassname">kiwi.container.setup.</code><code class="descname">ContainerSetup</code><a class="reference internal" href="../_modules/kiwi/container/setup.html#ContainerSetup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.container.setup.ContainerSetup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>container setup factory</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/kiwi-logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">kiwi.container.setup Package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-kiwi.container.setup.base"><code class="docutils literal"><span class="pre">kiwi.container.setup.base</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.container.setup.docker"><code class="docutils literal"><span class="pre">kiwi.container.setup.docker</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.container.setup">Module Contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="kiwi.html">API Documentation 8.25.5</a><ul>
+  <li><a href="kiwi.container.html">kiwi.container Package</a><ul>
+      <li>Previous: <a href="kiwi.container.html" title="previous chapter">kiwi.container Package</a></li>
+      <li>Next: <a href="kiwi.filesystem.html" title="next chapter">kiwi.filesystem Package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<h1 class="logo"><a href="../index.html">kiwi</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=SUSE&repo=kiwi&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/SUSE/kiwi">
+    <img
+        alt="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+        src="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Marcus Schäfer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/api/kiwi.container.setup.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/SUSE/kiwi" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

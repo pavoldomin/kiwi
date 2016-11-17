@@ -1,0 +1,403 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kiwi.tasks package &#8212; kiwi 8.25.5 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '8.25.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="kiwi 8.25.5 documentation" href="../index.html" />
+    <link rel="up" title="API Documentation 8.25.5" href="kiwi.html" />
+    <link rel="next" title="kiwi.utils Package" href="kiwi.utils.html" />
+    <link rel="prev" title="kiwi.solver.repository Package" href="kiwi.solver.repository.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="kiwi-tasks-package">
+<h1>kiwi.tasks package<a class="headerlink" href="#kiwi-tasks-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-kiwi.tasks.base">
+<span id="kiwi-tasks-base-module"></span><h2><a class="reference internal" href="#module-kiwi.tasks.base" title="kiwi.tasks.base"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.tasks.base</span></code></a> Module<a class="headerlink" href="#module-kiwi.tasks.base" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.tasks.base.CliTask">
+<em class="property">class </em><code class="descclassname">kiwi.tasks.base.</code><code class="descname">CliTask</code><span class="sig-paren">(</span><em>should_perform_task_setup=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/tasks/base.html#CliTask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.tasks.base.CliTask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Base class for all task classes, loads the task and provides
+the interface to the command options and the XML description</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">cli</span></code></dt>
+<dd><p class="first last">Instance of Cli</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">task</span></code></dt>
+<dd><p class="first last">Instance of imported task class</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">command_args</span></code></dt>
+<dd><p class="first last">command specific docopt arguments dictionary</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">global_args</span></code></dt>
+<dd><p class="first last">global docopt arguments dictionary</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">runtime_checker</span></code></dt>
+<dd><p class="first last">Instance of RuntimeChecker</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.tasks.base.CliTask.load_xml_description">
+<code class="descname">load_xml_description</code><span class="sig-paren">(</span><em>description_directory</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/tasks/base.html#CliTask.load_xml_description"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.tasks.base.CliTask.load_xml_description" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load, upgrade, validate XML description</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">xml_data</span></code></dt>
+<dd><p class="first last">instance of XML data toplevel domain (image), stateless data</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">config_file</span></code></dt>
+<dd><p class="first last">used config file path</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">xml_state</span></code></dt>
+<dd><p class="first last">Instance of XMLState, stateful data</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.tasks.base.CliTask.quadruple_token">
+<code class="descname">quadruple_token</code><span class="sig-paren">(</span><em>option</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/tasks/base.html#CliTask.quadruple_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.tasks.base.CliTask.quadruple_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper method for commandline options of the form &#8211;option a,b,c,d</p>
+<p>Make sure to provide a common result for option values which
+separates the information in a comma separated list of values</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">common option value representation</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.tasks.result_bundle">
+<span id="kiwi-tasks-result-bundle-module"></span><h2><a class="reference internal" href="#module-kiwi.tasks.result_bundle" title="kiwi.tasks.result_bundle"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.tasks.result_bundle</span></code></a> Module<a class="headerlink" href="#module-kiwi.tasks.result_bundle" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.tasks.result_bundle.ResultBundleTask">
+<em class="property">class </em><code class="descclassname">kiwi.tasks.result_bundle.</code><code class="descname">ResultBundleTask</code><span class="sig-paren">(</span><em>should_perform_task_setup=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/tasks/result_bundle.html#ResultBundleTask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.tasks.result_bundle.ResultBundleTask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kiwi.tasks.base.CliTask" title="kiwi.tasks.base.CliTask"><code class="xref py py-class docutils literal"><span class="pre">kiwi.tasks.base.CliTask</span></code></a></p>
+<p>Implements result bundler</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">manual</span></code></dt>
+<dd><p class="first last">Instance of Help</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.tasks.result_bundle.ResultBundleTask.process">
+<code class="descname">process</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/tasks/result_bundle.html#ResultBundleTask.process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.tasks.result_bundle.ResultBundleTask.process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create result bundle from the image build results in the
+specified target directory. Each result image will contain
+the specified bundle identifier as part of its filename.
+Uncompressed image files will also become xz compressed
+and a sha sum will be created from every result image</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.tasks.result_list">
+<span id="kiwi-tasks-result-list-module"></span><h2><a class="reference internal" href="#module-kiwi.tasks.result_list" title="kiwi.tasks.result_list"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.tasks.result_list</span></code></a> Module<a class="headerlink" href="#module-kiwi.tasks.result_list" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.tasks.result_list.ResultListTask">
+<em class="property">class </em><code class="descclassname">kiwi.tasks.result_list.</code><code class="descname">ResultListTask</code><span class="sig-paren">(</span><em>should_perform_task_setup=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/tasks/result_list.html#ResultListTask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.tasks.result_list.ResultListTask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kiwi.tasks.base.CliTask" title="kiwi.tasks.base.CliTask"><code class="xref py py-class docutils literal"><span class="pre">kiwi.tasks.base.CliTask</span></code></a></p>
+<p>Implements result listing</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">manual</span></code></dt>
+<dd><p class="first last">Instance of Help</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.tasks.result_list.ResultListTask.process">
+<code class="descname">process</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/tasks/result_list.html#ResultListTask.process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.tasks.result_list.ResultListTask.process" title="Permalink to this definition">¶</a></dt>
+<dd><p>List result information from a previous system command</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.tasks.system_build">
+<span id="kiwi-tasks-system-build-module"></span><h2><a class="reference internal" href="#module-kiwi.tasks.system_build" title="kiwi.tasks.system_build"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.tasks.system_build</span></code></a> Module<a class="headerlink" href="#module-kiwi.tasks.system_build" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.tasks.system_build.SystemBuildTask">
+<em class="property">class </em><code class="descclassname">kiwi.tasks.system_build.</code><code class="descname">SystemBuildTask</code><span class="sig-paren">(</span><em>should_perform_task_setup=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/tasks/system_build.html#SystemBuildTask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.tasks.system_build.SystemBuildTask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kiwi.tasks.base.CliTask" title="kiwi.tasks.base.CliTask"><code class="xref py py-class docutils literal"><span class="pre">kiwi.tasks.base.CliTask</span></code></a></p>
+<p>Implements building of system images</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">manual</span></code></dt>
+<dd><p class="first last">Instance of Help</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.tasks.system_build.SystemBuildTask.process">
+<code class="descname">process</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/tasks/system_build.html#SystemBuildTask.process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.tasks.system_build.SystemBuildTask.process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a system image from the specified description. The
+build command combines the prepare and create commands</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.tasks.system_create">
+<span id="kiwi-tasks-system-create-module"></span><h2><a class="reference internal" href="#module-kiwi.tasks.system_create" title="kiwi.tasks.system_create"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.tasks.system_create</span></code></a> Module<a class="headerlink" href="#module-kiwi.tasks.system_create" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.tasks.system_create.SystemCreateTask">
+<em class="property">class </em><code class="descclassname">kiwi.tasks.system_create.</code><code class="descname">SystemCreateTask</code><span class="sig-paren">(</span><em>should_perform_task_setup=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/tasks/system_create.html#SystemCreateTask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.tasks.system_create.SystemCreateTask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kiwi.tasks.base.CliTask" title="kiwi.tasks.base.CliTask"><code class="xref py py-class docutils literal"><span class="pre">kiwi.tasks.base.CliTask</span></code></a></p>
+<p>Implements creation of system images</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">manual</span></code></dt>
+<dd><p class="first last">Instance of Help</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.tasks.system_create.SystemCreateTask.process">
+<code class="descname">process</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/tasks/system_create.html#SystemCreateTask.process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.tasks.system_create.SystemCreateTask.process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a system image from the specified root directory
+the root directory is the result of a system prepare
+command</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.tasks.system_prepare">
+<span id="kiwi-tasks-system-prepare-module"></span><h2><a class="reference internal" href="#module-kiwi.tasks.system_prepare" title="kiwi.tasks.system_prepare"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.tasks.system_prepare</span></code></a> Module<a class="headerlink" href="#module-kiwi.tasks.system_prepare" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.tasks.system_prepare.SystemPrepareTask">
+<em class="property">class </em><code class="descclassname">kiwi.tasks.system_prepare.</code><code class="descname">SystemPrepareTask</code><span class="sig-paren">(</span><em>should_perform_task_setup=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/tasks/system_prepare.html#SystemPrepareTask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.tasks.system_prepare.SystemPrepareTask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kiwi.tasks.base.CliTask" title="kiwi.tasks.base.CliTask"><code class="xref py py-class docutils literal"><span class="pre">kiwi.tasks.base.CliTask</span></code></a></p>
+<p>Implements preparation and installation of a new root system</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">manual</span></code></dt>
+<dd><p class="first last">Instance of Help</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.tasks.system_prepare.SystemPrepareTask.process">
+<code class="descname">process</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/tasks/system_prepare.html#SystemPrepareTask.process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.tasks.system_prepare.SystemPrepareTask.process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepare and install a new system for chroot access</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.tasks.system_update">
+<span id="kiwi-tasks-system-update-module"></span><h2><a class="reference internal" href="#module-kiwi.tasks.system_update" title="kiwi.tasks.system_update"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.tasks.system_update</span></code></a> Module<a class="headerlink" href="#module-kiwi.tasks.system_update" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.tasks.system_update.SystemUpdateTask">
+<em class="property">class </em><code class="descclassname">kiwi.tasks.system_update.</code><code class="descname">SystemUpdateTask</code><span class="sig-paren">(</span><em>should_perform_task_setup=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/tasks/system_update.html#SystemUpdateTask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.tasks.system_update.SystemUpdateTask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kiwi.tasks.base.CliTask" title="kiwi.tasks.base.CliTask"><code class="xref py py-class docutils literal"><span class="pre">kiwi.tasks.base.CliTask</span></code></a></p>
+<p>Implements update and maintenance of root systems</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">manual</span></code></dt>
+<dd><p class="first last">Instance of Help</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.tasks.system_update.SystemUpdateTask.process">
+<code class="descname">process</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/tasks/system_update.html#SystemUpdateTask.process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.tasks.system_update.SystemUpdateTask.process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update root system with latest repository updates
+and optionally allow to add or delete packages. the options
+to add or delete packages can be used multiple times</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.tasks">
+<span id="module-contents"></span><h2>Module Contents<a class="headerlink" href="#module-kiwi.tasks" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/kiwi-logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">kiwi.tasks package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-kiwi.tasks.base"><code class="docutils literal"><span class="pre">kiwi.tasks.base</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.tasks.result_bundle"><code class="docutils literal"><span class="pre">kiwi.tasks.result_bundle</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.tasks.result_list"><code class="docutils literal"><span class="pre">kiwi.tasks.result_list</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.tasks.system_build"><code class="docutils literal"><span class="pre">kiwi.tasks.system_build</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.tasks.system_create"><code class="docutils literal"><span class="pre">kiwi.tasks.system_create</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.tasks.system_prepare"><code class="docutils literal"><span class="pre">kiwi.tasks.system_prepare</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.tasks.system_update"><code class="docutils literal"><span class="pre">kiwi.tasks.system_update</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.tasks">Module Contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="kiwi.html">API Documentation 8.25.5</a><ul>
+      <li>Previous: <a href="kiwi.solver.repository.html" title="previous chapter">kiwi.solver.repository Package</a></li>
+      <li>Next: <a href="kiwi.utils.html" title="next chapter">kiwi.utils Package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<h1 class="logo"><a href="../index.html">kiwi</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=SUSE&repo=kiwi&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/SUSE/kiwi">
+    <img
+        alt="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+        src="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Marcus Schäfer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/api/kiwi.tasks.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/SUSE/kiwi" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

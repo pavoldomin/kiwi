@@ -1,0 +1,1028 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kiwi.bootloader.config Package &#8212; kiwi 8.25.5 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '8.25.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="kiwi 8.25.5 documentation" href="../index.html" />
+    <link rel="up" title="kiwi.bootloader Package" href="kiwi.bootloader.html" />
+    <link rel="next" title="kiwi.bootloader.install Package" href="kiwi.bootloader.install.html" />
+    <link rel="prev" title="kiwi.bootloader Package" href="kiwi.bootloader.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="kiwi-bootloader-config-package">
+<h1>kiwi.bootloader.config Package<a class="headerlink" href="#kiwi-bootloader-config-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-kiwi.bootloader.config.base">
+<span id="kiwi-bootloader-config-base-module"></span><h2><a class="reference internal" href="#module-kiwi.bootloader.config.base" title="kiwi.bootloader.config.base"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.bootloader.config.base</span></code></a> Module<a class="headerlink" href="#module-kiwi.bootloader.config.base" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.bootloader.config.base.BootLoaderConfigBase">
+<em class="property">class </em><code class="descclassname">kiwi.bootloader.config.base.</code><code class="descname">BootLoaderConfigBase</code><span class="sig-paren">(</span><em>xml_state</em>, <em>root_dir</em>, <em>custom_args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/base.html#BootLoaderConfigBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.base.BootLoaderConfigBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Base class for bootloader configuration</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">root_dir</span></code></dt>
+<dd><p class="first last">root directory path name</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">xml_state</span></code></dt>
+<dd><p class="first last">Instance of XMLState of the system image description</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">custom_args</span></code></dt>
+<dd><p class="first last">List of custom bootloader arguments</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.bootloader.config.base.BootLoaderConfigBase.create_efi_path">
+<code class="descname">create_efi_path</code><span class="sig-paren">(</span><em>in_sub_dir='boot/efi'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/base.html#BootLoaderConfigBase.create_efi_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.base.BootLoaderConfigBase.create_efi_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create standard EFI boot directory structure</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>in_sub_dir</strong> (<em>string</em>) &#8211; toplevel directory</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Full qualified EFI boot path</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.config.base.BootLoaderConfigBase.failsafe_boot_entry_requested">
+<code class="descname">failsafe_boot_entry_requested</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/base.html#BootLoaderConfigBase.failsafe_boot_entry_requested"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.base.BootLoaderConfigBase.failsafe_boot_entry_requested" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if a failsafe boot entry is requested</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.config.base.BootLoaderConfigBase.get_boot_cmdline">
+<code class="descname">get_boot_cmdline</code><span class="sig-paren">(</span><em>uuid=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/base.html#BootLoaderConfigBase.get_boot_cmdline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.base.BootLoaderConfigBase.get_boot_cmdline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Boot commandline arguments passed to the kernel</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">kernel boot arguments</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.config.base.BootLoaderConfigBase.get_boot_path">
+<code class="descname">get_boot_path</code><span class="sig-paren">(</span><em>target='disk'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/base.html#BootLoaderConfigBase.get_boot_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.base.BootLoaderConfigBase.get_boot_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bootloader lookup path on boot device</p>
+<p>If the bootloader reads the data it needs to boot, it does
+that from the configured boot device. Depending if that
+device is an extra boot partition or the root partition or
+or based on a non standard filesystem like a btrfs snapshot,
+the path name varies</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">path name</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.config.base.BootLoaderConfigBase.get_boot_theme">
+<code class="descname">get_boot_theme</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/base.html#BootLoaderConfigBase.get_boot_theme"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.base.BootLoaderConfigBase.get_boot_theme" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bootloader Theme name</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">theme name</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.config.base.BootLoaderConfigBase.get_boot_timeout_seconds">
+<code class="descname">get_boot_timeout_seconds</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/base.html#BootLoaderConfigBase.get_boot_timeout_seconds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.base.BootLoaderConfigBase.get_boot_timeout_seconds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bootloader timeout in seconds</p>
+<p>If no timeout is specified the default timeout applies</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">timeout seconds</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.config.base.BootLoaderConfigBase.get_gfxmode">
+<code class="descname">get_gfxmode</code><span class="sig-paren">(</span><em>target</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/base.html#BootLoaderConfigBase.get_gfxmode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.base.BootLoaderConfigBase.get_gfxmode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Graphics mode according to bootloader target</p>
+<p>Bootloaders which support a graphics mode can be configured
+to run graphics in a specific resolution and colors. There
+is no standard for this setup which causes kiwi to create
+a mapping from the kernel vesa mode number to the corresponding
+bootloader graphics mode setup</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>target</strong> (<em>string</em>) &#8211; bootloader name</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">boot graphics mode</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.config.base.BootLoaderConfigBase.get_hypervisor_domain">
+<code class="descname">get_hypervisor_domain</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/base.html#BootLoaderConfigBase.get_hypervisor_domain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.base.BootLoaderConfigBase.get_hypervisor_domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hypervisor domain name</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">domain name</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.config.base.BootLoaderConfigBase.get_install_image_boot_default">
+<code class="descname">get_install_image_boot_default</code><span class="sig-paren">(</span><em>loader=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/base.html#BootLoaderConfigBase.get_install_image_boot_default"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.base.BootLoaderConfigBase.get_install_image_boot_default" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provide the default boot menu entry identifier for install images</p>
+<p>The install image can be configured to provide more than
+one boot menu entry. Menu entries configured are:</p>
+<ul class="simple">
+<li>[0] Boot From Hard Disk</li>
+<li>[1] Install</li>
+<li>[2] Failsafe Install</li>
+</ul>
+<p>The installboot attribute controlls which of these are used
+by default. If not specified the boot from hard disk entry
+will be the default. Depending on the specified loader type
+either an entry number or name will be returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">menu name or id</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.config.base.BootLoaderConfigBase.get_menu_entry_install_title">
+<code class="descname">get_menu_entry_install_title</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/base.html#BootLoaderConfigBase.get_menu_entry_install_title"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.base.BootLoaderConfigBase.get_menu_entry_install_title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prefixed menu entry title for install images</p>
+<p>If no displayname is specified in the image description,
+the menu title is constructed from the image name</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">title text</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.config.base.BootLoaderConfigBase.get_menu_entry_title">
+<code class="descname">get_menu_entry_title</code><span class="sig-paren">(</span><em>plain=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/base.html#BootLoaderConfigBase.get_menu_entry_title"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.base.BootLoaderConfigBase.get_menu_entry_title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prefixed menu entry title</p>
+<p>If no displayname is specified in the image description,
+the menu title is constructed from the image name and
+build type</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">title text</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.config.base.BootLoaderConfigBase.post_init">
+<code class="descname">post_init</code><span class="sig-paren">(</span><em>custom_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/base.html#BootLoaderConfigBase.post_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.base.BootLoaderConfigBase.post_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Post initialization method</p>
+<p>Store custom arguments by default</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>custom_args</strong> (<em>list</em>) &#8211; custom bootloader arguments</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.config.base.BootLoaderConfigBase.quote_title">
+<code class="descname">quote_title</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/base.html#BootLoaderConfigBase.quote_title"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.base.BootLoaderConfigBase.quote_title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Quote special characters in the title name</p>
+<p>Not all characters can be displayed correctly in the bootloader
+environment. Therefore a quoting is required</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">quoted text</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.config.base.BootLoaderConfigBase.setup_disk_boot_images">
+<code class="descname">setup_disk_boot_images</code><span class="sig-paren">(</span><em>boot_uuid</em>, <em>lookup_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/base.html#BootLoaderConfigBase.setup_disk_boot_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.base.BootLoaderConfigBase.setup_disk_boot_images" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create bootloader images for disk boot</p>
+<p>Some bootloaders requires to build a boot image the bootloader
+can load from a specific offset address or from a standardized
+path on a filesystem.</p>
+<p>Implementation in specialized bootloader class required</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.config.base.BootLoaderConfigBase.setup_disk_image_config">
+<code class="descname">setup_disk_image_config</code><span class="sig-paren">(</span><em>uuid</em>, <em>hypervisor</em>, <em>kernel</em>, <em>initrd</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/base.html#BootLoaderConfigBase.setup_disk_image_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.base.BootLoaderConfigBase.setup_disk_image_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create boot config file to boot from disk.</p>
+<p>Implementation in specialized bootloader class required</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.config.base.BootLoaderConfigBase.setup_install_boot_images">
+<code class="descname">setup_install_boot_images</code><span class="sig-paren">(</span><em>mbrid</em>, <em>lookup_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/base.html#BootLoaderConfigBase.setup_install_boot_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.base.BootLoaderConfigBase.setup_install_boot_images" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create bootloader images for ISO boot an install media</p>
+<p>Implementation in specialized bootloader class required</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.config.base.BootLoaderConfigBase.setup_install_image_config">
+<code class="descname">setup_install_image_config</code><span class="sig-paren">(</span><em>mbrid</em>, <em>hypervisor</em>, <em>kernel</em>, <em>initrd</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/base.html#BootLoaderConfigBase.setup_install_image_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.base.BootLoaderConfigBase.setup_install_image_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create boot config file to boot from install media in EFI mode.</p>
+<p>Implementation in specialized bootloader class required</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.config.base.BootLoaderConfigBase.setup_live_boot_images">
+<code class="descname">setup_live_boot_images</code><span class="sig-paren">(</span><em>mbrid</em>, <em>lookup_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/base.html#BootLoaderConfigBase.setup_live_boot_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.base.BootLoaderConfigBase.setup_live_boot_images" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create bootloader images for ISO boot a live ISO image</p>
+<p>Implementation in specialized bootloader class required</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.config.base.BootLoaderConfigBase.setup_live_image_config">
+<code class="descname">setup_live_image_config</code><span class="sig-paren">(</span><em>mbrid</em>, <em>hypervisor</em>, <em>kernel</em>, <em>initrd</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/base.html#BootLoaderConfigBase.setup_live_image_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.base.BootLoaderConfigBase.setup_live_image_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create boot config file to boot live ISO image in EFI mode.</p>
+<p>Implementation in specialized bootloader class required</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.config.base.BootLoaderConfigBase.write">
+<code class="descname">write</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/base.html#BootLoaderConfigBase.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.base.BootLoaderConfigBase.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write config data to config file.</p>
+<p>Implementation in specialized bootloader class required</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.bootloader.config.grub2">
+<span id="kiwi-bootloader-config-grub2-module"></span><h2><a class="reference internal" href="#module-kiwi.bootloader.config.grub2" title="kiwi.bootloader.config.grub2"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.bootloader.config.grub2</span></code></a> Module<a class="headerlink" href="#module-kiwi.bootloader.config.grub2" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.bootloader.config.grub2.BootLoaderConfigGrub2">
+<em class="property">class </em><code class="descclassname">kiwi.bootloader.config.grub2.</code><code class="descname">BootLoaderConfigGrub2</code><span class="sig-paren">(</span><em>xml_state</em>, <em>root_dir</em>, <em>custom_args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/grub2.html#BootLoaderConfigGrub2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.grub2.BootLoaderConfigGrub2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kiwi.bootloader.config.base.BootLoaderConfigBase" title="kiwi.bootloader.config.base.BootLoaderConfigBase"><code class="xref py py-class docutils literal"><span class="pre">kiwi.bootloader.config.base.BootLoaderConfigBase</span></code></a></p>
+<p>grub2 bootloader configuration.</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">terminal</span></code></dt>
+<dd><p class="first last">terminal mode set to gfxterm</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">gfxmode</span></code></dt>
+<dd><p class="first last">configured or default graphics mode</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">bootpath</span></code></dt>
+<dd><p class="first last">boot path according to configuration</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">theme</span></code></dt>
+<dd><p class="first last">configured bootloader theme or none</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">timeout</span></code></dt>
+<dd><p class="first last">configured or default boot timeout</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">failsafe_boot</span></code></dt>
+<dd><p class="first last">failsafe mode requested true|false</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">hypervisor_domain</span></code></dt>
+<dd><p class="first last">configured hypervisor domain name or none</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">firmware</span></code></dt>
+<dd><p class="first last">Instance of FirmWare</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">hybrid_boot</span></code></dt>
+<dd><p class="first last">hybrid boot requested true|false</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">multiboot</span></code></dt>
+<dd><p class="first last">multiboot requested true|false</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">xen_guest</span></code></dt>
+<dd><p class="first last">Xen guest setup true|false</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">grub2</span></code></dt>
+<dd><p class="first last">Instance of config template: BootLoaderTemplateGrub2</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">config</span></code></dt>
+<dd><p class="first last">Configuration data from template substitution</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">efi_boot_path</span></code></dt>
+<dd><p class="first last">EFI boot path according to configuration</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">boot_directory_name</span></code></dt>
+<dd><p class="first last">grub boot directory below boot path set to: grub2</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.bootloader.config.grub2.BootLoaderConfigGrub2.post_init">
+<code class="descname">post_init</code><span class="sig-paren">(</span><em>custom_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/grub2.html#BootLoaderConfigGrub2.post_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.grub2.BootLoaderConfigGrub2.post_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>grub2 post initialization method</p>
+<p>Setup class attributes</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.config.grub2.BootLoaderConfigGrub2.setup_default_grub">
+<code class="descname">setup_default_grub</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/grub2.html#BootLoaderConfigGrub2.setup_default_grub"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.grub2.BootLoaderConfigGrub2.setup_default_grub" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create or update etc/default/grub by parameters required
+according to the root filesystem setup</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.config.grub2.BootLoaderConfigGrub2.setup_disk_boot_images">
+<code class="descname">setup_disk_boot_images</code><span class="sig-paren">(</span><em>boot_uuid</em>, <em>lookup_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/grub2.html#BootLoaderConfigGrub2.setup_disk_boot_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.grub2.BootLoaderConfigGrub2.setup_disk_boot_images" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create/Provide grub boot images and metadata</p>
+<p>In order to boot from the disk grub modules, images and theme
+data needs to be created and provided at the correct place in
+the filesystem</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>boot_uuid</strong> (<em>string</em>) &#8211; boot device UUID</li>
+<li><strong>lookup_path</strong> (<em>string</em>) &#8211; custom module lookup path</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.config.grub2.BootLoaderConfigGrub2.setup_disk_image_config">
+<code class="descname">setup_disk_image_config</code><span class="sig-paren">(</span><em>uuid</em>, <em>hypervisor='xen.gz'</em>, <em>kernel='linux.vmx'</em>, <em>initrd='initrd.vmx'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/grub2.html#BootLoaderConfigGrub2.setup_disk_image_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.grub2.BootLoaderConfigGrub2.setup_disk_image_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the grub.cfg in memory from a template suitable to boot
+from a disk image</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>uuid</strong> (<em>string</em>) &#8211; boot device UUID</li>
+<li><strong>hypervisor</strong> (<em>string</em>) &#8211; hypervisor name</li>
+<li><strong>kernel</strong> (<em>string</em>) &#8211; kernel name</li>
+<li><strong>initrd</strong> (<em>string</em>) &#8211; initrd name</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.config.grub2.BootLoaderConfigGrub2.setup_install_boot_images">
+<code class="descname">setup_install_boot_images</code><span class="sig-paren">(</span><em>mbrid</em>, <em>lookup_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/grub2.html#BootLoaderConfigGrub2.setup_install_boot_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.grub2.BootLoaderConfigGrub2.setup_install_boot_images" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create/Provide grub boot images and metadata</p>
+<p>In order to boot from the ISO grub modules, images and theme
+data needs to be created and provided at the correct place on
+the iso filesystem</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>mbrid</strong> (<em>string</em>) &#8211; mbrid file name on boot device</li>
+<li><strong>lookup_path</strong> (<em>string</em>) &#8211; custom module lookup path</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.config.grub2.BootLoaderConfigGrub2.setup_install_image_config">
+<code class="descname">setup_install_image_config</code><span class="sig-paren">(</span><em>mbrid</em>, <em>hypervisor='xen.gz'</em>, <em>kernel='linux'</em>, <em>initrd='initrd'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/grub2.html#BootLoaderConfigGrub2.setup_install_image_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.grub2.BootLoaderConfigGrub2.setup_install_image_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create grub config file to boot from an ISO install image</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>mbrid</strong> (<em>string</em>) &#8211; mbrid file name on boot device</li>
+<li><strong>hypervisor</strong> (<em>string</em>) &#8211; hypervisor name</li>
+<li><strong>kernel</strong> (<em>string</em>) &#8211; kernel name</li>
+<li><strong>initrd</strong> (<em>string</em>) &#8211; initrd name</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.config.grub2.BootLoaderConfigGrub2.setup_live_boot_images">
+<code class="descname">setup_live_boot_images</code><span class="sig-paren">(</span><em>mbrid</em>, <em>lookup_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/grub2.html#BootLoaderConfigGrub2.setup_live_boot_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.grub2.BootLoaderConfigGrub2.setup_live_boot_images" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create/Provide grub boot images and metadata</p>
+<p>Calls setup_install_boot_images because no different action required</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.config.grub2.BootLoaderConfigGrub2.setup_live_image_config">
+<code class="descname">setup_live_image_config</code><span class="sig-paren">(</span><em>mbrid</em>, <em>hypervisor='xen.gz'</em>, <em>kernel='linux'</em>, <em>initrd='initrd'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/grub2.html#BootLoaderConfigGrub2.setup_live_image_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.grub2.BootLoaderConfigGrub2.setup_live_image_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create grub config file to boot a live media ISO image</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>mbrid</strong> (<em>string</em>) &#8211; mbrid file name on boot device</li>
+<li><strong>hypervisor</strong> (<em>string</em>) &#8211; hypervisor name</li>
+<li><strong>kernel</strong> (<em>string</em>) &#8211; kernel name</li>
+<li><strong>initrd</strong> (<em>string</em>) &#8211; initrd name</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.config.grub2.BootLoaderConfigGrub2.write">
+<code class="descname">write</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/grub2.html#BootLoaderConfigGrub2.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.grub2.BootLoaderConfigGrub2.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write grub.cfg and etc/default/grub file</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.bootloader.config.isolinux">
+<span id="kiwi-bootloader-config-isolinux-module"></span><h2><a class="reference internal" href="#module-kiwi.bootloader.config.isolinux" title="kiwi.bootloader.config.isolinux"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.bootloader.config.isolinux</span></code></a> Module<a class="headerlink" href="#module-kiwi.bootloader.config.isolinux" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.bootloader.config.isolinux.BootLoaderConfigIsoLinux">
+<em class="property">class </em><code class="descclassname">kiwi.bootloader.config.isolinux.</code><code class="descname">BootLoaderConfigIsoLinux</code><span class="sig-paren">(</span><em>xml_state</em>, <em>root_dir</em>, <em>custom_args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/isolinux.html#BootLoaderConfigIsoLinux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.isolinux.BootLoaderConfigIsoLinux" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kiwi.bootloader.config.base.BootLoaderConfigBase" title="kiwi.bootloader.config.base.BootLoaderConfigBase"><code class="xref py py-class docutils literal"><span class="pre">kiwi.bootloader.config.base.BootLoaderConfigBase</span></code></a></p>
+<p>isolinux bootloader configuration.</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">terminal</span></code></dt>
+<dd><p class="first last">terminal mode set to graphics by default</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">gfxmode</span></code></dt>
+<dd><p class="first last">configured or default graphics mode</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">timeout</span></code></dt>
+<dd><p class="first last">configured or default boot timeout</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">cmdline</span></code></dt>
+<dd><p class="first last">kernel boot arguments</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">cmdline_failsafe</span></code></dt>
+<dd><p class="first last">kernel failsafe boot arguments</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">hypervisor_domain</span></code></dt>
+<dd><p class="first last">configured hypervisor domain name or none</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">multiboot</span></code></dt>
+<dd><p class="first last">multiboot requested true|false</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">isolinux</span></code></dt>
+<dd><p class="first last">Instance of config template: BootLoaderTemplateIsoLinux</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">config</span></code></dt>
+<dd><p class="first last">Configuration data from template substitution</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">config_message</span></code></dt>
+<dd><p class="first last">Configuration text message if graphics mode failed</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.bootloader.config.isolinux.BootLoaderConfigIsoLinux.post_init">
+<code class="descname">post_init</code><span class="sig-paren">(</span><em>custom_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/isolinux.html#BootLoaderConfigIsoLinux.post_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.isolinux.BootLoaderConfigIsoLinux.post_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>isolinux post initialization method</p>
+<p>Setup class attributes</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.config.isolinux.BootLoaderConfigIsoLinux.setup_install_boot_images">
+<code class="descname">setup_install_boot_images</code><span class="sig-paren">(</span><em>mbrid</em>, <em>lookup_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/isolinux.html#BootLoaderConfigIsoLinux.setup_install_boot_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.isolinux.BootLoaderConfigIsoLinux.setup_install_boot_images" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provide isolinux boot metadata</p>
+<p>The mbrid parameter is not used, because only isolinux
+loader binary and possible theming files are copied</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>mbrid</strong> (<em>string</em>) &#8211; unused</li>
+<li><strong>lookup_path</strong> (<em>string</em>) &#8211; custom module lookup path</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.config.isolinux.BootLoaderConfigIsoLinux.setup_install_image_config">
+<code class="descname">setup_install_image_config</code><span class="sig-paren">(</span><em>mbrid</em>, <em>hypervisor='xen.gz'</em>, <em>kernel='linux'</em>, <em>initrd='initrd'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/isolinux.html#BootLoaderConfigIsoLinux.setup_install_image_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.isolinux.BootLoaderConfigIsoLinux.setup_install_image_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create isolinux.cfg in memory from a template suitable to boot
+from an ISO image in BIOS boot mode</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>mbrid</strong> (<em>string</em>) &#8211; mbrid file name on boot device</li>
+<li><strong>hypervisor</strong> (<em>string</em>) &#8211; hypervisor name</li>
+<li><strong>kernel</strong> (<em>string</em>) &#8211; kernel name</li>
+<li><strong>initrd</strong> (<em>string</em>) &#8211; initrd name</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.config.isolinux.BootLoaderConfigIsoLinux.setup_live_boot_images">
+<code class="descname">setup_live_boot_images</code><span class="sig-paren">(</span><em>mbrid</em>, <em>lookup_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/isolinux.html#BootLoaderConfigIsoLinux.setup_live_boot_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.isolinux.BootLoaderConfigIsoLinux.setup_live_boot_images" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provide isolinux boot metadata</p>
+<p>Calls setup_install_boot_images because no different action required</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.config.isolinux.BootLoaderConfigIsoLinux.setup_live_image_config">
+<code class="descname">setup_live_image_config</code><span class="sig-paren">(</span><em>mbrid</em>, <em>hypervisor='xen.gz'</em>, <em>kernel='linux'</em>, <em>initrd='initrd'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/isolinux.html#BootLoaderConfigIsoLinux.setup_live_image_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.isolinux.BootLoaderConfigIsoLinux.setup_live_image_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create isolinux.cfg in memory from a template suitable to boot
+a live system from an ISO image in BIOS boot mode</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>mbrid</strong> (<em>string</em>) &#8211; mbrid file name on boot device</li>
+<li><strong>hypervisor</strong> (<em>string</em>) &#8211; hypervisor name</li>
+<li><strong>kernel</strong> (<em>string</em>) &#8211; kernel name</li>
+<li><strong>initrd</strong> (<em>string</em>) &#8211; initrd name</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.config.isolinux.BootLoaderConfigIsoLinux.write">
+<code class="descname">write</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/isolinux.html#BootLoaderConfigIsoLinux.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.isolinux.BootLoaderConfigIsoLinux.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write isolinux.cfg and isolinux.msg file</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.bootloader.config.zipl">
+<span id="kiwi-bootloader-config-zipl-module"></span><h2><a class="reference internal" href="#module-kiwi.bootloader.config.zipl" title="kiwi.bootloader.config.zipl"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.bootloader.config.zipl</span></code></a> Module<a class="headerlink" href="#module-kiwi.bootloader.config.zipl" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.bootloader.config.zipl.BootLoaderConfigZipl">
+<em class="property">class </em><code class="descclassname">kiwi.bootloader.config.zipl.</code><code class="descname">BootLoaderConfigZipl</code><span class="sig-paren">(</span><em>xml_state</em>, <em>root_dir</em>, <em>custom_args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/zipl.html#BootLoaderConfigZipl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.zipl.BootLoaderConfigZipl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kiwi.bootloader.config.base.BootLoaderConfigBase" title="kiwi.bootloader.config.base.BootLoaderConfigBase"><code class="xref py py-class docutils literal"><span class="pre">kiwi.bootloader.config.base.BootLoaderConfigBase</span></code></a></p>
+<p>zipl bootloader configuration.</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">arch</span></code></dt>
+<dd><p class="first last">platform.machine</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">timeout</span></code></dt>
+<dd><p class="first last">configured or default boot timeout</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">bootpath</span></code></dt>
+<dd><p class="first last">boot path set to: &#8216;.&#8217;</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">cmdline</span></code></dt>
+<dd><p class="first last">kernel boot arguments</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">cmdline_failsafe</span></code></dt>
+<dd><p class="first last">kernel failsafe boot arguments</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">target_blocksize</span></code></dt>
+<dd><p class="first last">configured or default target blocksize</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">target_type</span></code></dt>
+<dd><p class="first last">configured or default zipl target type</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">failsafe_boot</span></code></dt>
+<dd><p class="first last">failsafe mode requested true|false</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">target_device</span></code></dt>
+<dd><p class="first last">device node of target device</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">firmware</span></code></dt>
+<dd><p class="first last">Instance of FirmWare</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">target_table_type</span></code></dt>
+<dd><p class="first last">disk table type according to target device</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">zipl</span></code></dt>
+<dd><p class="first last">Instance of config template: BootLoaderTemplateZipl</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">config</span></code></dt>
+<dd><p class="first last">Configuration data from template substitution</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.bootloader.config.zipl.BootLoaderConfigZipl.post_init">
+<code class="descname">post_init</code><span class="sig-paren">(</span><em>custom_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/zipl.html#BootLoaderConfigZipl.post_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.zipl.BootLoaderConfigZipl.post_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>zipl post initialization method</p>
+<p>Setup class attributes</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.config.zipl.BootLoaderConfigZipl.setup_disk_boot_images">
+<code class="descname">setup_disk_boot_images</code><span class="sig-paren">(</span><em>boot_uuid</em>, <em>lookup_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/zipl.html#BootLoaderConfigZipl.setup_disk_boot_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.zipl.BootLoaderConfigZipl.setup_disk_boot_images" title="Permalink to this definition">¶</a></dt>
+<dd><p>On s390 no bootloader images needs to be created</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.config.zipl.BootLoaderConfigZipl.setup_disk_image_config">
+<code class="descname">setup_disk_image_config</code><span class="sig-paren">(</span><em>uuid=None</em>, <em>hypervisor=None</em>, <em>kernel='linux.vmx'</em>, <em>initrd='initrd.vmx'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/zipl.html#BootLoaderConfigZipl.setup_disk_image_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.zipl.BootLoaderConfigZipl.setup_disk_image_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the zipl config in memory from a template suitable to
+boot from a disk image.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>uuid</strong> (<em>string</em>) &#8211; unused</li>
+<li><strong>hypervisor</strong> (<em>string</em>) &#8211; unused</li>
+<li><strong>kernel</strong> (<em>string</em>) &#8211; kernel name</li>
+<li><strong>initrd</strong> (<em>string</em>) &#8211; initrd name</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.bootloader.config.zipl.BootLoaderConfigZipl.write">
+<code class="descname">write</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/bootloader/config/zipl.html#BootLoaderConfigZipl.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.zipl.BootLoaderConfigZipl.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write zipl config file</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.bootloader.config">
+<span id="module-contents"></span><h2>Module Contents<a class="headerlink" href="#module-kiwi.bootloader.config" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.bootloader.config.BootLoaderConfig">
+<em class="property">class </em><code class="descclassname">kiwi.bootloader.config.</code><code class="descname">BootLoaderConfig</code><a class="reference internal" href="../_modules/kiwi/bootloader/config.html#BootLoaderConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.bootloader.config.BootLoaderConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>BootLoaderConfig factory</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">name</span></code></dt>
+<dd><p class="first last">bootloader name</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">xml_state</span></code></dt>
+<dd><p class="first last">Instance of XMLState</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">root_dir</span></code></dt>
+<dd><p class="first last">root directory path name</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">custom_args</span></code></dt>
+<dd><p class="first last">list of custom bootloader arguments</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/kiwi-logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">kiwi.bootloader.config Package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-kiwi.bootloader.config.base"><code class="docutils literal"><span class="pre">kiwi.bootloader.config.base</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.bootloader.config.grub2"><code class="docutils literal"><span class="pre">kiwi.bootloader.config.grub2</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.bootloader.config.isolinux"><code class="docutils literal"><span class="pre">kiwi.bootloader.config.isolinux</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.bootloader.config.zipl"><code class="docutils literal"><span class="pre">kiwi.bootloader.config.zipl</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.bootloader.config">Module Contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="kiwi.html">API Documentation 8.25.5</a><ul>
+  <li><a href="kiwi.bootloader.html">kiwi.bootloader Package</a><ul>
+      <li>Previous: <a href="kiwi.bootloader.html" title="previous chapter">kiwi.bootloader Package</a></li>
+      <li>Next: <a href="kiwi.bootloader.install.html" title="next chapter">kiwi.bootloader.install Package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<h1 class="logo"><a href="../index.html">kiwi</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=SUSE&repo=kiwi&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/SUSE/kiwi">
+    <img
+        alt="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+        src="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Marcus Schäfer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/api/kiwi.bootloader.config.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/SUSE/kiwi" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

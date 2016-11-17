@@ -1,0 +1,315 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kiwi.xml_description &#8212; kiwi 8.25.5 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '8.25.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="top" title="kiwi 8.25.5 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for kiwi.xml_description</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2015 SUSE Linux GmbH.  All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This file is part of kiwi.</span>
+<span class="c1">#</span>
+<span class="c1"># kiwi is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1"># (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># kiwi is distributed in the hope that it will be useful,</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1"># GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with kiwi.  If not, see &lt;http://www.gnu.org/licenses/&gt;</span>
+<span class="c1">#</span>
+<span class="kn">from</span> <span class="nn">lxml</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">etree</span><span class="p">,</span>
+    <span class="n">isoschematron</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">tempfile</span> <span class="k">import</span> <span class="n">NamedTemporaryFile</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">six</span> <span class="k">import</span> <span class="n">BytesIO</span>
+
+<span class="c1"># In python2 bytes is string which is different from</span>
+<span class="c1"># the bytes type in python3. The bytes type from the</span>
+<span class="c1"># builtins generalizes this type to be bytes always</span>
+<span class="kn">from</span> <span class="nn">builtins</span> <span class="k">import</span> <span class="nb">bytes</span>
+
+<span class="c1"># project</span>
+<span class="kn">from</span> <span class="nn">.defaults</span> <span class="k">import</span> <span class="n">Defaults</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">xml_parse</span>
+<span class="kn">from</span> <span class="nn">.command</span> <span class="k">import</span> <span class="n">Command</span>
+<span class="kn">from</span> <span class="nn">.logger</span> <span class="k">import</span> <span class="n">log</span>
+
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">KiwiSchemaImportError</span><span class="p">,</span>
+    <span class="n">KiwiValidationError</span><span class="p">,</span>
+    <span class="n">KiwiDescriptionInvalid</span><span class="p">,</span>
+    <span class="n">KiwiDataStructureError</span><span class="p">,</span>
+    <span class="n">KiwiDescriptionConflict</span><span class="p">,</span>
+    <span class="n">KiwiCommandNotFound</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="XMLDescription"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_description.XMLDescription">[docs]</a><span class="k">class</span> <span class="nc">XMLDescription</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implements data management for the XML description</span>
+
+<span class="sd">    * XSLT Style Sheet processing to apply on this version of kiwi</span>
+<span class="sd">    * Schema Validation based on RelaxNG schema</span>
+<span class="sd">    * Loading XML data into internal data structures</span>
+
+<span class="sd">    Attributes</span>
+
+<span class="sd">    * :attr:`description_xslt_processed`</span>
+<span class="sd">        XML data after xsltproc processing</span>
+
+<span class="sd">    * :attr:`description`</span>
+<span class="sd">        path to XML description file</span>
+
+<span class="sd">    * :attr:`derived_from`</span>
+<span class="sd">        path to base XML description file</span>
+
+<span class="sd">    * :attr:`xml_content`</span>
+<span class="sd">        XML description data as content string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">derived_from</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xml_content</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">description</span> <span class="ow">and</span> <span class="n">xml_content</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">KiwiDescriptionConflict</span><span class="p">(</span>
+                <span class="s1">&#39;description and xml_content are mutually exclusive&#39;</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description_xslt_processed</span> <span class="o">=</span> <span class="n">NamedTemporaryFile</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">derived_from</span> <span class="o">=</span> <span class="n">derived_from</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xml_content</span> <span class="o">=</span> <span class="n">xml_content</span>
+
+<div class="viewcode-block" id="XMLDescription.load"><a class="viewcode-back" href="../../api/kiwi.html#kiwi.xml_description.XMLDescription.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read XML description, pass it along to the XSLT processor,</span>
+<span class="sd">        validate it against the schema and finally pass it to the</span>
+<span class="sd">        autogenerated(generateDS) parser.</span>
+
+<span class="sd">        :return: instance of XML toplevel domain (image)</span>
+<span class="sd">        :rtype: object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_xsltproc</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">schema_doc</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">Defaults</span><span class="o">.</span><span class="n">get_schema_file</span><span class="p">())</span>
+            <span class="n">relaxng</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">RelaxNG</span><span class="p">(</span><span class="n">schema_doc</span><span class="p">)</span>
+            <span class="n">schematron</span> <span class="o">=</span> <span class="n">isoschematron</span><span class="o">.</span><span class="n">Schematron</span><span class="p">(</span>
+                <span class="n">schema_doc</span><span class="p">,</span> <span class="n">store_report</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">KiwiSchemaImportError</span><span class="p">(</span>
+                <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="nb">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">description</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">description_xslt_processed</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">validation_rng</span> <span class="o">=</span> <span class="n">relaxng</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">description</span><span class="p">)</span>
+            <span class="n">validation_sch</span> <span class="o">=</span> <span class="n">schematron</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">description</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">KiwiValidationError</span><span class="p">(</span>
+                <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="nb">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">validation_rng</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_get_relaxng_validation_details</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">validation_sch</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_get_schematron_validation_details</span><span class="p">(</span>
+                <span class="n">schematron</span><span class="o">.</span><span class="n">validation_report</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">validation_rng</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">validation_sch</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="p">:</span>
+                <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;Schema validation for </span><span class="si">{description}</span><span class="s1"> failed&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">description</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">description</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;Schema validation for XML content failed&#39;</span>
+            <span class="k">raise</span> <span class="n">KiwiDescriptionInvalid</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_relaxng_validation_details</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run jing process to validate description against the schema</span>
+
+<span class="sd">        Jing command provides detailed feedback in case of schema</span>
+<span class="sd">        validation failure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cmd</span> <span class="o">=</span> <span class="n">Command</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+                <span class="p">[</span><span class="s1">&#39;jing&#39;</span><span class="p">,</span> <span class="n">Defaults</span><span class="o">.</span><span class="n">get_schema_file</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">description_xslt_processed</span><span class="o">.</span><span class="n">name</span><span class="p">],</span>
+                <span class="n">raise_on_error</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="n">KiwiCommandNotFound</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;A detailed schema validation failure report requires jing to be installed&#39;</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;jing&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="nb">format</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">return</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;RelaxNG validation failed. See jing report:&#39;</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--&gt; </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">cmd</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_schematron_validation_details</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">validation_report</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract error message form the schematron validation report</span>
+
+<span class="sd">        :param etree validation_report: the schematron validation report</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">nspaces</span> <span class="o">=</span> <span class="n">validation_report</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span><span class="o">.</span><span class="n">nsmap</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Schematron validation failed:&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">validation_report</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span>
+            <span class="s1">&#39;//svrl:failed-assert/svrl:text&#39;</span><span class="p">,</span> <span class="n">namespaces</span><span class="o">=</span><span class="n">nspaces</span>
+        <span class="p">):</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--&gt; </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">msg</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_parse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">parse</span> <span class="o">=</span> <span class="n">xml_parse</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">description_xslt_processed</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="kc">True</span>
+            <span class="p">)</span>
+            <span class="n">parse</span><span class="o">.</span><span class="n">description_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">description</span>
+            <span class="p">)</span>
+            <span class="n">parse</span><span class="o">.</span><span class="n">derived_description_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">derived_from</span>
+            <span class="k">return</span> <span class="n">parse</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">KiwiDataStructureError</span><span class="p">(</span>
+                <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="nb">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_xsltproc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply XSLT style sheet rules to the XML data</span>
+
+<span class="sd">        The result of the XSLT processing is stored in a named</span>
+<span class="sd">        temporary file and used for further schema validation</span>
+<span class="sd">        and parsing into the data structure classes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">xslt_transform</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">XSLT</span><span class="p">(</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">Defaults</span><span class="o">.</span><span class="n">get_xsl_stylesheet_file</span><span class="p">())</span>
+        <span class="p">)</span>
+
+        <span class="n">xml_source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="k">else</span> \
+            <span class="n">BytesIO</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xml_content</span><span class="p">))</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">description_xslt_processed</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">xsltout</span><span class="p">:</span>
+            <span class="n">xsltout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="n">etree</span><span class="o">.</span><span class="n">tostring</span><span class="p">(</span><span class="n">xslt_transform</span><span class="p">(</span><span class="n">etree</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">xml_source</span><span class="p">)))</span>
+            <span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/kiwi-logo.png" alt="Logo"/>
+            </a></p><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<h1 class="logo"><a href="../../index.html">kiwi</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=SUSE&repo=kiwi&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/SUSE/kiwi">
+    <img
+        alt="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+        src="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Marcus Schäfer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/SUSE/kiwi" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

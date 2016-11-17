@@ -1,0 +1,1476 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kiwi.system Package &#8212; kiwi 8.25.5 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '8.25.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="kiwi 8.25.5 documentation" href="../index.html" />
+    <link rel="up" title="API Documentation 8.25.5" href="kiwi.html" />
+    <link rel="next" title="kiwi.solver Package" href="kiwi.solver.html" />
+    <link rel="prev" title="kiwi.storage.subformat.template Package" href="kiwi.storage.subformat.template.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="kiwi-system-package">
+<h1>kiwi.system Package<a class="headerlink" href="#kiwi-system-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-kiwi.system.identifier">
+<span id="kiwi-system-identifier-module"></span><h2><a class="reference internal" href="#module-kiwi.system.identifier" title="kiwi.system.identifier"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.system.identifier</span></code></a> Module<a class="headerlink" href="#module-kiwi.system.identifier" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.system.identifier.SystemIdentifier">
+<em class="property">class </em><code class="descclassname">kiwi.system.identifier.</code><code class="descname">SystemIdentifier</code><a class="reference internal" href="../_modules/kiwi/system/identifier.html#SystemIdentifier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.identifier.SystemIdentifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Create a random ID to identify the system. The information
+is used to create the mbrid file as an example</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">image_id</span></code></dt>
+<dd><p class="first last">Hex identifier string</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.system.identifier.SystemIdentifier.calculate_id">
+<code class="descname">calculate_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/identifier.html#SystemIdentifier.calculate_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.identifier.SystemIdentifier.calculate_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate random hex id</p>
+<p>Using 4 tuples of rand in range from 1..0xfe</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.identifier.SystemIdentifier.get_id">
+<code class="descname">get_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/identifier.html#SystemIdentifier.get_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.identifier.SystemIdentifier.get_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Current hex identifier</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">hex id</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.identifier.SystemIdentifier.write">
+<code class="descname">write</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/identifier.html#SystemIdentifier.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.identifier.SystemIdentifier.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write current hex identifier to file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>string</em>) &#8211; file path name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.identifier.SystemIdentifier.write_to_disk">
+<code class="descname">write_to_disk</code><span class="sig-paren">(</span><em>device_provider</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/identifier.html#SystemIdentifier.write_to_disk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.identifier.SystemIdentifier.write_to_disk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write current hex identifier to MBR at offset 0x1b8 on disk</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>device_provider</strong> (<em>object</em>) &#8211; Instance based on DeviceProvider</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.system.kernel">
+<span id="kiwi-system-kernel-module"></span><h2><a class="reference internal" href="#module-kiwi.system.kernel" title="kiwi.system.kernel"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.system.kernel</span></code></a> Module<a class="headerlink" href="#module-kiwi.system.kernel" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.system.kernel.Kernel">
+<em class="property">class </em><code class="descclassname">kiwi.system.kernel.</code><code class="descname">Kernel</code><span class="sig-paren">(</span><em>root_dir</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/kernel.html#Kernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.kernel.Kernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Implementes kernel lookup and extraction from given root tree</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">root_dir</span></code></dt>
+<dd><p class="first last">root directory path name</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">kernel_names</span></code></dt>
+<dd><p class="first last">list of kernel names to search for
+functions.sh::suseStripKernel() provides a normalized
+file so that we do not have to search for many different
+names in this code</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.system.kernel.Kernel.copy_kernel">
+<code class="descname">copy_kernel</code><span class="sig-paren">(</span><em>target_dir</em>, <em>file_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/kernel.html#Kernel.copy_kernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.kernel.Kernel.copy_kernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy kernel to specified target</p>
+<p>If no file_name is given the target filename is set
+as kernel-&lt;kernel.version&gt;.kernel</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>target_dir</strong> (<em>string</em>) &#8211; target path name</li>
+<li><strong>filename</strong> (<em>string</em>) &#8211; base filename in target</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.kernel.Kernel.copy_xen_hypervisor">
+<code class="descname">copy_xen_hypervisor</code><span class="sig-paren">(</span><em>target_dir</em>, <em>file_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/kernel.html#Kernel.copy_xen_hypervisor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.kernel.Kernel.copy_xen_hypervisor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy xen hypervisor to specified target</p>
+<p>If no file_name is given the target filename is set
+as hypervisor-&lt;xen.name&gt;</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>target_dir</strong> (<em>string</em>) &#8211; target path name</li>
+<li><strong>filename</strong> (<em>string</em>) &#8211; base filename in target</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.kernel.Kernel.get_kernel">
+<code class="descname">get_kernel</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/kernel.html#Kernel.get_kernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.kernel.Kernel.get_kernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lookup kernel files and provide filename and version</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">tuple with filename and version</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">namedtuple</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.kernel.Kernel.get_xen_hypervisor">
+<code class="descname">get_xen_hypervisor</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/kernel.html#Kernel.get_xen_hypervisor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.kernel.Kernel.get_xen_hypervisor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lookup xen hypervisor and provide filename and hypervisor name</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">tuple with filename and hypervisor name</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">namedtuple</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.system.prepare">
+<span id="kiwi-system-prepare-module"></span><h2><a class="reference internal" href="#module-kiwi.system.prepare" title="kiwi.system.prepare"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.system.prepare</span></code></a> Module<a class="headerlink" href="#module-kiwi.system.prepare" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.system.prepare.SystemPrepare">
+<em class="property">class </em><code class="descclassname">kiwi.system.prepare.</code><code class="descname">SystemPrepare</code><span class="sig-paren">(</span><em>xml_state</em>, <em>root_dir</em>, <em>allow_existing=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/prepare.html#SystemPrepare"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.prepare.SystemPrepare" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Implements preparation and installation of a new root system</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">xml_state</span></code></dt>
+<dd><p class="first last">Instance of XMLState</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">profiles</span></code></dt>
+<dd><p class="first last">list of configured profiles</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">root_bind</span></code></dt>
+<dd><p class="first last">Instance of RootBind</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">uri_list</span></code></dt>
+<dd><p class="first last">A list of Uri references</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.system.prepare.SystemPrepare.delete_packages">
+<code class="descname">delete_packages</code><span class="sig-paren">(</span><em>manager</em>, <em>packages</em>, <em>force=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/prepare.html#SystemPrepare.delete_packages"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.prepare.SystemPrepare.delete_packages" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete one or more packages using the package manager inside
+of the new root directory</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>manager</strong> (<em>object</em>) &#8211; PackageManager</li>
+<li><strong>packages</strong> (<em>list</em>) &#8211; package list</li>
+<li><strong>force</strong> (<em>bool</em>) &#8211; force deletion true|false</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.prepare.SystemPrepare.install_bootstrap">
+<code class="descname">install_bootstrap</code><span class="sig-paren">(</span><em>manager</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/prepare.html#SystemPrepare.install_bootstrap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.prepare.SystemPrepare.install_bootstrap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Install system software using the package manager
+from the host, also known as bootstrapping</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.prepare.SystemPrepare.install_packages">
+<code class="descname">install_packages</code><span class="sig-paren">(</span><em>manager</em>, <em>packages</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/prepare.html#SystemPrepare.install_packages"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.prepare.SystemPrepare.install_packages" title="Permalink to this definition">¶</a></dt>
+<dd><p>Install one or more packages using the package manager inside
+of the new root directory</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>manager</strong> (<em>object</em>) &#8211; PackageManager</li>
+<li><strong>packages</strong> (<em>list</em>) &#8211; package list</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.prepare.SystemPrepare.install_system">
+<code class="descname">install_system</code><span class="sig-paren">(</span><em>manager</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/prepare.html#SystemPrepare.install_system"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.prepare.SystemPrepare.install_system" title="Permalink to this definition">¶</a></dt>
+<dd><p>Install system software using the package manager inside
+of the new root directory. This is done via a chroot operation
+and requires the desired package manager to became installed
+via the bootstrap phase</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>manager</strong> (<em>object</em>) &#8211; PackageManager</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.prepare.SystemPrepare.pinch_system">
+<code class="descname">pinch_system</code><span class="sig-paren">(</span><em>manager</em>, <em>force=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/prepare.html#SystemPrepare.pinch_system"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.prepare.SystemPrepare.pinch_system" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete packages marked for deletion in the XML description</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>manager</strong> (<em>object</em>) &#8211; PackageManager</li>
+<li><strong>force</strong> (<em>bool</em>) &#8211; force deletion true|false</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.prepare.SystemPrepare.setup_repositories">
+<code class="descname">setup_repositories</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/prepare.html#SystemPrepare.setup_repositories"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.prepare.SystemPrepare.setup_repositories" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set up repositories for software installation and return a
+package manager for performing software installation tasks</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Instance of PackageManager</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="kiwi.package_manager.html#kiwi.package_manager.PackageManager" title="kiwi.package_manager.PackageManager">PackageManager</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.prepare.SystemPrepare.update_system">
+<code class="descname">update_system</code><span class="sig-paren">(</span><em>manager</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/prepare.html#SystemPrepare.update_system"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.prepare.SystemPrepare.update_system" title="Permalink to this definition">¶</a></dt>
+<dd><p>Install package updates from the used repositories.
+the process uses the package manager from inside of the
+new root directory</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>manager</strong> (<em>object</em>) &#8211; PackageManager</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.system.profile">
+<span id="kiwi-system-profile-module"></span><h2><a class="reference internal" href="#module-kiwi.system.profile" title="kiwi.system.profile"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.system.profile</span></code></a> Module<a class="headerlink" href="#module-kiwi.system.profile" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.system.profile.Profile">
+<em class="property">class </em><code class="descclassname">kiwi.system.profile.</code><code class="descname">Profile</code><span class="sig-paren">(</span><em>xml_state</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/profile.html#Profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.profile.Profile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Create bash readable .profile environment from the XML
+description. The information is used by the kiwi first
+boot code.</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">xml_state</span></code></dt>
+<dd><p class="first last">Instance of XMLState</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">dot_profile</span></code></dt>
+<dd><p class="first last">profile dictionary</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.system.profile.Profile.add">
+<code class="descname">add</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/profile.html#Profile.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.profile.Profile.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add key/value pair to profile dictionary</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>key</strong> (<em>string</em>) &#8211; profile key</li>
+<li><strong>value</strong> (<em>string</em>) &#8211; profile value</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.profile.Profile.create">
+<code class="descname">create</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/profile.html#Profile.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.profile.Profile.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create bash quoted profile</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">profile dump for bash</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.profile.Profile.delete">
+<code class="descname">delete</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/profile.html#Profile.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.profile.Profile.delete" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.system.result">
+<span id="kiwi-system-result-module"></span><h2><a class="reference internal" href="#module-kiwi.system.result" title="kiwi.system.result"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.system.result</span></code></a> Module<a class="headerlink" href="#module-kiwi.system.result" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.system.result.Result">
+<em class="property">class </em><code class="descclassname">kiwi.system.result.</code><code class="descname">Result</code><span class="sig-paren">(</span><em>xml_state</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/result.html#Result"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.result.Result" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Collect image building results</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">result_files</span></code></dt>
+<dd><p class="first last">List of result files</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">class_version</span></code></dt>
+<dd><p class="first last">Result class version</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">xml_state</span></code></dt>
+<dd><p class="first last">Instance of XMLState</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.system.result.Result.add">
+<code class="descname">add</code><span class="sig-paren">(</span><em>key</em>, <em>filename</em>, <em>use_for_bundle=True</em>, <em>compress=False</em>, <em>shasum=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/result.html#Result.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.result.Result.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add result tuple to result_files list</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>key</strong> (<em>string</em>) &#8211; name</li>
+<li><strong>filename</strong> (<em>string</em>) &#8211; file path name</li>
+<li><strong>use_for_bundle</strong> (<a class="reference internal" href="kiwi.boot.html#module-kiwi.boot" title="kiwi.boot"><em>boot</em></a>) &#8211; use when bundling results true|false</li>
+<li><strong>compress</strong> (<em>bool</em>) &#8211; compress when bundling true|false</li>
+<li><strong>shasum</strong> (<em>bool</em>) &#8211; create shasum when bundling true|false</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.result.Result.dump">
+<code class="descname">dump</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/result.html#Result.dump"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.result.Result.dump" title="Permalink to this definition">¶</a></dt>
+<dd><p>Picke dump this instance to a file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>string</em>) &#8211; file path name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.result.Result.get_results">
+<code class="descname">get_results</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/result.html#Result.get_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.result.Result.get_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Current list of result tuples</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="kiwi.system.result.Result.load">
+<em class="property">classmethod </em><code class="descname">load</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/result.html#Result.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.result.Result.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load pickle dumped filename into a Result instance</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>string</em>) &#8211; file path name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.result.Result.print_results">
+<code class="descname">print_results</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/result.html#Result.print_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.result.Result.print_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print results human readable</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="kiwi.system.result.result_file_type">
+<em class="property">class </em><code class="descclassname">kiwi.system.result.</code><code class="descname">result_file_type</code><span class="sig-paren">(</span><em>filename</em>, <em>use_for_bundle</em>, <em>compress</em>, <em>shasum</em><span class="sig-paren">)</span><a class="headerlink" href="#kiwi.system.result.result_file_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">tuple</span></code></p>
+<dl class="attribute">
+<dt id="kiwi.system.result.result_file_type.compress">
+<code class="descname">compress</code><a class="headerlink" href="#kiwi.system.result.result_file_type.compress" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="kiwi.system.result.result_file_type.filename">
+<code class="descname">filename</code><a class="headerlink" href="#kiwi.system.result.result_file_type.filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="kiwi.system.result.result_file_type.shasum">
+<code class="descname">shasum</code><a class="headerlink" href="#kiwi.system.result.result_file_type.shasum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="kiwi.system.result.result_file_type.use_for_bundle">
+<code class="descname">use_for_bundle</code><a class="headerlink" href="#kiwi.system.result.result_file_type.use_for_bundle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.system.root_bind">
+<span id="kiwi-system-root-bind-module"></span><h2><a class="reference internal" href="#module-kiwi.system.root_bind" title="kiwi.system.root_bind"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.system.root_bind</span></code></a> Module<a class="headerlink" href="#module-kiwi.system.root_bind" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.system.root_bind.RootBind">
+<em class="property">class </em><code class="descclassname">kiwi.system.root_bind.</code><code class="descname">RootBind</code><span class="sig-paren">(</span><em>root_init</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/root_bind.html#RootBind"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.root_bind.RootBind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Implements binding/copying of host system paths
+into the new root directory</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">root_dir</span></code></dt>
+<dd><p class="first last">root directory path name</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">cleanup_files</span></code></dt>
+<dd><p class="first last">list of files to cleanup, delete</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">mount_stack</span></code></dt>
+<dd><p class="first last">list of mounted directories for cleanup</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">dir_stack</span></code></dt>
+<dd><p class="first last">list of directories for cleanup</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">config_files</span></code></dt>
+<dd><p class="first last">list of initial config files</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">bind_locations</span></code></dt>
+<dd><p class="first last">list of kernel filesystems to bind mount</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">shared_location</span></code></dt>
+<dd><p class="first last">shared directory between image root and build system root</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.system.root_bind.RootBind.cleanup">
+<code class="descname">cleanup</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/root_bind.html#RootBind.cleanup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.root_bind.RootBind.cleanup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cleanup mounted locations, directories and intermediate config files</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.root_bind.RootBind.mount_kernel_file_systems">
+<code class="descname">mount_kernel_file_systems</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/root_bind.html#RootBind.mount_kernel_file_systems"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.root_bind.RootBind.mount_kernel_file_systems" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bind mount kernel filesystems</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.root_bind.RootBind.mount_shared_directory">
+<code class="descname">mount_shared_directory</code><span class="sig-paren">(</span><em>host_dir=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/root_bind.html#RootBind.mount_shared_directory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.root_bind.RootBind.mount_shared_directory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bind mount shared location</p>
+<p>The shared location is a directory which shares data from
+the image buildsystem host with the image root system. It
+is used for the repository setup and the package manager
+cache to allow chroot operations without being forced to
+duplicate this data</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.root_bind.RootBind.move_to_root">
+<code class="descname">move_to_root</code><span class="sig-paren">(</span><em>elements</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/root_bind.html#RootBind.move_to_root"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.root_bind.RootBind.move_to_root" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the given path elements to a new root directory</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>elements</strong> (<em>list</em>) &#8211; list of path names</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">changed elements</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.root_bind.RootBind.setup_intermediate_config">
+<code class="descname">setup_intermediate_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/root_bind.html#RootBind.setup_intermediate_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.root_bind.RootBind.setup_intermediate_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create intermediate config files</p>
+<p>Some config files e.g etc/hosts needs to be temporarly copied
+from the buildsystem host to the image root system in order to
+allow e.g DNS resolution in the way as it is configured on the
+buildsystem host. These config files only exists during the image
+build process and are not part of the final image</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.system.root_init">
+<span id="kiwi-system-root-init-module"></span><h2><a class="reference internal" href="#module-kiwi.system.root_init" title="kiwi.system.root_init"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.system.root_init</span></code></a> Module<a class="headerlink" href="#module-kiwi.system.root_init" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.system.root_init.RootInit">
+<em class="property">class </em><code class="descclassname">kiwi.system.root_init.</code><code class="descname">RootInit</code><span class="sig-paren">(</span><em>root_dir</em>, <em>allow_existing=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/root_init.html#RootInit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.root_init.RootInit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Implements creation of new root directory for a linux system.
+Host system independent static default files and device nodes
+are created to initialize a new base system</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">root_dir</span></code></dt>
+<dd><p class="first last">root directory path name</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.system.root_init.RootInit.create">
+<code class="descname">create</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/root_init.html#RootInit.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.root_init.RootInit.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create new system root directory</p>
+<p>The method creates a temporary directory and initializes it
+for the purpose of building a system image from it. This
+includes the following setup:</p>
+<ul class="simple">
+<li>create static core device nodes</li>
+<li>create core system paths</li>
+</ul>
+<p>On success the contents of the temporary location are
+synced to the specified root_dir and the temporary location
+will be deleted. That way we never work on an incomplete
+initial setup</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.root_init.RootInit.delete">
+<code class="descname">delete</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/root_init.html#RootInit.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.root_init.RootInit.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Force delete root directory and its contents</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.system.setup">
+<span id="kiwi-system-setup-module"></span><h2><a class="reference internal" href="#module-kiwi.system.setup" title="kiwi.system.setup"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.system.setup</span></code></a> Module<a class="headerlink" href="#module-kiwi.system.setup" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.system.setup.SystemSetup">
+<em class="property">class </em><code class="descclassname">kiwi.system.setup.</code><code class="descname">SystemSetup</code><span class="sig-paren">(</span><em>xml_state</em>, <em>root_dir</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/setup.html#SystemSetup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.setup.SystemSetup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Implementation of system setup steps supported by kiwi.
+kiwi is not responsible for the system configuration, however
+some setup steps needs to be performed in order to provide
+a minimal work environment inside of the image according to
+the desired image type.</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">arch</span></code></dt>
+<dd><p class="first last">platform.machine
+The 32bit x86 platform is handled as &#8216;ix86&#8217;</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">xml_state</span></code></dt>
+<dd><p class="first last">Instance of XMLState</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">description_dir</span></code></dt>
+<dd><p class="first last">path to image description directory</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">derived_description_dir</span></code></dt>
+<dd><p class="first last">path to derived_description_dir
+boot image descriptions inherits data from the system image
+description, thus they are derived from another image
+description directory which is needed to e.g find system
+image archives, overlay files</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">root_dir</span></code></dt>
+<dd><p class="first last">root directory path name</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.system.setup.SystemSetup.call_config_script">
+<code class="descname">call_config_script</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/setup.html#SystemSetup.call_config_script"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.setup.SystemSetup.call_config_script" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call config.sh script chrooted</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.setup.SystemSetup.call_edit_boot_config_script">
+<code class="descname">call_edit_boot_config_script</code><span class="sig-paren">(</span><em>filesystem</em>, <em>boot_part_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/setup.html#SystemSetup.call_edit_boot_config_script"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.setup.SystemSetup.call_edit_boot_config_script" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call configured editbootconfig script _NON_ chrooted</p>
+<p>Pass the boot filesystem name and the partition number of
+the boot partition as parameters to the call</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filesystem</strong> (<em>string</em>) &#8211; boot filesystem name</li>
+<li><strong>boot_part_id</strong> (<em>int</em>) &#8211; boot partition number</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.setup.SystemSetup.call_edit_boot_install_script">
+<code class="descname">call_edit_boot_install_script</code><span class="sig-paren">(</span><em>diskname</em>, <em>boot_device_node</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/setup.html#SystemSetup.call_edit_boot_install_script"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.setup.SystemSetup.call_edit_boot_install_script" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call configured editbootinstall script _NON_ chrooted</p>
+<p>Pass the disk file name and the device node of the boot partition
+as parameters to the call</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>diskname</strong> (<em>string</em>) &#8211; file path name</li>
+<li><strong>boot_device_node</strong> (<em>string</em>) &#8211; boot device node name</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.setup.SystemSetup.call_image_script">
+<code class="descname">call_image_script</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/setup.html#SystemSetup.call_image_script"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.setup.SystemSetup.call_image_script" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call images.sh script chrooted</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.setup.SystemSetup.cleanup">
+<code class="descname">cleanup</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/setup.html#SystemSetup.cleanup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.setup.SystemSetup.cleanup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete all traces of a kiwi description which are not
+required in the later image</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.setup.SystemSetup.create_fstab">
+<code class="descname">create_fstab</code><span class="sig-paren">(</span><em>entries</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/setup.html#SystemSetup.create_fstab"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.setup.SystemSetup.create_fstab" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create etc/fstab from given list of entries</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.setup.SystemSetup.create_init_link_from_linuxrc">
+<code class="descname">create_init_link_from_linuxrc</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/setup.html#SystemSetup.create_init_link_from_linuxrc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.setup.SystemSetup.create_init_link_from_linuxrc" title="Permalink to this definition">¶</a></dt>
+<dd><p>kiwi boot images provides the linuxrc script, however the kernel
+also expects an init executable to be present. This method creates
+a hard link to the linuxrc file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.setup.SystemSetup.create_recovery_archive">
+<code class="descname">create_recovery_archive</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/setup.html#SystemSetup.create_recovery_archive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.setup.SystemSetup.create_recovery_archive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a compressed recovery archive from the root tree
+for use with kiwi&#8217;s recvoery system. The method creates
+additional data into the image root filesystem which is
+deleted prior to the creation of a new recovery data set</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.setup.SystemSetup.export_modprobe_setup">
+<code class="descname">export_modprobe_setup</code><span class="sig-paren">(</span><em>target_root_dir</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/setup.html#SystemSetup.export_modprobe_setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.setup.SystemSetup.export_modprobe_setup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export etc/modprobe.d to given root_dir</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>target_root_dir</strong> (<em>string</em>) &#8211; path name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.setup.SystemSetup.export_rpm_package_list">
+<code class="descname">export_rpm_package_list</code><span class="sig-paren">(</span><em>target_dir</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/setup.html#SystemSetup.export_rpm_package_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.setup.SystemSetup.export_rpm_package_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export image rpm package list as metadata reference
+used by the open buildservice</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>target_dir</strong> (<em>string</em>) &#8211; path name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.setup.SystemSetup.export_rpm_package_verification">
+<code class="descname">export_rpm_package_verification</code><span class="sig-paren">(</span><em>target_dir</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/setup.html#SystemSetup.export_rpm_package_verification"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.setup.SystemSetup.export_rpm_package_verification" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export rpm package verification result as metadata reference
+used by the open buildservice</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>target_dir</strong> (<em>string</em>) &#8211; path name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.setup.SystemSetup.import_description">
+<code class="descname">import_description</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/setup.html#SystemSetup.import_description"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.setup.SystemSetup.import_description" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import XML descriptions, custom scripts, archives and
+script helper methods</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.setup.SystemSetup.import_image_identifier">
+<code class="descname">import_image_identifier</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/setup.html#SystemSetup.import_image_identifier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.setup.SystemSetup.import_image_identifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create etc/ImageID identifier file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.setup.SystemSetup.import_overlay_files">
+<code class="descname">import_overlay_files</code><span class="sig-paren">(</span><em>follow_links=False</em>, <em>preserve_owner_group=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/setup.html#SystemSetup.import_overlay_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.setup.SystemSetup.import_overlay_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy overlay files from the image description to
+the image root tree. Supported are a root/ directory
+or a root.tar.gz tarball. The root/ directory takes
+precedence over the tarball</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>follow_links</strong> (<em>bool</em>) &#8211; follow symlinks true|false</li>
+<li><strong>preserve_owner_group</strong> (<em>bool</em>) &#8211; preserve permissions true|false</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.setup.SystemSetup.import_repositories_marked_as_imageinclude">
+<code class="descname">import_repositories_marked_as_imageinclude</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/setup.html#SystemSetup.import_repositories_marked_as_imageinclude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.setup.SystemSetup.import_repositories_marked_as_imageinclude" title="Permalink to this definition">¶</a></dt>
+<dd><p>Those &lt;repository&gt; sections which are marked with the
+imageinclude attribute should be permanently added to
+the image repository configuration</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.setup.SystemSetup.import_shell_environment">
+<code class="descname">import_shell_environment</code><span class="sig-paren">(</span><em>profile</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/setup.html#SystemSetup.import_shell_environment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.setup.SystemSetup.import_shell_environment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create profile environment to let scripts consume
+information from the XML description.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>profile</strong> (<em>object</em>) &#8211; Instance of Profile</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.setup.SystemSetup.set_selinux_file_contexts">
+<code class="descname">set_selinux_file_contexts</code><span class="sig-paren">(</span><em>security_context_file</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/setup.html#SystemSetup.set_selinux_file_contexts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.setup.SystemSetup.set_selinux_file_contexts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the security context fields (extended attributes)
+on the files matching the security_context_file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>security_context_file</strong> (<em>string</em>) &#8211; path file name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.setup.SystemSetup.setup_groups">
+<code class="descname">setup_groups</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/setup.html#SystemSetup.setup_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.setup.SystemSetup.setup_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add groups for configured users</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.setup.SystemSetup.setup_hardware_clock">
+<code class="descname">setup_hardware_clock</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/setup.html#SystemSetup.setup_hardware_clock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.setup.SystemSetup.setup_hardware_clock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup etc/adjtime by running hwclock</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.setup.SystemSetup.setup_keyboard_map">
+<code class="descname">setup_keyboard_map</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/setup.html#SystemSetup.setup_keyboard_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.setup.SystemSetup.setup_keyboard_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup etc/sysconfig/keyboard console keyboard</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.setup.SystemSetup.setup_locale">
+<code class="descname">setup_locale</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/setup.html#SystemSetup.setup_locale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.setup.SystemSetup.setup_locale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup etc/sysconfig/language UTF8 locale</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.setup.SystemSetup.setup_timezone">
+<code class="descname">setup_timezone</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/setup.html#SystemSetup.setup_timezone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.setup.SystemSetup.setup_timezone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup timezone symlink</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.setup.SystemSetup.setup_users">
+<code class="descname">setup_users</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/setup.html#SystemSetup.setup_users"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.setup.SystemSetup.setup_users" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add/Modify configured users</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.system.shell">
+<span id="kiwi-system-shell-module"></span><h2><a class="reference internal" href="#module-kiwi.system.shell" title="kiwi.system.shell"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.system.shell</span></code></a> Module<a class="headerlink" href="#module-kiwi.system.shell" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.system.shell.Shell">
+<em class="property">class </em><code class="descclassname">kiwi.system.shell.</code><code class="descname">Shell</code><a class="reference internal" href="../_modules/kiwi/system/shell.html#Shell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.shell.Shell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Special character handling for shell evaluated code</p>
+<dl class="classmethod">
+<dt id="kiwi.system.shell.Shell.quote">
+<em class="property">classmethod </em><code class="descname">quote</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/shell.html#Shell.quote"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.shell.Shell.quote" title="Permalink to this definition">¶</a></dt>
+<dd><p>Quote characters which have a special meaning for bash
+but should be used as normal characters. actually I had
+planned to use pipes.quote but it does not quote as I
+had expected it. e.g &#8216;name_wit_a_$&#8217; does not quote the $
+so we do it on our own for the scope of kiwi</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>message</strong> (<em>string</em>) &#8211; message text</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">quoted text</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="kiwi.system.shell.Shell.quote_key_value_file">
+<em class="property">classmethod </em><code class="descname">quote_key_value_file</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/shell.html#Shell.quote_key_value_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.shell.Shell.quote_key_value_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Quote given input file which has to be of the form
+key=value to be able to become sourced by the shell</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>string</em>) &#8211; file path name</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">quoted text</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="kiwi.system.shell.Shell.run_common_function">
+<em class="property">classmethod </em><code class="descname">run_common_function</code><span class="sig-paren">(</span><em>name</em>, <em>parameters</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/shell.html#Shell.run_common_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.shell.Shell.run_common_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run a function implemented in boot/functions.sh</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> (<em>string</em>) &#8211; function name</li>
+<li><strong>parameters</strong> (<em>list</em>) &#8211; function arguments</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.system.size">
+<span id="kiwi-system-size-module"></span><h2><a class="reference internal" href="#module-kiwi.system.size" title="kiwi.system.size"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.system.size</span></code></a> Module<a class="headerlink" href="#module-kiwi.system.size" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.system.size.SystemSize">
+<em class="property">class </em><code class="descclassname">kiwi.system.size.</code><code class="descname">SystemSize</code><span class="sig-paren">(</span><em>source_dir</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/size.html#SystemSize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.size.SystemSize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Provide source tree size information</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">source_dir</span></code></dt>
+<dd><p class="first last">source directory path name</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.system.size.SystemSize.accumulate_files">
+<code class="descname">accumulate_files</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/size.html#SystemSize.accumulate_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.size.SystemSize.accumulate_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate sum of all files in the source tree</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">number of files</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.size.SystemSize.accumulate_mbyte_file_sizes">
+<code class="descname">accumulate_mbyte_file_sizes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/size.html#SystemSize.accumulate_mbyte_file_sizes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.size.SystemSize.accumulate_mbyte_file_sizes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate data size of all data in the source tree</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">mbytes</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.size.SystemSize.customize">
+<code class="descname">customize</code><span class="sig-paren">(</span><em>size</em>, <em>requested_filesystem</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/size.html#SystemSize.customize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.size.SystemSize.customize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Increase the sum of all file sizes by an empiric factor</p>
+<p>Each filesystem has some overhead it needs to manage itself.
+Thus the plain data size is always smaller as the size of
+the container which embeds it. This method increases the
+given size by a filesystem specific empiric factor to
+ensure the given data size can be stored in a filesystem
+of the customized size</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>size</strong> (<em>int</em>) &#8211; mbsize to update</li>
+<li><strong>requested_filesystem</strong> (<em>string</em>) &#8211; filesystem name</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">mbytes</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">int</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.system.uri">
+<span id="kiwi-system-uri-module"></span><h2><a class="reference internal" href="#module-kiwi.system.uri" title="kiwi.system.uri"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.system.uri</span></code></a> Module<a class="headerlink" href="#module-kiwi.system.uri" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.system.uri.Uri">
+<em class="property">class </em><code class="descclassname">kiwi.system.uri.</code><code class="descname">Uri</code><span class="sig-paren">(</span><em>uri</em>, <em>repo_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/uri.html#Uri"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.uri.Uri" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Normalize url types available in a kiwi configuration into
+standard mime types.</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">repo_type</span></code></dt>
+<dd><p class="first last">Repository type name</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">uri</span></code></dt>
+<dd><p class="first last">URI, repository location, file</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">repo_type</span></code></dt>
+<dd><p class="first last">repository type name, rpm-dir, rpm-md, yast2</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">mount_stack</span></code></dt>
+<dd><p class="first last">list of mounted locations</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">remote_uri_types</span></code></dt>
+<dd><p class="first last">dictionary of remote uri type names</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">local_uri_type</span></code></dt>
+<dd><p class="first last">dictionary of local uri type names</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.system.uri.Uri.alias">
+<code class="descname">alias</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/uri.html#Uri.alias"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.uri.Uri.alias" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create hexdigest from URI as alias</p>
+<p>If the repository definition from the XML description does
+not provide an alias, kiwi creates one for you. However it&#8217;s
+better to assign a human readable alias in the XML
+configuration</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">alias name as hexdigest</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.uri.Uri.is_remote">
+<code class="descname">is_remote</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/uri.html#Uri.is_remote"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.uri.Uri.is_remote" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if URI is a remote or local location</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.uri.Uri.translate">
+<code class="descname">translate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/uri.html#Uri.translate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.uri.Uri.translate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Translate repository location according to their URI type</p>
+<p>Depending on the URI type the provided location needs to
+be adapted e.g loop mounted in case of an ISO or updated
+by the service URL in case of an open buildservice project
+name</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.system.users">
+<span id="kiwi-system-users-module"></span><h2><a class="reference internal" href="#module-kiwi.system.users" title="kiwi.system.users"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.system.users</span></code></a> Module<a class="headerlink" href="#module-kiwi.system.users" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.system.users.Users">
+<em class="property">class </em><code class="descclassname">kiwi.system.users.</code><code class="descname">Users</code><span class="sig-paren">(</span><em>root_dir</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/users.html#Users"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.users.Users" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Operations on users and groups in a root directory</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">root_dir</span></code></dt>
+<dd><p class="first last">root directory path name</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.system.users.Users.group_add">
+<code class="descname">group_add</code><span class="sig-paren">(</span><em>group_name</em>, <em>options</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/users.html#Users.group_add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.users.Users.group_add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add group with options</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>group_name</strong> (<em>string</em>) &#8211; group name</li>
+<li><strong>options</strong> (<em>list</em>) &#8211; groupadd options</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.users.Users.group_exists">
+<code class="descname">group_exists</code><span class="sig-paren">(</span><em>group_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/users.html#Users.group_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.users.Users.group_exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if group exists</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>group_name</strong> (<em>string</em>) &#8211; group name</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.users.Users.setup_home_for_user">
+<code class="descname">setup_home_for_user</code><span class="sig-paren">(</span><em>user_name</em>, <em>group_name</em>, <em>home_path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/users.html#Users.setup_home_for_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.users.Users.setup_home_for_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup user home directory</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>user_name</strong> (<em>string</em>) &#8211; user name</li>
+<li><strong>group_name</strong> (<em>string</em>) &#8211; group name</li>
+<li><strong>home_path</strong> (<em>string</em>) &#8211; path name</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.users.Users.user_add">
+<code class="descname">user_add</code><span class="sig-paren">(</span><em>user_name</em>, <em>options</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/users.html#Users.user_add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.users.Users.user_add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add user with options</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>user_name</strong> (<em>string</em>) &#8211; user name</li>
+<li><strong>options</strong> (<em>list</em>) &#8211; useradd options</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.users.Users.user_exists">
+<code class="descname">user_exists</code><span class="sig-paren">(</span><em>user_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/users.html#Users.user_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.users.Users.user_exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if user exists</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user_name</strong> (<em>string</em>) &#8211; user name</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.system.users.Users.user_modify">
+<code class="descname">user_modify</code><span class="sig-paren">(</span><em>user_name</em>, <em>options</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/system/users.html#Users.user_modify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.system.users.Users.user_modify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modify user with options</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>user_name</strong> (<em>string</em>) &#8211; user name</li>
+<li><strong>options</strong> (<em>list</em>) &#8211; usermod options</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.system">
+<span id="module-contents"></span><h2>Module Contents<a class="headerlink" href="#module-kiwi.system" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/kiwi-logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">kiwi.system Package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-kiwi.system.identifier"><code class="docutils literal"><span class="pre">kiwi.system.identifier</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.system.kernel"><code class="docutils literal"><span class="pre">kiwi.system.kernel</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.system.prepare"><code class="docutils literal"><span class="pre">kiwi.system.prepare</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.system.profile"><code class="docutils literal"><span class="pre">kiwi.system.profile</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.system.result"><code class="docutils literal"><span class="pre">kiwi.system.result</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.system.root_bind"><code class="docutils literal"><span class="pre">kiwi.system.root_bind</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.system.root_init"><code class="docutils literal"><span class="pre">kiwi.system.root_init</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.system.setup"><code class="docutils literal"><span class="pre">kiwi.system.setup</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.system.shell"><code class="docutils literal"><span class="pre">kiwi.system.shell</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.system.size"><code class="docutils literal"><span class="pre">kiwi.system.size</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.system.uri"><code class="docutils literal"><span class="pre">kiwi.system.uri</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.system.users"><code class="docutils literal"><span class="pre">kiwi.system.users</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.system">Module Contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="kiwi.html">API Documentation 8.25.5</a><ul>
+      <li>Previous: <a href="kiwi.storage.subformat.template.html" title="previous chapter">kiwi.storage.subformat.template Package</a></li>
+      <li>Next: <a href="kiwi.solver.html" title="next chapter">kiwi.solver Package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<h1 class="logo"><a href="../index.html">kiwi</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=SUSE&repo=kiwi&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/SUSE/kiwi">
+    <img
+        alt="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+        src="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Marcus Schäfer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/api/kiwi.system.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/SUSE/kiwi" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

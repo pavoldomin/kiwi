@@ -1,0 +1,1554 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Schema Documentation 6.4 &#8212; kiwi 8.25.5 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '8.25.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="kiwi 8.25.5 documentation" href="index.html" />
+    <link rel="prev" title="kiwi.volume_manager Package" href="api/kiwi.volume_manager.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="schema-documentation-6-4">
+<h1>Schema Documentation 6.4<a class="headerlink" href="#schema-documentation-6-4" title="Permalink to this headline">¶</a></h1>
+<div class="topic">
+<p class="topic-title first">Element quantifiers</p>
+<ul class="simple">
+<li><strong>Optional</strong> elements are qualified with <span class="target" id="id1">[?]</span></li>
+<li>Elements that occur <strong>one or more</strong> times are qualified with <span class="target" id="id2">[+]</span></li>
+<li>Elements that occur <strong>zero or more</strong> times are qualified with <span class="target" id="id3">[*]</span></li>
+<li>Required elements are not qualified</li>
+</ul>
+</div>
+<div class="section" id="image">
+<span id="k-image"></span><h2>image<a class="headerlink" href="#image" title="Permalink to this headline">¶</a></h2>
+<p>The root element of the configuration file</p>
+<dl class="docutils">
+<dt>Children:</dt>
+<dd>The following elements occur in <code class="docutils literal"><span class="pre">image</span></code>: <a class="reference internal" href="#k-image-description"><span class="std std-ref">description</span></a> , <a class="reference internal" href="#k-image-preferences"><span class="std std-ref">preferences</span></a> <a class="reference internal" href="#id2">[+]</a>, <a class="reference internal" href="#k-image-profiles"><span class="std std-ref">profiles</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-instsource"><span class="std std-ref">instsource</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-users"><span class="std std-ref">users</span></a> <a class="reference internal" href="#id3">[*]</a>, <a class="reference internal" href="#k-image-drivers"><span class="std std-ref">drivers</span></a> <a class="reference internal" href="#id3">[*]</a>, <a class="reference internal" href="#k-image-strip"><span class="std std-ref">strip</span></a> <a class="reference internal" href="#id3">[*]</a>, <a class="reference internal" href="#k-image-repository"><span class="std std-ref">repository</span></a> <a class="reference internal" href="#id3">[*]</a>, <a class="reference internal" href="#k-image-packages"><span class="std std-ref">packages</span></a> <a class="reference internal" href="#id3">[*]</a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">image</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">name</span></code> : An image name without / and spaces</li>
+<li><code class="docutils literal"><span class="pre">displayname</span></code> <a class="reference internal" href="#id1">[?]</a>: A friendly display name. Used in the boot menu for isolinux and grub</li>
+<li><code class="docutils literal"><span class="pre">kiwirevision</span></code> <a class="reference internal" href="#id1">[?]</a>: A kiwi git revision number which is known to build a working image from this description. If the kiwi git revision doesn&#8217;t match the installed kiwi revision the process will exit.</li>
+<li><code class="docutils literal"><span class="pre">id</span></code> <a class="reference internal" href="#id1">[?]</a>: An identification number which is represented in a file named /etc/ImageID</li>
+<li><code class="docutils literal"><span class="pre">schemaversion</span></code> : The allowed Schema version (fixed value)</li>
+<li><code class="docutils literal"><span class="pre">xsi:noNamespaceSchemaLocation</span></code> <a class="reference internal" href="#id1">[?]</a>: The location of the XSD Schema (not relevant for RELAX NG or DTD)</li>
+<li><code class="docutils literal"><span class="pre">xsi:schemaLocation</span></code> <a class="reference internal" href="#id1">[?]</a>: A pair of URI references: First is a namespace name, second the location of the XSD Schema (not relevant for RELAX NG or DTD)</li>
+</ul>
+<div class="section" id="description">
+<span id="k-image-description"></span><h3>description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h3>
+<p>A Short Description</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">description</span></code>: <a class="reference internal" href="#k-image"><span class="std std-ref">image</span></a></dd>
+<dt>Children:</dt>
+<dd>The following elements occur in <code class="docutils literal"><span class="pre">description</span></code>: <a class="reference internal" href="#k-image-description-author"><span class="std std-ref">author</span></a> , <a class="reference internal" href="#k-image-description-contact"><span class="std std-ref">contact</span></a> <a class="reference internal" href="#id2">[+]</a>, <a class="reference internal" href="#k-image-description-specification"><span class="std std-ref">specification</span></a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">description</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">type</span></code> : Kiwi distinguishes between two basic image description types which uses the same format but one is created and provided by the kiwi developers and the other is created by the users of kiwi. The type=boot specifies a boot image (initrd) which should be provided by the kiwi developers wheras type=system specifies a standard image description created by a kiwi user.</li>
+</ul>
+<div class="section" id="author">
+<span id="k-image-description-author"></span><h4>author<a class="headerlink" href="#author" title="Permalink to this headline">¶</a></h4>
+<p>Author of the image</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">author</span></code>: <a class="reference internal" href="#k-image-description"><span class="std std-ref">description</span></a></dd>
+</dl>
+</div>
+<div class="section" id="contact">
+<span id="k-image-description-contact"></span><h4>contact<a class="headerlink" href="#contact" title="Permalink to this headline">¶</a></h4>
+<p>Contact Information from the Author, like Email etc.</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">contact</span></code>: <a class="reference internal" href="#k-image-description"><span class="std std-ref">description</span></a></dd>
+</dl>
+</div>
+<div class="section" id="specification">
+<span id="k-image-description-specification"></span><h4>specification<a class="headerlink" href="#specification" title="Permalink to this headline">¶</a></h4>
+<p>A Detailed Description</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">specification</span></code>: <a class="reference internal" href="#k-image-description"><span class="std std-ref">description</span></a></dd>
+</dl>
+</div>
+</div>
+<div class="section" id="preferences">
+<span id="k-image-preferences"></span><h3>preferences<a class="headerlink" href="#preferences" title="Permalink to this headline">¶</a></h3>
+<p>Configuration Information Needed for Logical Extend</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">preferences</span></code>: <a class="reference internal" href="#k-image"><span class="std std-ref">image</span></a></dd>
+<dt>Children:</dt>
+<dd>The following elements occur in <code class="docutils literal"><span class="pre">preferences</span></code>: <a class="reference internal" href="#k-image-preferences-bootsplash-theme"><span class="std std-ref">bootsplash-theme</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-bootloader-theme"><span class="std std-ref">bootloader-theme</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-defaultdestination"><span class="std std-ref">defaultdestination</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-defaultprebuilt"><span class="std std-ref">defaultprebuilt</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-defaultroot"><span class="std std-ref">defaultroot</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-hwclock"><span class="std std-ref">hwclock</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-keytable"><span class="std std-ref">keytable</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-locale"><span class="std std-ref">locale</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-packagemanager"><span class="std std-ref">packagemanager</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-partitioner"><span class="std std-ref">partitioner</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-rpm-check-signatures"><span class="std std-ref">rpm-check-signatures</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-rpm-excludedocs"><span class="std std-ref">rpm-excludedocs</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-rpm-force"><span class="std std-ref">rpm-force</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-showlicense"><span class="std std-ref">showlicense</span></a> <a class="reference internal" href="#id3">[*]</a>, <a class="reference internal" href="#k-image-preferences-timezone"><span class="std std-ref">timezone</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-type"><span class="std std-ref">type</span></a> <a class="reference internal" href="#id3">[*]</a>, <a class="reference internal" href="#k-image-preferences-version"><span class="std std-ref">version</span></a> <a class="reference internal" href="#id1">[?]</a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">preferences</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">profiles</span></code> <a class="reference internal" href="#id1">[?]</a>: A profile name which binds the section to this name</li>
+</ul>
+<div class="section" id="bootsplash-theme">
+<span id="k-image-preferences-bootsplash-theme"></span><h4>bootsplash-theme<a class="headerlink" href="#bootsplash-theme" title="Permalink to this headline">¶</a></h4>
+<p>Image bootsplash theme setup.</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">bootsplash-theme</span></code>: <a class="reference internal" href="#k-image-preferences"><span class="std std-ref">preferences</span></a></dd>
+</dl>
+</div>
+<div class="section" id="bootloader-theme">
+<span id="k-image-preferences-bootloader-theme"></span><h4>bootloader-theme<a class="headerlink" href="#bootloader-theme" title="Permalink to this headline">¶</a></h4>
+<p>Image bootloader theme setup.</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">bootloader-theme</span></code>: <a class="reference internal" href="#k-image-preferences"><span class="std std-ref">preferences</span></a></dd>
+</dl>
+</div>
+<div class="section" id="defaultdestination">
+<span id="k-image-preferences-defaultdestination"></span><h4>defaultdestination<a class="headerlink" href="#defaultdestination" title="Permalink to this headline">¶</a></h4>
+<p>Default Path if destdir Otion is Not Specified</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">defaultdestination</span></code>: <a class="reference internal" href="#k-image-preferences"><span class="std std-ref">preferences</span></a></dd>
+</dl>
+</div>
+<div class="section" id="defaultprebuilt">
+<span id="k-image-preferences-defaultprebuilt"></span><h4>defaultprebuilt<a class="headerlink" href="#defaultprebuilt" title="Permalink to this headline">¶</a></h4>
+<p>Default directory name for pre-built boot images, used if the directory is not specified on the command line</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">defaultprebuilt</span></code>: <a class="reference internal" href="#k-image-preferences"><span class="std std-ref">preferences</span></a></dd>
+</dl>
+</div>
+<div class="section" id="defaultroot">
+<span id="k-image-preferences-defaultroot"></span><h4>defaultroot<a class="headerlink" href="#defaultroot" title="Permalink to this headline">¶</a></h4>
+<p>Default Root Directory Name if root Option is Not Specified</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">defaultroot</span></code>: <a class="reference internal" href="#k-image-preferences"><span class="std std-ref">preferences</span></a></dd>
+</dl>
+</div>
+<div class="section" id="hwclock">
+<span id="k-image-preferences-hwclock"></span><h4>hwclock<a class="headerlink" href="#hwclock" title="Permalink to this headline">¶</a></h4>
+<p>Setup Image harware clock setup, either utc or localtime</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">hwclock</span></code>: <a class="reference internal" href="#k-image-preferences"><span class="std std-ref">preferences</span></a></dd>
+</dl>
+</div>
+<div class="section" id="keytable">
+<span id="k-image-preferences-keytable"></span><h4>keytable<a class="headerlink" href="#keytable" title="Permalink to this headline">¶</a></h4>
+<p>Image keytable setup.</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">keytable</span></code>: <a class="reference internal" href="#k-image-preferences"><span class="std std-ref">preferences</span></a></dd>
+</dl>
+</div>
+<div class="section" id="locale">
+<span id="k-image-preferences-locale"></span><h4>locale<a class="headerlink" href="#locale" title="Permalink to this headline">¶</a></h4>
+<p>Image locale setup.</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">locale</span></code>: <a class="reference internal" href="#k-image-preferences"><span class="std std-ref">preferences</span></a></dd>
+</dl>
+</div>
+<div class="section" id="packagemanager">
+<span id="k-image-preferences-packagemanager"></span><h4>packagemanager<a class="headerlink" href="#packagemanager" title="Permalink to this headline">¶</a></h4>
+<p>Name of the Package Manager</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">packagemanager</span></code>: <a class="reference internal" href="#k-image-preferences"><span class="std std-ref">preferences</span></a></dd>
+</dl>
+</div>
+<div class="section" id="partitioner">
+<span id="k-image-preferences-partitioner"></span><h4>partitioner<a class="headerlink" href="#partitioner" title="Permalink to this headline">¶</a></h4>
+<p>Name of the Partitioner used for any disk partition tasks</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">partitioner</span></code>: <a class="reference internal" href="#k-image-preferences"><span class="std std-ref">preferences</span></a></dd>
+</dl>
+</div>
+<div class="section" id="rpm-check-signatures">
+<span id="k-image-preferences-rpm-check-signatures"></span><h4>rpm-check-signatures<a class="headerlink" href="#rpm-check-signatures" title="Permalink to this headline">¶</a></h4>
+<p>Setup a Package Signature</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">rpm-check-signatures</span></code>: <a class="reference internal" href="#k-image-preferences"><span class="std std-ref">preferences</span></a></dd>
+</dl>
+</div>
+<div class="section" id="rpm-excludedocs">
+<span id="k-image-preferences-rpm-excludedocs"></span><h4>rpm-excludedocs<a class="headerlink" href="#rpm-excludedocs" title="Permalink to this headline">¶</a></h4>
+<p>Do not install files marked as documentation in the package</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">rpm-excludedocs</span></code>: <a class="reference internal" href="#k-image-preferences"><span class="std std-ref">preferences</span></a></dd>
+</dl>
+</div>
+<div class="section" id="rpm-force">
+<span id="k-image-preferences-rpm-force"></span><h4>rpm-force<a class="headerlink" href="#rpm-force" title="Permalink to this headline">¶</a></h4>
+<p>Force the Installation of a Package</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">rpm-force</span></code>: <a class="reference internal" href="#k-image-preferences"><span class="std std-ref">preferences</span></a></dd>
+</dl>
+</div>
+<div class="section" id="showlicense">
+<span id="k-image-preferences-showlicense"></span><h4>showlicense<a class="headerlink" href="#showlicense" title="Permalink to this headline">¶</a></h4>
+<p>Setup showlicense</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">showlicense</span></code>: <a class="reference internal" href="#k-image-preferences"><span class="std std-ref">preferences</span></a></dd>
+</dl>
+</div>
+<div class="section" id="timezone">
+<span id="k-image-preferences-timezone"></span><h4>timezone<a class="headerlink" href="#timezone" title="Permalink to this headline">¶</a></h4>
+<p>Setup Image Timezone setup</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">timezone</span></code>: <a class="reference internal" href="#k-image-preferences"><span class="std std-ref">preferences</span></a></dd>
+</dl>
+</div>
+<div class="section" id="type">
+<span id="k-image-preferences-type"></span><h4>type<a class="headerlink" href="#type" title="Permalink to this headline">¶</a></h4>
+<p>The Image Type of the Logical Extend</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">type</span></code>: <a class="reference internal" href="#k-image-preferences"><span class="std std-ref">preferences</span></a></dd>
+<dt>Children:</dt>
+<dd>The following elements occur in <code class="docutils literal"><span class="pre">type</span></code>: <a class="reference internal" href="#k-image-preferences-type-machine"><span class="std std-ref">machine</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-type-oemconfig"><span class="std std-ref">oemconfig</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-type-pxedeploy"><span class="std std-ref">pxedeploy</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-type-size"><span class="std std-ref">size</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-type-systemdisk"><span class="std std-ref">systemdisk</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-type-vagrantconfig"><span class="std std-ref">vagrantconfig</span></a> <a class="reference internal" href="#id3">[*]</a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">type</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">boot</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies the path of the boot image (initrd), relative to /usr/share/kiwi/image</li>
+<li><code class="docutils literal"><span class="pre">bootfilesystem</span></code> <a class="reference internal" href="#id1">[?]</a>: if an extra boot partition is required this attribute specify which filesystem should be used for it. The type of the bootloader might overwrite this setting e.g for the syslinux loader fat is required</li>
+<li><code class="docutils literal"><span class="pre">firmware</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies the boot firmware of the system. Most systems uses a standard BIOS but there are also other firmware systems like efi, coreboot, etc.. This attribute is used to differentiate the image according to the firmware which boots up the system. It mostly has an impact on the disk layout and the partition table type. By default the standard x86 bios firmware setup is used</li>
+<li><code class="docutils literal"><span class="pre">bootkernel</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies the kernel boot profile defined in the boot image description. When kiwi builds the boot image the information is passed as add-profile option</li>
+<li><code class="docutils literal"><span class="pre">bootloader</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies the bootloader used for booting the image. At the moment grub, zipl and sys|extlinux are supported</li>
+<li><code class="docutils literal"><span class="pre">bootloader_console</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies the bootloader console. The value only has an effect for the grub bootloader. By default a graphics console setup is used</li>
+<li><code class="docutils literal"><span class="pre">zipl_targettype</span></code> <a class="reference internal" href="#id1">[?]</a>: The device type of the disk zipl should boot. On zFCP devices use SCSI, on DASD devices use CDL or LDL on emulated DASD devices use FBA</li>
+<li><code class="docutils literal"><span class="pre">bootpartition</span></code> <a class="reference internal" href="#id1">[?]</a>: specify if an extra boot partition should be used or not. This will overwrite kiwi&#8217;s default layout</li>
+<li><code class="docutils literal"><span class="pre">bootpartsize</span></code> <a class="reference internal" href="#id1">[?]</a>: For images with a separate boot partition this attribute specifies the size in MB. If not set the min bootpart size is set to 200 MB</li>
+<li><code class="docutils literal"><span class="pre">bootprofile</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies the boot profile defined in the boot image description. When kiwi builds the boot image the information is passed as add-profile option</li>
+<li><code class="docutils literal"><span class="pre">boottimeout</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies the boot timeout in seconds prior to launching the default boot option. the unit for the timeout value is seconds if GRUB is used as the boot loader and 1/10 seconds if syslinux is used</li>
+<li><code class="docutils literal"><span class="pre">btrfs_root_is_snapshot</span></code> <a class="reference internal" href="#id1">[?]</a>: Tell kiwi to install the system into a btrfs snapshot The snapshot layout is compatible with the snapper management toolkit. By default no snapshots are used</li>
+<li><code class="docutils literal"><span class="pre">btrfs_root_is_readonly_snapshot</span></code> <a class="reference internal" href="#id1">[?]</a>: Tell kiwi to set the btrfs root filesystem snapshot read-only Once all data has been placed to the root filesystem snapshot it will be turned into read-only mode if this option is set to true. The option is only effective if btrfs_root_is_snapshot is also set to true. By default the root filesystem snapshot is writable</li>
+<li><code class="docutils literal"><span class="pre">checkprebuilt</span></code> <a class="reference internal" href="#id1">[?]</a>: Activates whether KIWI should search for a prebuild boot image or not. Obsolete attribute since KIWI v8</li>
+<li><code class="docutils literal"><span class="pre">compressed</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies whether the image output file should be compressed or not. This makes only sense for filesystem only images respectively for the pxe or cpio type</li>
+<li><code class="docutils literal"><span class="pre">container</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies a name for the container</li>
+<li><code class="docutils literal"><span class="pre">devicepersistency</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies which method to use in order to get persistent storage device names. By default by-uuid is used.</li>
+<li><code class="docutils literal"><span class="pre">editbootconfig</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies the path to a script which is called right before the bootloader is installed. The script runs relative to the directory which contains the image structure</li>
+<li><code class="docutils literal"><span class="pre">editbootinstall</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies the path to a script which is called right after the bootloader is installed. The script runs relative to the directory which contains the image structure</li>
+<li><code class="docutils literal"><span class="pre">filesystem</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies the root filesystem type</li>
+<li><code class="docutils literal"><span class="pre">flags</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies flags for the image type. This could be compressed or clic and applies to the iso type only</li>
+<li><code class="docutils literal"><span class="pre">format</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies the format of the virtual disk. The ec2 value is deprecated and no longer supported It remains in the schema to allow us to print a better Error message than we receive from the parser. To be remove from here by the end of 2014</li>
+<li><code class="docutils literal"><span class="pre">formatoptions</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies additional format options passed on to qemu-img formatoptions is a comma separated list of format specific options in a name=value format like qemu-img expects it. kiwi will take the information and pass it as parameter to the -o option in the qemu-img call</li>
+<li><code class="docutils literal"><span class="pre">fsnocheck</span></code> <a class="reference internal" href="#id1">[?]</a>: Turn off periodic filesystem checks on ext2/3/4. Obsolete attribute since KIWI v8</li>
+<li><code class="docutils literal"><span class="pre">fsmountoptions</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies the filesystem mount options which also ends up in fstab The string given here is passed as value to the -o option of mount</li>
+<li><code class="docutils literal"><span class="pre">gcelicense</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies the license tag in a GCE format</li>
+<li><code class="docutils literal"><span class="pre">hybrid</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies that the image file should be turned into a hybrid image file. It&#8217;s required to use the vmxboot boot image to boot that image though</li>
+<li><code class="docutils literal"><span class="pre">hybridpersistent</span></code> <a class="reference internal" href="#id1">[?]</a>: Will trigger the creation of a partition for a COW file to keep data persistent over a reboot</li>
+<li><code class="docutils literal"><span class="pre">hybridpersistent_filesystem</span></code> <a class="reference internal" href="#id1">[?]</a>: Set the filesystem to use for persistent writing if a hybrid image is used as disk on e.g a USB Stick. By default the btrfs filesystem is used</li>
+<li><code class="docutils literal"><span class="pre">gpt_hybrid_mbr</span></code> <a class="reference internal" href="#id1">[?]</a>: for gpt disk types only: create a hybrid GPT/MBR partition table</li>
+<li><code class="docutils literal"><span class="pre">initrd_system</span></code> <a class="reference internal" href="#id1">[?]</a>: specify which initrd builder to use, default is kiwi&#8217;s builtin architecture. Be aware that the dracut initrd system does not support all features of the kiwi initrd</li>
+<li><code class="docutils literal"><span class="pre">image</span></code> : Specifies the image type</li>
+<li><code class="docutils literal"><span class="pre">installboot</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies the bootloader default boot entry for the&#8221; initial boot of a kiwi install image. This value is&#8221; only evaluated for grub and ext|syslinux&#8221;</li>
+<li><code class="docutils literal"><span class="pre">installprovidefailsafe</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies if the bootloader menu should provide an&#8221; failsafe entry with special kernel parameters or not&#8221;</li>
+<li><code class="docutils literal"><span class="pre">installiso</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies if a install iso should be created (oem only)</li>
+<li><code class="docutils literal"><span class="pre">installstick</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies if a install stick should be created (oem only)</li>
+<li><code class="docutils literal"><span class="pre">installpxe</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies if all data for a pxe network installation should be created (oem only)</li>
+<li><code class="docutils literal"><span class="pre">kernelcmdline</span></code> <a class="reference internal" href="#id1">[?]</a>:</li>
+<li><code class="docutils literal"><span class="pre">luks</span></code> <a class="reference internal" href="#id1">[?]</a>: Setup cryptographic volume along with the given filesystem using the LUKS extension. The value of this attribute represents the password string used to be able to mount that filesystem while booting</li>
+<li><code class="docutils literal"><span class="pre">luksOS</span></code> <a class="reference internal" href="#id1">[?]</a>: With the luksOS value a predefined set of ciper, keysize and hash format options is passed to the cryptsetup call in order to create a format compatible to the specified distribution</li>
+<li><code class="docutils literal"><span class="pre">mdraid</span></code> <a class="reference internal" href="#id1">[?]</a>: Setup software raid in degraded mode with one disk Thus only mirroring and striping is possible</li>
+<li><code class="docutils literal"><span class="pre">overlayroot</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies to use an overlay root system consisting out of a squashfs compressed read-only root system overlayed using the overlayfs filesystem into an extra read-write partition. Available for the disk image types, vmx and oem</li>
+<li><code class="docutils literal"><span class="pre">primary</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies the primary type (choose KIWI option type)</li>
+<li><code class="docutils literal"><span class="pre">ramonly</span></code> <a class="reference internal" href="#id1">[?]</a>: for use with overlay filesystems only: will force any COW action to happen in RAM</li>
+<li><code class="docutils literal"><span class="pre">rootfs_label</span></code> <a class="reference internal" href="#id1">[?]</a>: label to set for the root filesystem. By default ROOT is used</li>
+<li><code class="docutils literal"><span class="pre">target_blocksize</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies the image blocksize in bytes which has to match the logical (SSZ) blocksize of the target storage device. By default 512 byte is used which works on many disks However 4096 byte disks are coming. You can check the desired target by calling: blockdev &#8211;report device</li>
+<li><code class="docutils literal"><span class="pre">target_removable</span></code> <a class="reference internal" href="#id1">[?]</a>: Indicate if the target disk for oem images is deployed to a removable device e.g a USB stick or not. This only affects the EFI setup if requested and in the end avoids the creation of a custom boot menu entry in the firmware of the target machine. By default the target disk is expected to be non-removable</li>
+<li><code class="docutils literal"><span class="pre">vbootsize</span></code> <a class="reference internal" href="#id1">[?]</a>: For images with a an extra virtual boot space specifies the size in MB. If not set the min vboot size is set to 10 MB</li>
+<li><code class="docutils literal"><span class="pre">vga</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies the kernel framebuffer mode. More information about the possible values can be found by calling hwinfo &#8211;framebuffer or in /usr/src/linux/Documentation/fb/vesafb.txt</li>
+<li><code class="docutils literal"><span class="pre">vhdfixedtag</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies the GUID in a fixed format VHD</li>
+<li><code class="docutils literal"><span class="pre">volid</span></code> <a class="reference internal" href="#id1">[?]</a>: for the iso type only: Specifies the volume ID (volume name or label) to be written into the master block. There is space for 32 characters.</li>
+<li><code class="docutils literal"><span class="pre">wwid_wait_timeout</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies the wait period in seconds after launching the multipath daemon to wait until all presented devices are available on the host. Default timeout is 3 seconds</li>
+</ul>
+<div class="section" id="machine">
+<span id="k-image-preferences-type-machine"></span><h5>machine<a class="headerlink" href="#machine" title="Permalink to this headline">¶</a></h5>
+<p>specifies the VM configuration sections</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">machine</span></code>: <a class="reference internal" href="#k-image-preferences-type"><span class="std std-ref">type</span></a></dd>
+<dt>Children:</dt>
+<dd>The following elements occur in <code class="docutils literal"><span class="pre">machine</span></code>: <a class="reference internal" href="#k-image-preferences-type-machine-vmconfig-entry"><span class="std std-ref">vmconfig-entry</span></a> <a class="reference internal" href="#id3">[*]</a>, <a class="reference internal" href="#k-image-preferences-type-machine-vmdisk"><span class="std std-ref">vmdisk</span></a> , <a class="reference internal" href="#k-image-preferences-type-machine-vmdvd"><span class="std std-ref">vmdvd</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-type-machine-vmnic"><span class="std std-ref">vmnic</span></a> <a class="reference internal" href="#id3">[*]</a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">machine</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">min_memory</span></code> <a class="reference internal" href="#id1">[?]</a>: The virtual machine min memory in MB (ovf only)</li>
+<li><code class="docutils literal"><span class="pre">max_memory</span></code> <a class="reference internal" href="#id1">[?]</a>: The virtual machine max memory in MB (ovf only)</li>
+<li><code class="docutils literal"><span class="pre">min_cpu</span></code> <a class="reference internal" href="#id1">[?]</a>: The virtual machine min CPU count (ovf only)</li>
+<li><code class="docutils literal"><span class="pre">max_cpu</span></code> <a class="reference internal" href="#id1">[?]</a>: The virtual machine max CPU count (ovf only)</li>
+<li><code class="docutils literal"><span class="pre">ovftype</span></code> <a class="reference internal" href="#id1">[?]</a>: The OVF configuration type</li>
+<li><code class="docutils literal"><span class="pre">HWversion</span></code> <a class="reference internal" href="#id1">[?]</a>: The virtual HW version number for the VM configuration (vmdk and ovf)</li>
+<li><code class="docutils literal"><span class="pre">arch</span></code> <a class="reference internal" href="#id1">[?]</a>: the VM architecture type (vmdk only)</li>
+<li><code class="docutils literal"><span class="pre">domain</span></code> <a class="reference internal" href="#id1">[?]</a>: The domain setup for the VM (xen only)</li>
+<li><code class="docutils literal"><span class="pre">guestOS</span></code> <a class="reference internal" href="#id1">[?]</a>: The virtual guestOS identification string for the VM (vmdk and ovf, note the name designation is different for the two formats)</li>
+<li><code class="docutils literal"><span class="pre">memory</span></code> <a class="reference internal" href="#id1">[?]</a>: The memory, in MB, setup for the guest VM (all formats)</li>
+<li><code class="docutils literal"><span class="pre">ncpus</span></code> <a class="reference internal" href="#id1">[?]</a>: The number of virtual cpus for the guest VM (all formats)</li>
+</ul>
+<div class="section" id="vmconfig-entry">
+<span id="k-image-preferences-type-machine-vmconfig-entry"></span><h6>vmconfig-entry<a class="headerlink" href="#vmconfig-entry" title="Permalink to this headline">¶</a></h6>
+<p>An entry for the VM configuration file</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">vmconfig-entry</span></code>: <a class="reference internal" href="#k-image-preferences-type-machine"><span class="std std-ref">machine</span></a></dd>
+</dl>
+</div>
+<div class="section" id="vmdisk">
+<span id="k-image-preferences-type-machine-vmdisk"></span><h6>vmdisk<a class="headerlink" href="#vmdisk" title="Permalink to this headline">¶</a></h6>
+<p>The VM disk definition.</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">vmdisk</span></code>: <a class="reference internal" href="#k-image-preferences-type-machine"><span class="std std-ref">machine</span></a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">vmdisk</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">disktype</span></code> <a class="reference internal" href="#id1">[?]</a>: The type of the disk as it is internally handled by the VM (ovf only)</li>
+<li><code class="docutils literal"><span class="pre">controller</span></code> <a class="reference internal" href="#id1">[?]</a>: The disk controller used for the VM guest (vmdk only)</li>
+<li><code class="docutils literal"><span class="pre">id</span></code> <a class="reference internal" href="#id1">[?]</a>: The disk ID / device for the VM disk (vmdk only)</li>
+<li><code class="docutils literal"><span class="pre">device</span></code> <a class="reference internal" href="#id1">[?]</a>: The disk device to appear in the guest (xen only)</li>
+<li><code class="docutils literal"><span class="pre">diskmode</span></code> <a class="reference internal" href="#id1">[?]</a>: The disk mode (vmdk only)</li>
+</ul>
+</div>
+<div class="section" id="vmdvd">
+<span id="k-image-preferences-type-machine-vmdvd"></span><h6>vmdvd<a class="headerlink" href="#vmdvd" title="Permalink to this headline">¶</a></h6>
+<p>The VM CD/DVD drive definition. You can setup either a scsi CD or an ide CD drive</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">vmdvd</span></code>: <a class="reference internal" href="#k-image-preferences-type-machine"><span class="std std-ref">machine</span></a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">vmdvd</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">controller</span></code> : The CD/DVD controller used for the VM guest</li>
+<li><code class="docutils literal"><span class="pre">id</span></code> : The CD/DVD ID for the VM CD rom drive</li>
+</ul>
+</div>
+<div class="section" id="vmnic">
+<span id="k-image-preferences-type-machine-vmnic"></span><h6>vmnic<a class="headerlink" href="#vmnic" title="Permalink to this headline">¶</a></h6>
+<p>The VM network interface definition</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">vmnic</span></code>: <a class="reference internal" href="#k-image-preferences-type-machine"><span class="std std-ref">machine</span></a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">vmnic</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">driver</span></code> <a class="reference internal" href="#id1">[?]</a>: The driver used for the VM network interface</li>
+<li><code class="docutils literal"><span class="pre">interface</span></code> : The interface ID for the VM network interface</li>
+<li><code class="docutils literal"><span class="pre">mode</span></code> <a class="reference internal" href="#id1">[?]</a>: The VM network mode</li>
+<li><code class="docutils literal"><span class="pre">mac</span></code> <a class="reference internal" href="#id1">[?]</a>: The VM mac address</li>
+</ul>
+</div>
+</div>
+<div class="section" id="oemconfig">
+<span id="k-image-preferences-type-oemconfig"></span><h5>oemconfig<a class="headerlink" href="#oemconfig" title="Permalink to this headline">¶</a></h5>
+<p>Specifies the OEM configuration section</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">oemconfig</span></code>: <a class="reference internal" href="#k-image-preferences-type"><span class="std std-ref">type</span></a></dd>
+<dt>Children:</dt>
+<dd>The following elements occur in <code class="docutils literal"><span class="pre">oemconfig</span></code>: <a class="reference internal" href="#k-image-preferences-type-oemconfig-oem-ataraid-scan"><span class="std std-ref">oem-ataraid-scan</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-type-oemconfig-oem-boot-title"><span class="std std-ref">oem-boot-title</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-type-oemconfig-oem-bootwait"><span class="std std-ref">oem-bootwait</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-type-oemconfig-oem-device-filter"><span class="std std-ref">oem-device-filter</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-type-oemconfig-oem-inplace-recovery"><span class="std std-ref">oem-inplace-recovery</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-type-oemconfig-oem-kiwi-initrd"><span class="std std-ref">oem-kiwi-initrd</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-type-oemconfig-oem-multipath-scan"><span class="std std-ref">oem-multipath-scan</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-type-oemconfig-oem-vmcp-parmfile"><span class="std std-ref">oem-vmcp-parmfile</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-type-oemconfig-oem-partition-install"><span class="std std-ref">oem-partition-install</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-type-oemconfig-oem-reboot"><span class="std std-ref">oem-reboot</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-type-oemconfig-oem-reboot-interactive"><span class="std std-ref">oem-reboot-interactive</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-type-oemconfig-oem-recovery"><span class="std std-ref">oem-recovery</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-type-oemconfig-oem-recoveryid"><span class="std std-ref">oem-recoveryID</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-type-oemconfig-oem-recovery-part-size"><span class="std std-ref">oem-recovery-part-size</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-type-oemconfig-oem-shutdown"><span class="std std-ref">oem-shutdown</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-type-oemconfig-oem-shutdown-interactive"><span class="std std-ref">oem-shutdown-interactive</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-type-oemconfig-oem-silent-boot"><span class="std std-ref">oem-silent-boot</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-type-oemconfig-oem-silent-install"><span class="std std-ref">oem-silent-install</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-type-oemconfig-oem-silent-verify"><span class="std std-ref">oem-silent-verify</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-type-oemconfig-oem-skip-verify"><span class="std std-ref">oem-skip-verify</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-type-oemconfig-oem-swap"><span class="std std-ref">oem-swap</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-type-oemconfig-oem-swapsize"><span class="std std-ref">oem-swapsize</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-type-oemconfig-oem-systemsize"><span class="std std-ref">oem-systemsize</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-type-oemconfig-oem-unattended"><span class="std std-ref">oem-unattended</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-type-oemconfig-oem-unattended-id"><span class="std std-ref">oem-unattended-id</span></a> <a class="reference internal" href="#id1">[?]</a></dd>
+</dl>
+<div class="section" id="oem-ataraid-scan">
+<span id="k-image-preferences-type-oemconfig-oem-ataraid-scan"></span><h6>oem-ataraid-scan<a class="headerlink" href="#oem-ataraid-scan" title="Permalink to this headline">¶</a></h6>
+<p>For oemboot driven images: turn on or off the search for ata raid devices (aka fake raid controllers) true/false (default is true)</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">oem-ataraid-scan</span></code>: <a class="reference internal" href="#k-image-preferences-type-oemconfig"><span class="std std-ref">oemconfig</span></a></dd>
+</dl>
+</div>
+<div class="section" id="oem-boot-title">
+<span id="k-image-preferences-type-oemconfig-oem-boot-title"></span><h6>oem-boot-title<a class="headerlink" href="#oem-boot-title" title="Permalink to this headline">¶</a></h6>
+<p>For oemboot driven images: setup of the boot menu text displayed within the square brackets after first reboot of the OEM image</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">oem-boot-title</span></code>: <a class="reference internal" href="#k-image-preferences-type-oemconfig"><span class="std std-ref">oemconfig</span></a></dd>
+</dl>
+</div>
+<div class="section" id="oem-bootwait">
+<span id="k-image-preferences-type-oemconfig-oem-bootwait"></span><h6>oem-bootwait<a class="headerlink" href="#oem-bootwait" title="Permalink to this headline">¶</a></h6>
+<p>For oemboot driven images: halt system after image dump true/false</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">oem-bootwait</span></code>: <a class="reference internal" href="#k-image-preferences-type-oemconfig"><span class="std std-ref">oemconfig</span></a></dd>
+</dl>
+</div>
+<div class="section" id="oem-device-filter">
+<span id="k-image-preferences-type-oemconfig-oem-device-filter"></span><h6>oem-device-filter<a class="headerlink" href="#oem-device-filter" title="Permalink to this headline">¶</a></h6>
+<p>For oemboot driven images: filter install devices by given regular expression. The expression is handled by the bash regexp operator</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">oem-device-filter</span></code>: <a class="reference internal" href="#k-image-preferences-type-oemconfig"><span class="std std-ref">oemconfig</span></a></dd>
+</dl>
+</div>
+<div class="section" id="oem-inplace-recovery">
+<span id="k-image-preferences-type-oemconfig-oem-inplace-recovery"></span><h6>oem-inplace-recovery<a class="headerlink" href="#oem-inplace-recovery" title="Permalink to this headline">¶</a></h6>
+<p>For oemboot driven images: Specify whether the recovery archive should be stored as part of the image or not. If it&#8217;s not stored it&#8217;s created during install of the oem image</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">oem-inplace-recovery</span></code>: <a class="reference internal" href="#k-image-preferences-type-oemconfig"><span class="std std-ref">oemconfig</span></a></dd>
+</dl>
+</div>
+<div class="section" id="oem-kiwi-initrd">
+<span id="k-image-preferences-type-oemconfig-oem-kiwi-initrd"></span><h6>oem-kiwi-initrd<a class="headerlink" href="#oem-kiwi-initrd" title="Permalink to this headline">¶</a></h6>
+<p>For oemboot driven images: use kiwi initrd in any case and don&#8217;t replace it with mkinitrd created initrd</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">oem-kiwi-initrd</span></code>: <a class="reference internal" href="#k-image-preferences-type-oemconfig"><span class="std std-ref">oemconfig</span></a></dd>
+</dl>
+</div>
+<div class="section" id="oem-multipath-scan">
+<span id="k-image-preferences-type-oemconfig-oem-multipath-scan"></span><h6>oem-multipath-scan<a class="headerlink" href="#oem-multipath-scan" title="Permalink to this headline">¶</a></h6>
+<p>For oemboot driven images: turn on or off the search for multipath devices: true/false (default is true)</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">oem-multipath-scan</span></code>: <a class="reference internal" href="#k-image-preferences-type-oemconfig"><span class="std std-ref">oemconfig</span></a></dd>
+</dl>
+</div>
+<div class="section" id="oem-vmcp-parmfile">
+<span id="k-image-preferences-type-oemconfig-oem-vmcp-parmfile"></span><h6>oem-vmcp-parmfile<a class="headerlink" href="#oem-vmcp-parmfile" title="Permalink to this headline">¶</a></h6>
+<p>For oemboot driven images: provide the name of a parmfile which is loaded via cmsfscat on s390 systems. Default value is set to: PARM-S11</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">oem-vmcp-parmfile</span></code>: <a class="reference internal" href="#k-image-preferences-type-oemconfig"><span class="std std-ref">oemconfig</span></a></dd>
+</dl>
+</div>
+<div class="section" id="oem-partition-install">
+<span id="k-image-preferences-type-oemconfig-oem-partition-install"></span><h6>oem-partition-install<a class="headerlink" href="#oem-partition-install" title="Permalink to this headline">¶</a></h6>
+<p>For oemboot driven images: install the system not as disk but into a free partition. If this option is set all other oem-* options concerning the partition table will not have any effect</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">oem-partition-install</span></code>: <a class="reference internal" href="#k-image-preferences-type-oemconfig"><span class="std std-ref">oemconfig</span></a></dd>
+</dl>
+</div>
+<div class="section" id="oem-reboot">
+<span id="k-image-preferences-type-oemconfig-oem-reboot"></span><h6>oem-reboot<a class="headerlink" href="#oem-reboot" title="Permalink to this headline">¶</a></h6>
+<p>For oemboot driven images: reboot after first deployment true/false</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">oem-reboot</span></code>: <a class="reference internal" href="#k-image-preferences-type-oemconfig"><span class="std std-ref">oemconfig</span></a></dd>
+</dl>
+</div>
+<div class="section" id="oem-reboot-interactive">
+<span id="k-image-preferences-type-oemconfig-oem-reboot-interactive"></span><h6>oem-reboot-interactive<a class="headerlink" href="#oem-reboot-interactive" title="Permalink to this headline">¶</a></h6>
+<p>For oemboot driven images: reboot after first deployment true/false</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">oem-reboot-interactive</span></code>: <a class="reference internal" href="#k-image-preferences-type-oemconfig"><span class="std std-ref">oemconfig</span></a></dd>
+</dl>
+</div>
+<div class="section" id="oem-recovery">
+<span id="k-image-preferences-type-oemconfig-oem-recovery"></span><h6>oem-recovery<a class="headerlink" href="#oem-recovery" title="Permalink to this headline">¶</a></h6>
+<p>For oemboot driven images: create a recovery archive yes/no</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">oem-recovery</span></code>: <a class="reference internal" href="#k-image-preferences-type-oemconfig"><span class="std std-ref">oemconfig</span></a></dd>
+</dl>
+</div>
+<div class="section" id="oem-recoveryid">
+<span id="k-image-preferences-type-oemconfig-oem-recoveryid"></span><h6>oem-recoveryID<a class="headerlink" href="#oem-recoveryid" title="Permalink to this headline">¶</a></h6>
+<p>For oemboot driven images: Set the partition ID of recovery partition. Default value is 83 (Linux)</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">oem-recoveryID</span></code>: <a class="reference internal" href="#k-image-preferences-type-oemconfig"><span class="std std-ref">oemconfig</span></a></dd>
+</dl>
+</div>
+<div class="section" id="oem-recovery-part-size">
+<span id="k-image-preferences-type-oemconfig-oem-recovery-part-size"></span><h6>oem-recovery-part-size<a class="headerlink" href="#oem-recovery-part-size" title="Permalink to this headline">¶</a></h6>
+<p>For oemboot driven images: Set the size of the recovery partition. Value is interpreted as MB</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">oem-recovery-part-size</span></code>: <a class="reference internal" href="#k-image-preferences-type-oemconfig"><span class="std std-ref">oemconfig</span></a></dd>
+</dl>
+</div>
+<div class="section" id="oem-shutdown">
+<span id="k-image-preferences-type-oemconfig-oem-shutdown"></span><h6>oem-shutdown<a class="headerlink" href="#oem-shutdown" title="Permalink to this headline">¶</a></h6>
+<p>For oemboot driven images: shutdown after first deployment  true/false</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">oem-shutdown</span></code>: <a class="reference internal" href="#k-image-preferences-type-oemconfig"><span class="std std-ref">oemconfig</span></a></dd>
+</dl>
+</div>
+<div class="section" id="oem-shutdown-interactive">
+<span id="k-image-preferences-type-oemconfig-oem-shutdown-interactive"></span><h6>oem-shutdown-interactive<a class="headerlink" href="#oem-shutdown-interactive" title="Permalink to this headline">¶</a></h6>
+<p>For oemboot driven images: shutdown after first deployment  true/false</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">oem-shutdown-interactive</span></code>: <a class="reference internal" href="#k-image-preferences-type-oemconfig"><span class="std std-ref">oemconfig</span></a></dd>
+</dl>
+</div>
+<div class="section" id="oem-silent-boot">
+<span id="k-image-preferences-type-oemconfig-oem-silent-boot"></span><h6>oem-silent-boot<a class="headerlink" href="#oem-silent-boot" title="Permalink to this headline">¶</a></h6>
+<p>For oemboot driven images: boot silently during the initial boot true/false</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">oem-silent-boot</span></code>: <a class="reference internal" href="#k-image-preferences-type-oemconfig"><span class="std std-ref">oemconfig</span></a></dd>
+</dl>
+</div>
+<div class="section" id="oem-silent-install">
+<span id="k-image-preferences-type-oemconfig-oem-silent-install"></span><h6>oem-silent-install<a class="headerlink" href="#oem-silent-install" title="Permalink to this headline">¶</a></h6>
+<p>For oemboot driven images: do not show progress of the image dump process, true/false</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">oem-silent-install</span></code>: <a class="reference internal" href="#k-image-preferences-type-oemconfig"><span class="std std-ref">oemconfig</span></a></dd>
+</dl>
+</div>
+<div class="section" id="oem-silent-verify">
+<span id="k-image-preferences-type-oemconfig-oem-silent-verify"></span><h6>oem-silent-verify<a class="headerlink" href="#oem-silent-verify" title="Permalink to this headline">¶</a></h6>
+<p>For oemboot driven images: do not show progress of the image verification process, true/false</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">oem-silent-verify</span></code>: <a class="reference internal" href="#k-image-preferences-type-oemconfig"><span class="std std-ref">oemconfig</span></a></dd>
+</dl>
+</div>
+<div class="section" id="oem-skip-verify">
+<span id="k-image-preferences-type-oemconfig-oem-skip-verify"></span><h6>oem-skip-verify<a class="headerlink" href="#oem-skip-verify" title="Permalink to this headline">¶</a></h6>
+<p>For oemboot driven images: do not perform the md5 verification process, true/false</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">oem-skip-verify</span></code>: <a class="reference internal" href="#k-image-preferences-type-oemconfig"><span class="std std-ref">oemconfig</span></a></dd>
+</dl>
+</div>
+<div class="section" id="oem-swap">
+<span id="k-image-preferences-type-oemconfig-oem-swap"></span><h6>oem-swap<a class="headerlink" href="#oem-swap" title="Permalink to this headline">¶</a></h6>
+<p>For oemboot driven images: use a swap partition yes/no</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">oem-swap</span></code>: <a class="reference internal" href="#k-image-preferences-type-oemconfig"><span class="std std-ref">oemconfig</span></a></dd>
+</dl>
+</div>
+<div class="section" id="oem-swapsize">
+<span id="k-image-preferences-type-oemconfig-oem-swapsize"></span><h6>oem-swapsize<a class="headerlink" href="#oem-swapsize" title="Permalink to this headline">¶</a></h6>
+<p>For oemboot driven images: Set the size of the swap partition in MB</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">oem-swapsize</span></code>: <a class="reference internal" href="#k-image-preferences-type-oemconfig"><span class="std std-ref">oemconfig</span></a></dd>
+</dl>
+</div>
+<div class="section" id="oem-systemsize">
+<span id="k-image-preferences-type-oemconfig-oem-systemsize"></span><h6>oem-systemsize<a class="headerlink" href="#oem-systemsize" title="Permalink to this headline">¶</a></h6>
+<p>For oemboot driven images: Set the size of the system (root) partition in MB</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">oem-systemsize</span></code>: <a class="reference internal" href="#k-image-preferences-type-oemconfig"><span class="std std-ref">oemconfig</span></a></dd>
+</dl>
+</div>
+<div class="section" id="oem-unattended">
+<span id="k-image-preferences-type-oemconfig-oem-unattended"></span><h6>oem-unattended<a class="headerlink" href="#oem-unattended" title="Permalink to this headline">¶</a></h6>
+<p>For oemboot driven images: don&#8217;t ask questions if possible true/false</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">oem-unattended</span></code>: <a class="reference internal" href="#k-image-preferences-type-oemconfig"><span class="std std-ref">oemconfig</span></a></dd>
+</dl>
+</div>
+<div class="section" id="oem-unattended-id">
+<span id="k-image-preferences-type-oemconfig-oem-unattended-id"></span><h6>oem-unattended-id<a class="headerlink" href="#oem-unattended-id" title="Permalink to this headline">¶</a></h6>
+<p>For oemboot driven images: use the specified disk id the device is looked up in /dev/disk/by-* and /dev/mapper/*</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">oem-unattended-id</span></code>: <a class="reference internal" href="#k-image-preferences-type-oemconfig"><span class="std std-ref">oemconfig</span></a></dd>
+</dl>
+</div>
+</div>
+<div class="section" id="pxedeploy">
+<span id="k-image-preferences-type-pxedeploy"></span><h5>pxedeploy<a class="headerlink" href="#pxedeploy" title="Permalink to this headline">¶</a></h5>
+<p>Controls the Image Deploy Process</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">pxedeploy</span></code>: <a class="reference internal" href="#k-image-preferences-type"><span class="std std-ref">type</span></a></dd>
+<dt>Children:</dt>
+<dd>The following elements occur in <code class="docutils literal"><span class="pre">pxedeploy</span></code>: <a class="reference internal" href="#k-image-preferences-type-pxedeploy-timeout"><span class="std std-ref">timeout</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-type-pxedeploy-kernel"><span class="std std-ref">kernel</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-type-pxedeploy-initrd"><span class="std std-ref">initrd</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-type-pxedeploy-partitions"><span class="std std-ref">partitions</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-type-pxedeploy-union"><span class="std std-ref">union</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-preferences-type-pxedeploy-configuration"><span class="std std-ref">configuration</span></a> <a class="reference internal" href="#id3">[*]</a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">pxedeploy</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">server</span></code> <a class="reference internal" href="#id1">[?]</a>: Name or IP Address of server for downloading the data</li>
+<li><code class="docutils literal"><span class="pre">blocksize</span></code> <a class="reference internal" href="#id1">[?]</a>: Blocksize value used for atftp downloads</li>
+</ul>
+<div class="section" id="timeout">
+<span id="k-image-preferences-type-pxedeploy-timeout"></span><h6>timeout<a class="headerlink" href="#timeout" title="Permalink to this headline">¶</a></h6>
+<p>Specifies an ATFTP Download Timeout</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">timeout</span></code>: <a class="reference internal" href="#k-image-preferences-type-pxedeploy"><span class="std std-ref">pxedeploy</span></a></dd>
+</dl>
+</div>
+<div class="section" id="kernel">
+<span id="k-image-preferences-type-pxedeploy-kernel"></span><h6>kernel<a class="headerlink" href="#kernel" title="Permalink to this headline">¶</a></h6>
+<p>Specifies Where to Find the Boot Kernel</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">kernel</span></code>: <a class="reference internal" href="#k-image-preferences-type-pxedeploy"><span class="std std-ref">pxedeploy</span></a></dd>
+</dl>
+</div>
+<div class="section" id="initrd">
+<span id="k-image-preferences-type-pxedeploy-initrd"></span><h6>initrd<a class="headerlink" href="#initrd" title="Permalink to this headline">¶</a></h6>
+<p>Specifies where the Boot Image can be Found</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">initrd</span></code>: <a class="reference internal" href="#k-image-preferences-type-pxedeploy"><span class="std std-ref">pxedeploy</span></a></dd>
+</dl>
+</div>
+<div class="section" id="partitions">
+<span id="k-image-preferences-type-pxedeploy-partitions"></span><h6>partitions<a class="headerlink" href="#partitions" title="Permalink to this headline">¶</a></h6>
+<p>A List of Partitions</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">partitions</span></code>: <a class="reference internal" href="#k-image-preferences-type-pxedeploy"><span class="std std-ref">pxedeploy</span></a></dd>
+<dt>Children:</dt>
+<dd>The following elements occur in <code class="docutils literal"><span class="pre">partitions</span></code>: <a class="reference internal" href="#k-image-preferences-type-pxedeploy-partitions-partition"><span class="std std-ref">partition</span></a> <a class="reference internal" href="#id2">[+]</a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">partitions</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">device</span></code> <a class="reference internal" href="#id1">[?]</a>: As part of the network deploy configuration this section specifies the disk device name</li>
+</ul>
+<div class="section" id="partition">
+<span id="k-image-preferences-type-pxedeploy-partitions-partition"></span><h7>partition<a class="headerlink" href="#partition" title="Permalink to this headline">¶</a></h7>
+<p>A Partition</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">partition</span></code>: <a class="reference internal" href="#k-image-preferences-type-pxedeploy-partitions"><span class="std std-ref">partitions</span></a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">partition</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">type</span></code> : Partition Type identifier, see parted for details</li>
+<li><code class="docutils literal"><span class="pre">number</span></code> : Partition ID</li>
+<li><code class="docutils literal"><span class="pre">size</span></code> <a class="reference internal" href="#id1">[?]</a>: A partition size or optional image size</li>
+<li><code class="docutils literal"><span class="pre">mountpoint</span></code> <a class="reference internal" href="#id1">[?]</a>: Mount path for this partition</li>
+<li><code class="docutils literal"><span class="pre">target</span></code> <a class="reference internal" href="#id1">[?]</a>: Is a real target or not which means is part of the /etc/fstab file or not</li>
+</ul>
+</div>
+</div>
+<div class="section" id="union">
+<span id="k-image-preferences-type-pxedeploy-union"></span><h6>union<a class="headerlink" href="#union" title="Permalink to this headline">¶</a></h6>
+<p>Specifies the Overlay Filesystem</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">union</span></code>: <a class="reference internal" href="#k-image-preferences-type-pxedeploy"><span class="std std-ref">pxedeploy</span></a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">union</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">ro</span></code> : Device only for read-only</li>
+<li><code class="docutils literal"><span class="pre">rw</span></code> : Device for Read-Write</li>
+<li><code class="docutils literal"><span class="pre">type</span></code> :</li>
+</ul>
+</div>
+<div class="section" id="configuration">
+<span id="k-image-preferences-type-pxedeploy-configuration"></span><h6>configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h6>
+<p>Specifies Configuration files</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">configuration</span></code>: <a class="reference internal" href="#k-image-preferences-type-pxedeploy"><span class="std std-ref">pxedeploy</span></a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">configuration</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">source</span></code> : A location where packages can be found to build an installation source from</li>
+<li><code class="docutils literal"><span class="pre">dest</span></code> : Destination of a resource</li>
+<li><code class="docutils literal"><span class="pre">arch</span></code> <a class="reference internal" href="#id1">[?]</a>: An architecture</li>
+</ul>
+</div>
+</div>
+<div class="section" id="size">
+<span id="k-image-preferences-type-size"></span><h5>size<a class="headerlink" href="#size" title="Permalink to this headline">¶</a></h5>
+<p>Specifies the Size of an Image in (M)egabyte or (G)igabyte If the attribute additive is set the value will be added to the required size of the image</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">size</span></code>: <a class="reference internal" href="#k-image-preferences-type"><span class="std std-ref">type</span></a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">size</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">unit</span></code> <a class="reference internal" href="#id1">[?]</a>: The unit of the image</li>
+<li><code class="docutils literal"><span class="pre">additive</span></code> <a class="reference internal" href="#id1">[?]</a>:</li>
+</ul>
+</div>
+<div class="section" id="systemdisk">
+<span id="k-image-preferences-type-systemdisk"></span><h5>systemdisk<a class="headerlink" href="#systemdisk" title="Permalink to this headline">¶</a></h5>
+<p>Specify volumes and size attributes</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">systemdisk</span></code>: <a class="reference internal" href="#k-image-preferences-type"><span class="std std-ref">type</span></a></dd>
+<dt>Children:</dt>
+<dd>The following elements occur in <code class="docutils literal"><span class="pre">systemdisk</span></code>: <a class="reference internal" href="#k-image-preferences-type-systemdisk-volume"><span class="std std-ref">volume</span></a> <a class="reference internal" href="#id3">[*]</a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">systemdisk</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">name</span></code> <a class="reference internal" href="#id1">[?]</a>: Specify Volume group name, default is kiwiVG. This information is only used if the LVM volume management is used</li>
+<li><code class="docutils literal"><span class="pre">preferlvm</span></code> <a class="reference internal" href="#id1">[?]</a>: Prefer LVM even if the used filesystem has its own volume management system</li>
+</ul>
+<div class="section" id="volume">
+<span id="k-image-preferences-type-systemdisk-volume"></span><h6>volume<a class="headerlink" href="#volume" title="Permalink to this headline">¶</a></h6>
+<p>Specify which parts of the filesystem should be on an extra volume.</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">volume</span></code>: <a class="reference internal" href="#k-image-preferences-type-systemdisk"><span class="std std-ref">systemdisk</span></a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">volume</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">freespace</span></code> <a class="reference internal" href="#id1">[?]</a>: free space to be added to this volume. The value is used as MB by default but you can add &#8220;M&#8221; and/or &#8220;G&#8221; as postfix</li>
+<li><code class="docutils literal"><span class="pre">mountpoint</span></code> <a class="reference internal" href="#id1">[?]</a>: volume path. The mountpoint specifies a path which has to exist inside the root directory.</li>
+<li><code class="docutils literal"><span class="pre">name</span></code> : volume name. The name of the volume. if mountpoint is not specified the name specifies a path which has to exist inside the root directory.</li>
+<li><code class="docutils literal"><span class="pre">size</span></code> <a class="reference internal" href="#id1">[?]</a>: absolute size of the volume. If the size value is too small to store all data kiwi will exit. The value is used as MB by default but you can add &#8220;M&#8221; and/or &#8220;G&#8221; as postfix</li>
+</ul>
+</div>
+</div>
+<div class="section" id="vagrantconfig">
+<span id="k-image-preferences-type-vagrantconfig"></span><h5>vagrantconfig<a class="headerlink" href="#vagrantconfig" title="Permalink to this headline">¶</a></h5>
+<p>Specifies the Vagrant configuration section</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">vagrantconfig</span></code>: <a class="reference internal" href="#k-image-preferences-type"><span class="std std-ref">type</span></a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">vagrantconfig</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">provider</span></code> : The vagrant provider for this box</li>
+<li><code class="docutils literal"><span class="pre">virtualsize</span></code> : The vagrant virtual image size in GB</li>
+<li><code class="docutils literal"><span class="pre">boxname</span></code> <a class="reference internal" href="#id1">[?]</a>: The boxname as it&#8217;s written into the json file If not specified the image name is used</li>
+</ul>
+</div>
+</div>
+<div class="section" id="version">
+<span id="k-image-preferences-version"></span><h4>version<a class="headerlink" href="#version" title="Permalink to this headline">¶</a></h4>
+<p>A Version Number for the Image, Consists of Major.Minor.Release</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">version</span></code>: <a class="reference internal" href="#k-image-preferences"><span class="std std-ref">preferences</span></a></dd>
+</dl>
+</div>
+</div>
+<div class="section" id="profiles">
+<span id="k-image-profiles"></span><h3>profiles<a class="headerlink" href="#profiles" title="Permalink to this headline">¶</a></h3>
+<p>Creates Namespace Section for Drivers</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">profiles</span></code>: <a class="reference internal" href="#k-image"><span class="std std-ref">image</span></a></dd>
+<dt>Children:</dt>
+<dd>The following elements occur in <code class="docutils literal"><span class="pre">profiles</span></code>: <a class="reference internal" href="#k-image-profiles-profile"><span class="std std-ref">profile</span></a> <a class="reference internal" href="#id2">[+]</a></dd>
+</dl>
+<div class="section" id="profile">
+<span id="k-image-profiles-profile"></span><h4>profile<a class="headerlink" href="#profile" title="Permalink to this headline">¶</a></h4>
+<p>Creates Profiles</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">profile</span></code>: <a class="reference internal" href="#k-image-profiles"><span class="std std-ref">profiles</span></a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">profile</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">name</span></code> : A name</li>
+<li><code class="docutils literal"><span class="pre">description</span></code> : Description of how this profiles influences the image</li>
+<li><code class="docutils literal"><span class="pre">import</span></code> <a class="reference internal" href="#id1">[?]</a>: Import profile by default if no profile was set on the command line</li>
+</ul>
+</div>
+</div>
+<div class="section" id="instsource">
+<span id="k-image-instsource"></span><h3>instsource<a class="headerlink" href="#instsource" title="Permalink to this headline">¶</a></h3>
+<p>Describe Packages and Metadata</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">instsource</span></code>: <a class="reference internal" href="#k-image"><span class="std std-ref">image</span></a></dd>
+<dt>Children:</dt>
+<dd>The following elements occur in <code class="docutils literal"><span class="pre">instsource</span></code>: <a class="reference internal" href="#k-image-instsource-architectures"><span class="std std-ref">architectures</span></a> , <a class="reference internal" href="#k-image-instsource-productoptions"><span class="std std-ref">productoptions</span></a> , <a class="reference internal" href="#k-image-instsource-instrepo"><span class="std std-ref">instrepo</span></a> <a class="reference internal" href="#id2">[+]</a>, <a class="reference internal" href="#k-image-instsource-metadata"><span class="std std-ref">metadata</span></a> , <a class="reference internal" href="#k-image-instsource-repopackages"><span class="std std-ref">repopackages</span></a> <a class="reference internal" href="#id3">[*]</a>, <a class="reference internal" href="#k-image-instsource-driverupdate"><span class="std std-ref">driverupdate</span></a> <a class="reference internal" href="#id1">[?]</a></dd>
+</dl>
+<div class="section" id="architectures">
+<span id="k-image-instsource-architectures"></span><h4>architectures<a class="headerlink" href="#architectures" title="Permalink to this headline">¶</a></h4>
+<p>Describe Packages and Metadata</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">architectures</span></code>: <a class="reference internal" href="#k-image-instsource"><span class="std std-ref">instsource</span></a></dd>
+<dt>Children:</dt>
+<dd>The following elements occur in <code class="docutils literal"><span class="pre">architectures</span></code>: <a class="reference internal" href="#k-image-instsource-architectures-arch"><span class="std std-ref">arch</span></a> <a class="reference internal" href="#id2">[+]</a>, <a class="reference internal" href="#k-image-instsource-architectures-requiredarch"><span class="std std-ref">requiredarch</span></a> <a class="reference internal" href="#id2">[+]</a></dd>
+</dl>
+<div class="section" id="arch">
+<span id="k-image-instsource-architectures-arch"></span><h5>arch<a class="headerlink" href="#arch" title="Permalink to this headline">¶</a></h5>
+<p>Describe Packages and Metadata</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">arch</span></code>: <a class="reference internal" href="#k-image-instsource-architectures"><span class="std std-ref">architectures</span></a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">arch</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">id</span></code> : An ID</li>
+<li><code class="docutils literal"><span class="pre">name</span></code> : A name</li>
+<li><code class="docutils literal"><span class="pre">fallback</span></code> <a class="reference internal" href="#id1">[?]</a>:</li>
+</ul>
+</div>
+<div class="section" id="requiredarch">
+<span id="k-image-instsource-architectures-requiredarch"></span><h5>requiredarch<a class="headerlink" href="#requiredarch" title="Permalink to this headline">¶</a></h5>
+<p>Describe Packages and Metadata</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">requiredarch</span></code>: <a class="reference internal" href="#k-image-instsource-architectures"><span class="std std-ref">architectures</span></a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">requiredarch</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">ref</span></code> :</li>
+</ul>
+</div>
+</div>
+<div class="section" id="productoptions">
+<span id="k-image-instsource-productoptions"></span><h4>productoptions<a class="headerlink" href="#productoptions" title="Permalink to this headline">¶</a></h4>
+<p>Describe Packages and Metadata</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">productoptions</span></code>: <a class="reference internal" href="#k-image-instsource"><span class="std std-ref">instsource</span></a></dd>
+<dt>Children:</dt>
+<dd>The following elements occur in <code class="docutils literal"><span class="pre">productoptions</span></code>: <a class="reference internal" href="#k-image-instsource-productoptions-productoption"><span class="std std-ref">productoption</span></a> <a class="reference internal" href="#id3">[*]</a>, <a class="reference internal" href="#k-image-instsource-productoptions-productinfo"><span class="std std-ref">productinfo</span></a> <a class="reference internal" href="#id3">[*]</a>, <a class="reference internal" href="#k-image-instsource-productoptions-productvar"><span class="std std-ref">productvar</span></a> <a class="reference internal" href="#id3">[*]</a></dd>
+</dl>
+<div class="section" id="productoption">
+<span id="k-image-instsource-productoptions-productoption"></span><h5>productoption<a class="headerlink" href="#productoption" title="Permalink to this headline">¶</a></h5>
+<p>Describe Packages and Metadata</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">productoption</span></code>: <a class="reference internal" href="#k-image-instsource-productoptions"><span class="std std-ref">productoptions</span></a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">productoption</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">name</span></code> : A name</li>
+</ul>
+</div>
+<div class="section" id="productinfo">
+<span id="k-image-instsource-productoptions-productinfo"></span><h5>productinfo<a class="headerlink" href="#productinfo" title="Permalink to this headline">¶</a></h5>
+<p>Describe Packages and Metadata</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">productinfo</span></code>: <a class="reference internal" href="#k-image-instsource-productoptions"><span class="std std-ref">productoptions</span></a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">productinfo</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">name</span></code> : A name</li>
+</ul>
+</div>
+<div class="section" id="productvar">
+<span id="k-image-instsource-productoptions-productvar"></span><h5>productvar<a class="headerlink" href="#productvar" title="Permalink to this headline">¶</a></h5>
+<p>Describe Packages and Metadata</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">productvar</span></code>: <a class="reference internal" href="#k-image-instsource-productoptions"><span class="std std-ref">productoptions</span></a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">productvar</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">name</span></code> : A name</li>
+</ul>
+</div>
+</div>
+<div class="section" id="instrepo">
+<span id="k-image-instsource-instrepo"></span><h4>instrepo<a class="headerlink" href="#instrepo" title="Permalink to this headline">¶</a></h4>
+<p>Name of a Installation Repository</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">instrepo</span></code>: <a class="reference internal" href="#k-image-instsource"><span class="std std-ref">instsource</span></a></dd>
+<dt>Children:</dt>
+<dd>The following elements occur in <code class="docutils literal"><span class="pre">instrepo</span></code>: <a class="reference internal" href="#k-image-instsource-instrepo-source"><span class="std std-ref">source</span></a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">instrepo</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">local</span></code> <a class="reference internal" href="#id1">[?]</a>:</li>
+<li><code class="docutils literal"><span class="pre">name</span></code> :</li>
+<li><code class="docutils literal"><span class="pre">password</span></code> <a class="reference internal" href="#id1">[?]</a>: The password</li>
+<li><code class="docutils literal"><span class="pre">priority</span></code> : Search priority for packages in this repo</li>
+<li><code class="docutils literal"><span class="pre">username</span></code> <a class="reference internal" href="#id1">[?]</a>: A name of a user</li>
+</ul>
+<div class="section" id="source">
+<span id="k-image-instsource-instrepo-source"></span><h5>source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h5>
+<p>A Pointer to a Repository/Package Source</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">source</span></code>: <a class="reference internal" href="#k-image-instsource-instrepo"><span class="std std-ref">instrepo</span></a>, <a class="reference internal" href="#k-image-repository"><span class="std std-ref">repository</span></a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">source</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">path</span></code> : A path</li>
+</ul>
+</div>
+</div>
+<div class="section" id="metadata">
+<span id="k-image-instsource-metadata"></span><h4>metadata<a class="headerlink" href="#metadata" title="Permalink to this headline">¶</a></h4>
+<p>Contains Metadata</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">metadata</span></code>: <a class="reference internal" href="#k-image-instsource"><span class="std std-ref">instsource</span></a></dd>
+<dt>Children:</dt>
+<dd>The following elements occur in <code class="docutils literal"><span class="pre">metadata</span></code>: <a class="reference internal" href="#k-image-instsource-metadata-repopackage"><span class="std std-ref">repopackage</span></a> <a class="reference internal" href="#id3">[*]</a>, <a class="reference internal" href="#k-image-instsource-metadata-metafile"><span class="std std-ref">metafile</span></a> <a class="reference internal" href="#id3">[*]</a>, <a class="reference internal" href="#k-image-instsource-metadata-chroot"><span class="std std-ref">chroot</span></a> <a class="reference internal" href="#id3">[*]</a></dd>
+</dl>
+<div class="section" id="repopackage">
+<span id="k-image-instsource-metadata-repopackage"></span><h5>repopackage<a class="headerlink" href="#repopackage" title="Permalink to this headline">¶</a></h5>
+<p>Name of an instsource Package</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">repopackage</span></code>: <a class="reference internal" href="#k-image-instsource-metadata"><span class="std std-ref">metadata</span></a>, <a class="reference internal" href="#k-image-instsource-repopackages"><span class="std std-ref">repopackages</span></a>, <a class="reference internal" href="#k-image-instsource-driverupdate-install"><span class="std std-ref">install</span></a>, <a class="reference internal" href="#k-image-instsource-driverupdate-modules"><span class="std std-ref">modules</span></a>, <a class="reference internal" href="#k-image-instsource-driverupdate-instsys"><span class="std std-ref">instsys</span></a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">repopackage</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">name</span></code> : A name</li>
+<li><code class="docutils literal"><span class="pre">arch</span></code> <a class="reference internal" href="#id1">[?]</a>: An architecture</li>
+<li><code class="docutils literal"><span class="pre">forcerepo</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies the search priority</li>
+<li><code class="docutils literal"><span class="pre">addarch</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies that this package should additionally add the same package from the given arch</li>
+<li><code class="docutils literal"><span class="pre">removearch</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies that the package with the given arch should be removed</li>
+<li><code class="docutils literal"><span class="pre">onlyarch</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies that the package with the given arch should be used in any case</li>
+<li><code class="docutils literal"><span class="pre">source</span></code> <a class="reference internal" href="#id1">[?]</a>: A location where packages can be found to build an installation source from</li>
+<li><code class="docutils literal"><span class="pre">script</span></code> <a class="reference internal" href="#id1">[?]</a>: A script hook for meta files to be called after the file was fetched</li>
+<li><code class="docutils literal"><span class="pre">medium</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies that the package will be put to the specific medium number (CD1, DVD7, ...)</li>
+</ul>
+</div>
+<div class="section" id="metafile">
+<span id="k-image-instsource-metadata-metafile"></span><h5>metafile<a class="headerlink" href="#metafile" title="Permalink to this headline">¶</a></h5>
+<p>A file Pointer Optionally Bundled With a Script</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">metafile</span></code>: <a class="reference internal" href="#k-image-instsource-metadata"><span class="std std-ref">metadata</span></a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">metafile</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">url</span></code> : URL where to find the metafile</li>
+<li><code class="docutils literal"><span class="pre">script</span></code> : A script hook for meta files to be called after the file was fetched</li>
+<li><code class="docutils literal"><span class="pre">target</span></code> : Destination path where to download the file</li>
+</ul>
+</div>
+<div class="section" id="chroot">
+<span id="k-image-instsource-metadata-chroot"></span><h5>chroot<a class="headerlink" href="#chroot" title="Permalink to this headline">¶</a></h5>
+<p>Describe Packages and Metadata</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">chroot</span></code>: <a class="reference internal" href="#k-image-instsource-metadata"><span class="std std-ref">metadata</span></a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">chroot</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">requires</span></code> :</li>
+</ul>
+</div>
+</div>
+<div class="section" id="repopackages">
+<span id="k-image-instsource-repopackages"></span><h4>repopackages<a class="headerlink" href="#repopackages" title="Permalink to this headline">¶</a></h4>
+<p>Specifies Packages for Installation Source</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">repopackages</span></code>: <a class="reference internal" href="#k-image-instsource"><span class="std std-ref">instsource</span></a></dd>
+<dt>Children:</dt>
+<dd>The following elements occur in <code class="docutils literal"><span class="pre">repopackages</span></code>: <a class="reference internal" href="#k-image-instsource-repopackages-repopackage"><span class="std std-ref">repopackage</span></a> <a class="reference internal" href="#id3">[*]</a></dd>
+</dl>
+<div class="section" id="k-image-instsource-repopackages-repopackage">
+<span id="id4"></span><h5>repopackage<a class="headerlink" href="#k-image-instsource-repopackages-repopackage" title="Permalink to this headline">¶</a></h5>
+<p>Name of an instsource Package</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">repopackage</span></code>: <a class="reference internal" href="#k-image-instsource-metadata"><span class="std std-ref">metadata</span></a>, <a class="reference internal" href="#k-image-instsource-repopackages"><span class="std std-ref">repopackages</span></a>, <a class="reference internal" href="#k-image-instsource-driverupdate-install"><span class="std std-ref">install</span></a>, <a class="reference internal" href="#k-image-instsource-driverupdate-modules"><span class="std std-ref">modules</span></a>, <a class="reference internal" href="#k-image-instsource-driverupdate-instsys"><span class="std std-ref">instsys</span></a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">repopackage</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">name</span></code> : A name</li>
+<li><code class="docutils literal"><span class="pre">arch</span></code> <a class="reference internal" href="#id1">[?]</a>: An architecture</li>
+<li><code class="docutils literal"><span class="pre">forcerepo</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies the search priority</li>
+<li><code class="docutils literal"><span class="pre">addarch</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies that this package should additionally add the same package from the given arch</li>
+<li><code class="docutils literal"><span class="pre">removearch</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies that the package with the given arch should be removed</li>
+<li><code class="docutils literal"><span class="pre">onlyarch</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies that the package with the given arch should be used in any case</li>
+<li><code class="docutils literal"><span class="pre">source</span></code> <a class="reference internal" href="#id1">[?]</a>: A location where packages can be found to build an installation source from</li>
+<li><code class="docutils literal"><span class="pre">script</span></code> <a class="reference internal" href="#id1">[?]</a>: A script hook for meta files to be called after the file was fetched</li>
+<li><code class="docutils literal"><span class="pre">medium</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies that the package will be put to the specific medium number (CD1, DVD7, ...)</li>
+</ul>
+</div>
+</div>
+<div class="section" id="driverupdate">
+<span id="k-image-instsource-driverupdate"></span><h4>driverupdate<a class="headerlink" href="#driverupdate" title="Permalink to this headline">¶</a></h4>
+<p>Describe Packages and Metadata</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">driverupdate</span></code>: <a class="reference internal" href="#k-image-instsource"><span class="std std-ref">instsource</span></a></dd>
+<dt>Children:</dt>
+<dd>The following elements occur in <code class="docutils literal"><span class="pre">driverupdate</span></code>: <a class="reference internal" href="#k-image-instsource-driverupdate-target"><span class="std std-ref">target</span></a> <a class="reference internal" href="#id2">[+]</a>, <a class="reference internal" href="#k-image-instsource-driverupdate-install"><span class="std std-ref">install</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-instsource-driverupdate-modules"><span class="std std-ref">modules</span></a> <a class="reference internal" href="#id1">[?]</a>, <a class="reference internal" href="#k-image-instsource-driverupdate-instsys"><span class="std std-ref">instsys</span></a> <a class="reference internal" href="#id1">[?]</a></dd>
+</dl>
+<div class="section" id="target">
+<span id="k-image-instsource-driverupdate-target"></span><h5>target<a class="headerlink" href="#target" title="Permalink to this headline">¶</a></h5>
+<p>Describe Packages and Metadata</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">target</span></code>: <a class="reference internal" href="#k-image-instsource-driverupdate"><span class="std std-ref">driverupdate</span></a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">target</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">arch</span></code> : An architecture</li>
+</ul>
+</div>
+<div class="section" id="install">
+<span id="k-image-instsource-driverupdate-install"></span><h5>install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h5>
+<p>Describe Packages and Metadata</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">install</span></code>: <a class="reference internal" href="#k-image-instsource-driverupdate"><span class="std std-ref">driverupdate</span></a></dd>
+<dt>Children:</dt>
+<dd>The following elements occur in <code class="docutils literal"><span class="pre">install</span></code>: <a class="reference internal" href="#k-image-instsource-driverupdate-install-repopackage"><span class="std std-ref">repopackage</span></a> <a class="reference internal" href="#id3">[*]</a></dd>
+</dl>
+<div class="section" id="k-image-instsource-driverupdate-install-repopackage">
+<span id="id5"></span><h6>repopackage<a class="headerlink" href="#k-image-instsource-driverupdate-install-repopackage" title="Permalink to this headline">¶</a></h6>
+<p>Name of an instsource Package</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">repopackage</span></code>: <a class="reference internal" href="#k-image-instsource-metadata"><span class="std std-ref">metadata</span></a>, <a class="reference internal" href="#k-image-instsource-repopackages"><span class="std std-ref">repopackages</span></a>, <a class="reference internal" href="#k-image-instsource-driverupdate-install"><span class="std std-ref">install</span></a>, <a class="reference internal" href="#k-image-instsource-driverupdate-modules"><span class="std std-ref">modules</span></a>, <a class="reference internal" href="#k-image-instsource-driverupdate-instsys"><span class="std std-ref">instsys</span></a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">repopackage</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">name</span></code> : A name</li>
+<li><code class="docutils literal"><span class="pre">arch</span></code> <a class="reference internal" href="#id1">[?]</a>: An architecture</li>
+<li><code class="docutils literal"><span class="pre">forcerepo</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies the search priority</li>
+<li><code class="docutils literal"><span class="pre">addarch</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies that this package should additionally add the same package from the given arch</li>
+<li><code class="docutils literal"><span class="pre">removearch</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies that the package with the given arch should be removed</li>
+<li><code class="docutils literal"><span class="pre">onlyarch</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies that the package with the given arch should be used in any case</li>
+<li><code class="docutils literal"><span class="pre">source</span></code> <a class="reference internal" href="#id1">[?]</a>: A location where packages can be found to build an installation source from</li>
+<li><code class="docutils literal"><span class="pre">script</span></code> <a class="reference internal" href="#id1">[?]</a>: A script hook for meta files to be called after the file was fetched</li>
+<li><code class="docutils literal"><span class="pre">medium</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies that the package will be put to the specific medium number (CD1, DVD7, ...)</li>
+</ul>
+</div>
+</div>
+<div class="section" id="modules">
+<span id="k-image-instsource-driverupdate-modules"></span><h5>modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h5>
+<p>Describe Packages and Metadata</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">modules</span></code>: <a class="reference internal" href="#k-image-instsource-driverupdate"><span class="std std-ref">driverupdate</span></a></dd>
+<dt>Children:</dt>
+<dd>The following elements occur in <code class="docutils literal"><span class="pre">modules</span></code>: <a class="reference internal" href="#k-image-instsource-driverupdate-modules-repopackage"><span class="std std-ref">repopackage</span></a> <a class="reference internal" href="#id3">[*]</a></dd>
+</dl>
+<div class="section" id="k-image-instsource-driverupdate-modules-repopackage">
+<span id="id6"></span><h6>repopackage<a class="headerlink" href="#k-image-instsource-driverupdate-modules-repopackage" title="Permalink to this headline">¶</a></h6>
+<p>Name of an instsource Package</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">repopackage</span></code>: <a class="reference internal" href="#k-image-instsource-metadata"><span class="std std-ref">metadata</span></a>, <a class="reference internal" href="#k-image-instsource-repopackages"><span class="std std-ref">repopackages</span></a>, <a class="reference internal" href="#k-image-instsource-driverupdate-install"><span class="std std-ref">install</span></a>, <a class="reference internal" href="#k-image-instsource-driverupdate-modules"><span class="std std-ref">modules</span></a>, <a class="reference internal" href="#k-image-instsource-driverupdate-instsys"><span class="std std-ref">instsys</span></a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">repopackage</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">name</span></code> : A name</li>
+<li><code class="docutils literal"><span class="pre">arch</span></code> <a class="reference internal" href="#id1">[?]</a>: An architecture</li>
+<li><code class="docutils literal"><span class="pre">forcerepo</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies the search priority</li>
+<li><code class="docutils literal"><span class="pre">addarch</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies that this package should additionally add the same package from the given arch</li>
+<li><code class="docutils literal"><span class="pre">removearch</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies that the package with the given arch should be removed</li>
+<li><code class="docutils literal"><span class="pre">onlyarch</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies that the package with the given arch should be used in any case</li>
+<li><code class="docutils literal"><span class="pre">source</span></code> <a class="reference internal" href="#id1">[?]</a>: A location where packages can be found to build an installation source from</li>
+<li><code class="docutils literal"><span class="pre">script</span></code> <a class="reference internal" href="#id1">[?]</a>: A script hook for meta files to be called after the file was fetched</li>
+<li><code class="docutils literal"><span class="pre">medium</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies that the package will be put to the specific medium number (CD1, DVD7, ...)</li>
+</ul>
+</div>
+</div>
+<div class="section" id="instsys">
+<span id="k-image-instsource-driverupdate-instsys"></span><h5>instsys<a class="headerlink" href="#instsys" title="Permalink to this headline">¶</a></h5>
+<p>Describe Packages and Metadata</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">instsys</span></code>: <a class="reference internal" href="#k-image-instsource-driverupdate"><span class="std std-ref">driverupdate</span></a></dd>
+<dt>Children:</dt>
+<dd>The following elements occur in <code class="docutils literal"><span class="pre">instsys</span></code>: <a class="reference internal" href="#k-image-instsource-driverupdate-instsys-repopackage"><span class="std std-ref">repopackage</span></a> <a class="reference internal" href="#id3">[*]</a></dd>
+</dl>
+<div class="section" id="k-image-instsource-driverupdate-instsys-repopackage">
+<span id="id7"></span><h6>repopackage<a class="headerlink" href="#k-image-instsource-driverupdate-instsys-repopackage" title="Permalink to this headline">¶</a></h6>
+<p>Name of an instsource Package</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">repopackage</span></code>: <a class="reference internal" href="#k-image-instsource-metadata"><span class="std std-ref">metadata</span></a>, <a class="reference internal" href="#k-image-instsource-repopackages"><span class="std std-ref">repopackages</span></a>, <a class="reference internal" href="#k-image-instsource-driverupdate-install"><span class="std std-ref">install</span></a>, <a class="reference internal" href="#k-image-instsource-driverupdate-modules"><span class="std std-ref">modules</span></a>, <a class="reference internal" href="#k-image-instsource-driverupdate-instsys"><span class="std std-ref">instsys</span></a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">repopackage</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">name</span></code> : A name</li>
+<li><code class="docutils literal"><span class="pre">arch</span></code> <a class="reference internal" href="#id1">[?]</a>: An architecture</li>
+<li><code class="docutils literal"><span class="pre">forcerepo</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies the search priority</li>
+<li><code class="docutils literal"><span class="pre">addarch</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies that this package should additionally add the same package from the given arch</li>
+<li><code class="docutils literal"><span class="pre">removearch</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies that the package with the given arch should be removed</li>
+<li><code class="docutils literal"><span class="pre">onlyarch</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies that the package with the given arch should be used in any case</li>
+<li><code class="docutils literal"><span class="pre">source</span></code> <a class="reference internal" href="#id1">[?]</a>: A location where packages can be found to build an installation source from</li>
+<li><code class="docutils literal"><span class="pre">script</span></code> <a class="reference internal" href="#id1">[?]</a>: A script hook for meta files to be called after the file was fetched</li>
+<li><code class="docutils literal"><span class="pre">medium</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies that the package will be put to the specific medium number (CD1, DVD7, ...)</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="users">
+<span id="k-image-users"></span><h3>users<a class="headerlink" href="#users" title="Permalink to this headline">¶</a></h3>
+<p>A List of Users</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">users</span></code>: <a class="reference internal" href="#k-image"><span class="std std-ref">image</span></a></dd>
+<dt>Children:</dt>
+<dd>The following elements occur in <code class="docutils literal"><span class="pre">users</span></code>: <a class="reference internal" href="#k-image-users-user"><span class="std std-ref">user</span></a> <a class="reference internal" href="#id2">[+]</a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">users</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">profiles</span></code> <a class="reference internal" href="#id1">[?]</a>: A profile name which binds the section to this name</li>
+</ul>
+<div class="section" id="user">
+<span id="k-image-users-user"></span><h4>user<a class="headerlink" href="#user" title="Permalink to this headline">¶</a></h4>
+<p>A User with Name, Password, Path to Its Home And Shell</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">user</span></code>: <a class="reference internal" href="#k-image-users"><span class="std std-ref">users</span></a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">user</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">groups</span></code> <a class="reference internal" href="#id1">[?]</a>: The list of groups that he user belongs to. The frist item in the list is used as the login group. If &#8216;groups&#8217; is not present a default group is assigned to the user according to he specifing toolchain behaviour.</li>
+<li><code class="docutils literal"><span class="pre">home</span></code> : The home directory for this user</li>
+<li><code class="docutils literal"><span class="pre">id</span></code> <a class="reference internal" href="#id1">[?]</a>: The user ID for this user</li>
+<li><code class="docutils literal"><span class="pre">name</span></code> : A name</li>
+<li><code class="docutils literal"><span class="pre">password</span></code> <a class="reference internal" href="#id1">[?]</a>: The password</li>
+<li><code class="docutils literal"><span class="pre">pwdformat</span></code> <a class="reference internal" href="#id1">[?]</a>: Format of the given password, encrypted is the default</li>
+<li><code class="docutils literal"><span class="pre">realname</span></code> <a class="reference internal" href="#id1">[?]</a>: The name of an user</li>
+<li><code class="docutils literal"><span class="pre">shell</span></code> <a class="reference internal" href="#id1">[?]</a>: The shell for this user</li>
+</ul>
+</div>
+</div>
+<div class="section" id="drivers">
+<span id="k-image-drivers"></span><h3>drivers<a class="headerlink" href="#drivers" title="Permalink to this headline">¶</a></h3>
+<p>A Collection of Driver Files</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">drivers</span></code>: <a class="reference internal" href="#k-image"><span class="std std-ref">image</span></a></dd>
+<dt>Children:</dt>
+<dd>The following elements occur in <code class="docutils literal"><span class="pre">drivers</span></code>: <a class="reference internal" href="#k-image-drivers-file"><span class="std std-ref">file</span></a> <a class="reference internal" href="#id2">[+]</a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">drivers</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">profiles</span></code> <a class="reference internal" href="#id1">[?]</a>: A profile name which binds the section to this name</li>
+</ul>
+<div class="section" id="file">
+<span id="k-image-drivers-file"></span><h4>file<a class="headerlink" href="#file" title="Permalink to this headline">¶</a></h4>
+<p>A Pointer to a File</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">file</span></code>: <a class="reference internal" href="#k-image-drivers"><span class="std std-ref">drivers</span></a>, <a class="reference internal" href="#k-image-strip"><span class="std std-ref">strip</span></a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">file</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">name</span></code> : A name</li>
+<li><code class="docutils literal"><span class="pre">arch</span></code> <a class="reference internal" href="#id1">[?]</a>: An architecture</li>
+</ul>
+</div>
+</div>
+<div class="section" id="strip">
+<span id="k-image-strip"></span><h3>strip<a class="headerlink" href="#strip" title="Permalink to this headline">¶</a></h3>
+<p>A Collection of files to strip</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">strip</span></code>: <a class="reference internal" href="#k-image"><span class="std std-ref">image</span></a></dd>
+<dt>Children:</dt>
+<dd>The following elements occur in <code class="docutils literal"><span class="pre">strip</span></code>: <a class="reference internal" href="#k-image-strip-file"><span class="std std-ref">file</span></a> <a class="reference internal" href="#id2">[+]</a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">strip</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">type</span></code> :</li>
+<li><code class="docutils literal"><span class="pre">profiles</span></code> <a class="reference internal" href="#id1">[?]</a>: A profile name which binds the section to this name</li>
+</ul>
+<div class="section" id="k-image-strip-file">
+<span id="id8"></span><h4>file<a class="headerlink" href="#k-image-strip-file" title="Permalink to this headline">¶</a></h4>
+<p>A Pointer to a File</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">file</span></code>: <a class="reference internal" href="#k-image-drivers"><span class="std std-ref">drivers</span></a>, <a class="reference internal" href="#k-image-strip"><span class="std std-ref">strip</span></a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">file</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">name</span></code> : A name</li>
+<li><code class="docutils literal"><span class="pre">arch</span></code> <a class="reference internal" href="#id1">[?]</a>: An architecture</li>
+</ul>
+</div>
+</div>
+<div class="section" id="repository">
+<span id="k-image-repository"></span><h3>repository<a class="headerlink" href="#repository" title="Permalink to this headline">¶</a></h3>
+<p>The Name of the Repository</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">repository</span></code>: <a class="reference internal" href="#k-image"><span class="std std-ref">image</span></a></dd>
+<dt>Children:</dt>
+<dd>The following elements occur in <code class="docutils literal"><span class="pre">repository</span></code>: <a class="reference internal" href="#k-image-repository-source"><span class="std std-ref">source</span></a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">repository</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">type</span></code> <a class="reference internal" href="#id1">[?]</a>: Type of repository</li>
+<li><code class="docutils literal"><span class="pre">profiles</span></code> <a class="reference internal" href="#id1">[?]</a>: A profile name which binds the section to this name</li>
+<li><code class="docutils literal"><span class="pre">status</span></code> <a class="reference internal" href="#id1">[?]</a>: Specifies the status of the repository. This can be replaceable or if not specified it&#8217;s a must have repository</li>
+<li><code class="docutils literal"><span class="pre">alias</span></code> <a class="reference internal" href="#id1">[?]</a>: Alias name to be used for this repository. This is an optional free form text. If not set the source attribute value is used and builds the alias name by replacing each &#8216;/&#8217; with a &#8216;_&#8217;. An alias name should be set if the source argument doesn&#8217;t really explain what this repository contains</li>
+<li><code class="docutils literal"><span class="pre">components</span></code> <a class="reference internal" href="#id1">[?]</a>: Distribution components, used for deb repositories. If not set it defaults to main</li>
+<li><code class="docutils literal"><span class="pre">distribution</span></code> <a class="reference internal" href="#id1">[?]</a>: Distribution name information, used for deb repositories</li>
+<li><code class="docutils literal"><span class="pre">imageinclude</span></code> <a class="reference internal" href="#id1">[?]</a>: Specify whether or not this repository should be configured in the resulting image. Boolean value true or false, the default is false.</li>
+<li><code class="docutils literal"><span class="pre">prefer-license</span></code> <a class="reference internal" href="#id1">[?]</a>: Use the license found in this repository, if any, as the license installed in the image</li>
+<li><code class="docutils literal"><span class="pre">priority</span></code> <a class="reference internal" href="#id1">[?]</a>: Channel priority assigned to all packages available in this channel (0 if not set). If the exact same package is available in more than one channel, the highest priority is used</li>
+<li><code class="docutils literal"><span class="pre">password</span></code> <a class="reference internal" href="#id1">[?]</a>: The password</li>
+<li><code class="docutils literal"><span class="pre">username</span></code> <a class="reference internal" href="#id1">[?]</a>: A name of a user</li>
+</ul>
+<div class="section" id="k-image-repository-source">
+<span id="id9"></span><h4>source<a class="headerlink" href="#k-image-repository-source" title="Permalink to this headline">¶</a></h4>
+<p>A Pointer to a Repository/Package Source</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">source</span></code>: <a class="reference internal" href="#k-image-instsource-instrepo"><span class="std std-ref">instrepo</span></a>, <a class="reference internal" href="#k-image-repository"><span class="std std-ref">repository</span></a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">source</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">path</span></code> : A path</li>
+</ul>
+</div>
+</div>
+<div class="section" id="packages">
+<span id="k-image-packages"></span><h3>packages<a class="headerlink" href="#packages" title="Permalink to this headline">¶</a></h3>
+<p>Specifies Packages/Patterns Used in Different Stages</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">packages</span></code>: <a class="reference internal" href="#k-image"><span class="std std-ref">image</span></a></dd>
+<dt>Children:</dt>
+<dd>The following elements occur in <code class="docutils literal"><span class="pre">packages</span></code>: <a class="reference internal" href="#k-image-packages-archive"><span class="std std-ref">archive</span></a> <a class="reference internal" href="#id3">[*]</a>, <a class="reference internal" href="#k-image-packages-ignore"><span class="std std-ref">ignore</span></a> <a class="reference internal" href="#id3">[*]</a>, <a class="reference internal" href="#k-image-packages-namedcollection"><span class="std std-ref">namedCollection</span></a> <a class="reference internal" href="#id3">[*]</a>, <a class="reference internal" href="#k-image-packages-product"><span class="std std-ref">product</span></a> <a class="reference internal" href="#id3">[*]</a>, <a class="reference internal" href="#k-image-packages-package"><span class="std std-ref">package</span></a> <a class="reference internal" href="#id3">[*]</a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">packages</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">type</span></code> :</li>
+<li><code class="docutils literal"><span class="pre">profiles</span></code> <a class="reference internal" href="#id1">[?]</a>: A profile name which binds the section to this name</li>
+<li><code class="docutils literal"><span class="pre">patternType</span></code> <a class="reference internal" href="#id1">[?]</a>: Selection type for patterns. Could be onlyRequired or plusRecommended</li>
+</ul>
+<div class="section" id="archive">
+<span id="k-image-packages-archive"></span><h4>archive<a class="headerlink" href="#archive" title="Permalink to this headline">¶</a></h4>
+<p>Name of an image archive file (tarball)</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">archive</span></code>: <a class="reference internal" href="#k-image-packages"><span class="std std-ref">packages</span></a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">archive</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">name</span></code> : A name</li>
+<li><code class="docutils literal"><span class="pre">bootinclude</span></code> <a class="reference internal" href="#id1">[?]</a>: Indicates that this package should be part of the boot image (initrd) too. This attribute can be used to include for example branding packages specified in the system image description to become part of the boot image also</li>
+</ul>
+</div>
+<div class="section" id="ignore">
+<span id="k-image-packages-ignore"></span><h4>ignore<a class="headerlink" href="#ignore" title="Permalink to this headline">¶</a></h4>
+<p>Ignores a Package</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">ignore</span></code>: <a class="reference internal" href="#k-image-packages"><span class="std std-ref">packages</span></a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">ignore</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">name</span></code> : A name</li>
+</ul>
+</div>
+<div class="section" id="namedcollection">
+<span id="k-image-packages-namedcollection"></span><h4>namedCollection<a class="headerlink" href="#namedcollection" title="Permalink to this headline">¶</a></h4>
+<p>Name of a Pattern for SUSE or a Group for RH</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">namedCollection</span></code>: <a class="reference internal" href="#k-image-packages"><span class="std std-ref">packages</span></a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">namedCollection</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">name</span></code> : A name</li>
+<li><code class="docutils literal"><span class="pre">arch</span></code> <a class="reference internal" href="#id1">[?]</a>: An architecture</li>
+</ul>
+</div>
+<div class="section" id="product">
+<span id="k-image-packages-product"></span><h4>product<a class="headerlink" href="#product" title="Permalink to this headline">¶</a></h4>
+<p>Name of a Product From openSUSE</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">product</span></code>: <a class="reference internal" href="#k-image-packages"><span class="std std-ref">packages</span></a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">product</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">name</span></code> : A name</li>
+<li><code class="docutils literal"><span class="pre">arch</span></code> <a class="reference internal" href="#id1">[?]</a>: An architecture</li>
+</ul>
+</div>
+<div class="section" id="package">
+<span id="k-image-packages-package"></span><h4>package<a class="headerlink" href="#package" title="Permalink to this headline">¶</a></h4>
+<p>Name of an image Package</p>
+<dl class="docutils">
+<dt>Parents:</dt>
+<dd>These elements contain <code class="docutils literal"><span class="pre">package</span></code>: <a class="reference internal" href="#k-image-packages"><span class="std std-ref">packages</span></a></dd>
+</dl>
+<p>List of attributes for <code class="docutils literal"><span class="pre">package</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">name</span></code> : A name</li>
+<li><code class="docutils literal"><span class="pre">arch</span></code> <a class="reference internal" href="#id1">[?]</a>: An architecture</li>
+<li><code class="docutils literal"><span class="pre">replaces</span></code> <a class="reference internal" href="#id1">[?]</a>: Replace package with some other package</li>
+<li><code class="docutils literal"><span class="pre">bootdelete</span></code> <a class="reference internal" href="#id1">[?]</a>: Indicates that this package should be removed from the boot image (initrd). the attribute is only evaluated if the bootinclude attribute is specified along with it too</li>
+<li><code class="docutils literal"><span class="pre">bootinclude</span></code> <a class="reference internal" href="#id1">[?]</a>: Indicates that this package should be part of the boot image (initrd) too. This attribute can be used to include for example branding packages specified in the system image description to become part of the boot image also</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/kiwi-logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Schema Documentation 6.4</a><ul>
+<li><a class="reference internal" href="#image">image</a><ul>
+<li><a class="reference internal" href="#description">description</a><ul>
+<li><a class="reference internal" href="#author">author</a></li>
+<li><a class="reference internal" href="#contact">contact</a></li>
+<li><a class="reference internal" href="#specification">specification</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#preferences">preferences</a><ul>
+<li><a class="reference internal" href="#bootsplash-theme">bootsplash-theme</a></li>
+<li><a class="reference internal" href="#bootloader-theme">bootloader-theme</a></li>
+<li><a class="reference internal" href="#defaultdestination">defaultdestination</a></li>
+<li><a class="reference internal" href="#defaultprebuilt">defaultprebuilt</a></li>
+<li><a class="reference internal" href="#defaultroot">defaultroot</a></li>
+<li><a class="reference internal" href="#hwclock">hwclock</a></li>
+<li><a class="reference internal" href="#keytable">keytable</a></li>
+<li><a class="reference internal" href="#locale">locale</a></li>
+<li><a class="reference internal" href="#packagemanager">packagemanager</a></li>
+<li><a class="reference internal" href="#partitioner">partitioner</a></li>
+<li><a class="reference internal" href="#rpm-check-signatures">rpm-check-signatures</a></li>
+<li><a class="reference internal" href="#rpm-excludedocs">rpm-excludedocs</a></li>
+<li><a class="reference internal" href="#rpm-force">rpm-force</a></li>
+<li><a class="reference internal" href="#showlicense">showlicense</a></li>
+<li><a class="reference internal" href="#timezone">timezone</a></li>
+<li><a class="reference internal" href="#type">type</a><ul>
+<li><a class="reference internal" href="#machine">machine</a><ul>
+<li><a class="reference internal" href="#vmconfig-entry">vmconfig-entry</a></li>
+<li><a class="reference internal" href="#vmdisk">vmdisk</a></li>
+<li><a class="reference internal" href="#vmdvd">vmdvd</a></li>
+<li><a class="reference internal" href="#vmnic">vmnic</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#oemconfig">oemconfig</a><ul>
+<li><a class="reference internal" href="#oem-ataraid-scan">oem-ataraid-scan</a></li>
+<li><a class="reference internal" href="#oem-boot-title">oem-boot-title</a></li>
+<li><a class="reference internal" href="#oem-bootwait">oem-bootwait</a></li>
+<li><a class="reference internal" href="#oem-device-filter">oem-device-filter</a></li>
+<li><a class="reference internal" href="#oem-inplace-recovery">oem-inplace-recovery</a></li>
+<li><a class="reference internal" href="#oem-kiwi-initrd">oem-kiwi-initrd</a></li>
+<li><a class="reference internal" href="#oem-multipath-scan">oem-multipath-scan</a></li>
+<li><a class="reference internal" href="#oem-vmcp-parmfile">oem-vmcp-parmfile</a></li>
+<li><a class="reference internal" href="#oem-partition-install">oem-partition-install</a></li>
+<li><a class="reference internal" href="#oem-reboot">oem-reboot</a></li>
+<li><a class="reference internal" href="#oem-reboot-interactive">oem-reboot-interactive</a></li>
+<li><a class="reference internal" href="#oem-recovery">oem-recovery</a></li>
+<li><a class="reference internal" href="#oem-recoveryid">oem-recoveryID</a></li>
+<li><a class="reference internal" href="#oem-recovery-part-size">oem-recovery-part-size</a></li>
+<li><a class="reference internal" href="#oem-shutdown">oem-shutdown</a></li>
+<li><a class="reference internal" href="#oem-shutdown-interactive">oem-shutdown-interactive</a></li>
+<li><a class="reference internal" href="#oem-silent-boot">oem-silent-boot</a></li>
+<li><a class="reference internal" href="#oem-silent-install">oem-silent-install</a></li>
+<li><a class="reference internal" href="#oem-silent-verify">oem-silent-verify</a></li>
+<li><a class="reference internal" href="#oem-skip-verify">oem-skip-verify</a></li>
+<li><a class="reference internal" href="#oem-swap">oem-swap</a></li>
+<li><a class="reference internal" href="#oem-swapsize">oem-swapsize</a></li>
+<li><a class="reference internal" href="#oem-systemsize">oem-systemsize</a></li>
+<li><a class="reference internal" href="#oem-unattended">oem-unattended</a></li>
+<li><a class="reference internal" href="#oem-unattended-id">oem-unattended-id</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pxedeploy">pxedeploy</a><ul>
+<li><a class="reference internal" href="#timeout">timeout</a></li>
+<li><a class="reference internal" href="#kernel">kernel</a></li>
+<li><a class="reference internal" href="#initrd">initrd</a></li>
+<li><a class="reference internal" href="#partitions">partitions</a><ul>
+<li><a class="reference internal" href="#partition">partition</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#union">union</a></li>
+<li><a class="reference internal" href="#configuration">configuration</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#size">size</a></li>
+<li><a class="reference internal" href="#systemdisk">systemdisk</a><ul>
+<li><a class="reference internal" href="#volume">volume</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#vagrantconfig">vagrantconfig</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#version">version</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#profiles">profiles</a><ul>
+<li><a class="reference internal" href="#profile">profile</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#instsource">instsource</a><ul>
+<li><a class="reference internal" href="#architectures">architectures</a><ul>
+<li><a class="reference internal" href="#arch">arch</a></li>
+<li><a class="reference internal" href="#requiredarch">requiredarch</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#productoptions">productoptions</a><ul>
+<li><a class="reference internal" href="#productoption">productoption</a></li>
+<li><a class="reference internal" href="#productinfo">productinfo</a></li>
+<li><a class="reference internal" href="#productvar">productvar</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#instrepo">instrepo</a><ul>
+<li><a class="reference internal" href="#source">source</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#metadata">metadata</a><ul>
+<li><a class="reference internal" href="#repopackage">repopackage</a></li>
+<li><a class="reference internal" href="#metafile">metafile</a></li>
+<li><a class="reference internal" href="#chroot">chroot</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#repopackages">repopackages</a><ul>
+<li><a class="reference internal" href="#k-image-instsource-repopackages-repopackage">repopackage</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#driverupdate">driverupdate</a><ul>
+<li><a class="reference internal" href="#target">target</a></li>
+<li><a class="reference internal" href="#install">install</a><ul>
+<li><a class="reference internal" href="#k-image-instsource-driverupdate-install-repopackage">repopackage</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#modules">modules</a><ul>
+<li><a class="reference internal" href="#k-image-instsource-driverupdate-modules-repopackage">repopackage</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#instsys">instsys</a><ul>
+<li><a class="reference internal" href="#k-image-instsource-driverupdate-instsys-repopackage">repopackage</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#users">users</a><ul>
+<li><a class="reference internal" href="#user">user</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#drivers">drivers</a><ul>
+<li><a class="reference internal" href="#file">file</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#strip">strip</a><ul>
+<li><a class="reference internal" href="#k-image-strip-file">file</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#repository">repository</a><ul>
+<li><a class="reference internal" href="#k-image-repository-source">source</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#packages">packages</a><ul>
+<li><a class="reference internal" href="#archive">archive</a></li>
+<li><a class="reference internal" href="#ignore">ignore</a></li>
+<li><a class="reference internal" href="#namedcollection">namedCollection</a></li>
+<li><a class="reference internal" href="#product">product</a></li>
+<li><a class="reference internal" href="#package">package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="api/kiwi.volume_manager.html" title="previous chapter">kiwi.volume_manager Package</a></li>
+  </ul></li>
+</ul>
+</div>
+<h1 class="logo"><a href="index.html">kiwi</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=SUSE&repo=kiwi&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/SUSE/kiwi">
+    <img
+        alt="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+        src="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Marcus Schäfer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/schema.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/SUSE/kiwi" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

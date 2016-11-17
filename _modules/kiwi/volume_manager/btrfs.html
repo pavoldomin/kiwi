@@ -1,0 +1,481 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kiwi.volume_manager.btrfs &#8212; kiwi 8.25.5 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '8.25.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="top" title="kiwi 8.25.5 documentation" href="../../../index.html" />
+    <link rel="up" title="kiwi.volume_manager" href="../volume_manager.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for kiwi.volume_manager.btrfs</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2015 SUSE Linux GmbH.  All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This file is part of kiwi.</span>
+<span class="c1">#</span>
+<span class="c1"># kiwi is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1"># (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># kiwi is distributed in the hope that it will be useful,</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1"># GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with kiwi.  If not, see &lt;http://www.gnu.org/licenses/&gt;</span>
+<span class="c1">#</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">from</span> <span class="nn">xml.etree</span> <span class="k">import</span> <span class="n">ElementTree</span>
+<span class="kn">from</span> <span class="nn">xml.dom</span> <span class="k">import</span> <span class="n">minidom</span>
+
+<span class="c1"># project</span>
+<span class="kn">from</span> <span class="nn">..command</span> <span class="k">import</span> <span class="n">Command</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">VolumeManagerBase</span>
+<span class="kn">from</span> <span class="nn">..mount_manager</span> <span class="k">import</span> <span class="n">MountManager</span>
+<span class="kn">from</span> <span class="nn">..storage.mapped_device</span> <span class="k">import</span> <span class="n">MappedDevice</span>
+<span class="kn">from</span> <span class="nn">..filesystem</span> <span class="k">import</span> <span class="n">FileSystem</span>
+<span class="kn">from</span> <span class="nn">..utils.sync</span> <span class="k">import</span> <span class="n">DataSync</span>
+<span class="kn">from</span> <span class="nn">..utils.block</span> <span class="k">import</span> <span class="n">BlockID</span>
+<span class="kn">from</span> <span class="nn">..path</span> <span class="k">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">..logger</span> <span class="k">import</span> <span class="n">log</span>
+
+<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">KiwiVolumeRootIDError</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="VolumeManagerBtrfs"><a class="viewcode-back" href="../../../api/kiwi.volume_manager.html#kiwi.volume_manager.btrfs.VolumeManagerBtrfs">[docs]</a><span class="k">class</span> <span class="nc">VolumeManagerBtrfs</span><span class="p">(</span><span class="n">VolumeManagerBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implements btrfs sub-volume management</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="VolumeManagerBtrfs.post_init"><a class="viewcode-back" href="../../../api/kiwi.volume_manager.html#kiwi.volume_manager.btrfs.VolumeManagerBtrfs.post_init">[docs]</a>    <span class="k">def</span> <span class="nf">post_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">custom_args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Post initialization method</span>
+
+<span class="sd">        Store custom btrfs initialization arguments</span>
+
+<span class="sd">        Attributes</span>
+
+<span class="sd">        * :attr:`subvol_mount_list`</span>
+<span class="sd">            list of mounted btrfs subvolumes</span>
+
+<span class="sd">        * :attr:`toplevel_mount`</span>
+<span class="sd">            MountManager for root mountpoint</span>
+
+<span class="sd">        :param list custom_args: custom btrfs volume manager arguments</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">custom_args</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">custom_args</span> <span class="o">=</span> <span class="n">custom_args</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">custom_args</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="s1">&#39;root_label&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_args</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">custom_args</span><span class="p">[</span><span class="s1">&#39;root_label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ROOT&#39;</span>
+        <span class="k">if</span> <span class="s1">&#39;root_is_snapshot&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_args</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">custom_args</span><span class="p">[</span><span class="s1">&#39;root_is_snapshot&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="s1">&#39;root_is_readonly_snapshot&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_args</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">custom_args</span><span class="p">[</span><span class="s1">&#39;root_is_readonly_snapshot&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">subvol_mount_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toplevel_mount</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="VolumeManagerBtrfs.setup"><a class="viewcode-back" href="../../../api/kiwi.volume_manager.html#kiwi.volume_manager.btrfs.VolumeManagerBtrfs.setup">[docs]</a>    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Setup btrfs volume management</span>
+
+<span class="sd">        In case of btrfs a toplevel(@) subvolume is created and marked</span>
+<span class="sd">        as default volume. If snapshots are activated via the custom_args</span>
+<span class="sd">        the setup method also created the @/.snapshots/1/snapshot</span>
+<span class="sd">        subvolumes. There is no concept of a volume manager name, thus</span>
+<span class="sd">        the name argument is not used for btrfs</span>
+
+<span class="sd">        :param string name: unused</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_mountpoint</span><span class="p">()</span>
+
+        <span class="n">filesystem</span> <span class="o">=</span> <span class="n">FileSystem</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;btrfs&#39;</span><span class="p">,</span>
+            <span class="n">device_provider</span><span class="o">=</span><span class="n">MappedDevice</span><span class="p">(</span>
+                <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">device_provider</span><span class="o">=</span><span class="bp">self</span>
+            <span class="p">),</span>
+            <span class="n">custom_args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">custom_filesystem_args</span>
+        <span class="p">)</span>
+        <span class="n">filesystem</span><span class="o">.</span><span class="n">create_on_device</span><span class="p">(</span>
+            <span class="n">label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">custom_args</span><span class="p">[</span><span class="s1">&#39;root_label&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toplevel_mount</span> <span class="o">=</span> <span class="n">MountManager</span><span class="p">(</span>
+            <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">mountpoint</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mountpoint</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toplevel_mount</span><span class="o">.</span><span class="n">mount</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">custom_filesystem_args</span><span class="p">[</span><span class="s1">&#39;mount_options&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">root_volume</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mountpoint</span> <span class="o">+</span> <span class="s1">&#39;/@&#39;</span>
+        <span class="n">Command</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="p">[</span><span class="s1">&#39;btrfs&#39;</span><span class="p">,</span> <span class="s1">&#39;subvolume&#39;</span><span class="p">,</span> <span class="s1">&#39;create&#39;</span><span class="p">,</span> <span class="n">root_volume</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_args</span><span class="p">[</span><span class="s1">&#39;root_is_snapshot&#39;</span><span class="p">]:</span>
+            <span class="n">snapshot_volume</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mountpoint</span> <span class="o">+</span> <span class="s1">&#39;/@/.snapshots&#39;</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+                <span class="p">[</span><span class="s1">&#39;btrfs&#39;</span><span class="p">,</span> <span class="s1">&#39;subvolume&#39;</span><span class="p">,</span> <span class="s1">&#39;create&#39;</span><span class="p">,</span> <span class="n">snapshot_volume</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">Path</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">snapshot_volume</span> <span class="o">+</span> <span class="s1">&#39;/1&#39;</span><span class="p">)</span>
+            <span class="n">snapshot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mountpoint</span> <span class="o">+</span> <span class="s1">&#39;/@/.snapshots/1/snapshot&#39;</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+                <span class="p">[</span><span class="s1">&#39;btrfs&#39;</span><span class="p">,</span> <span class="s1">&#39;subvolume&#39;</span><span class="p">,</span> <span class="s1">&#39;snapshot&#39;</span><span class="p">,</span> <span class="n">root_volume</span><span class="p">,</span> <span class="n">snapshot</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_default_volume</span><span class="p">(</span><span class="s1">&#39;@/.snapshots/1/snapshot&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_default_volume</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VolumeManagerBtrfs.create_volumes"><a class="viewcode-back" href="../../../api/kiwi.volume_manager.html#kiwi.volume_manager.btrfs.VolumeManagerBtrfs.create_volumes">[docs]</a>    <span class="k">def</span> <span class="nf">create_volumes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filesystem_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create configured btrfs subvolumes</span>
+
+<span class="sd">        Any btrfs subvolume is of the same btrfs filesystem. There is no</span>
+<span class="sd">        way to have different filesystems per btrfs subvolume. Thus</span>
+<span class="sd">        the filesystem_name has no effect for btrfs</span>
+
+<span class="sd">        :param string filesystem_name: unused</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s1">&#39;Creating </span><span class="si">%s</span><span class="s1"> sub volumes&#39;</span><span class="p">,</span> <span class="n">filesystem_name</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_volume_paths_in_root_dir</span><span class="p">()</span>
+
+        <span class="n">canonical_volume_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_canonical_volume_list</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">canonical_volume_list</span><span class="o">.</span><span class="n">full_size_volume</span><span class="p">:</span>
+            <span class="c1"># put an eventual fullsize volume to the volume list</span>
+            <span class="c1"># because there is no extra handling required for it on btrfs</span>
+            <span class="n">canonical_volume_list</span><span class="o">.</span><span class="n">volumes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">canonical_volume_list</span><span class="o">.</span><span class="n">full_size_volume</span>
+            <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">volume</span> <span class="ow">in</span> <span class="n">canonical_volume_list</span><span class="o">.</span><span class="n">volumes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">volume</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;LVRoot&#39;</span><span class="p">:</span>
+                <span class="c1"># the btrfs root volume named &#39;@&#39; has been created as</span>
+                <span class="c1"># part of the setup procedure</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--&gt; sub volume </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">volume</span><span class="o">.</span><span class="n">realpath</span><span class="p">)</span>
+                <span class="n">toplevel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mountpoint</span> <span class="o">+</span> <span class="s1">&#39;/@/&#39;</span>
+                <span class="n">volume_parent_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normpath</span><span class="p">(</span>
+                    <span class="n">toplevel</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">volume</span><span class="o">.</span><span class="n">realpath</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">volume_parent_path</span><span class="p">):</span>
+                    <span class="n">Path</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">volume_parent_path</span><span class="p">)</span>
+                <span class="n">Command</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="s1">&#39;btrfs&#39;</span><span class="p">,</span> <span class="s1">&#39;subvolume&#39;</span><span class="p">,</span> <span class="s1">&#39;create&#39;</span><span class="p">,</span>
+                        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normpath</span><span class="p">(</span><span class="n">toplevel</span> <span class="o">+</span> <span class="n">volume</span><span class="o">.</span><span class="n">realpath</span><span class="p">)</span>
+                    <span class="p">]</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_args</span><span class="p">[</span><span class="s1">&#39;root_is_snapshot&#39;</span><span class="p">]:</span>
+                    <span class="n">snapshot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mountpoint</span> <span class="o">+</span> <span class="s1">&#39;/@/.snapshots/1/snapshot/&#39;</span>
+                    <span class="n">volume_mount</span> <span class="o">=</span> <span class="n">MountManager</span><span class="p">(</span>
+                        <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
+                        <span class="n">mountpoint</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normpath</span><span class="p">(</span><span class="n">snapshot</span> <span class="o">+</span> <span class="n">volume</span><span class="o">.</span><span class="n">realpath</span><span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">subvol_mount_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="n">volume_mount</span>
+                    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="VolumeManagerBtrfs.get_fstab"><a class="viewcode-back" href="../../../api/kiwi.volume_manager.html#kiwi.volume_manager.btrfs.VolumeManagerBtrfs.get_fstab">[docs]</a>    <span class="k">def</span> <span class="nf">get_fstab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">persistency_type</span><span class="o">=</span><span class="s1">&#39;by-label&#39;</span><span class="p">,</span> <span class="n">filesystem_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Implements creation of the fstab entries. The method</span>
+<span class="sd">        returns a list of fstab compatible entries</span>
+
+<span class="sd">        :param string persistency_type: by-label | by-uuid</span>
+<span class="sd">        :param string filesystem_name: unused</span>
+
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fstab_entries</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">mount_options</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">custom_filesystem_args</span><span class="p">[</span><span class="s1">&#39;mount_options&#39;</span><span class="p">]</span> <span class="ow">or</span> <span class="p">[</span><span class="s1">&#39;defaults&#39;</span><span class="p">]</span>
+        <span class="n">block_operation</span> <span class="o">=</span> <span class="n">BlockID</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">blkid_type</span> <span class="o">=</span> <span class="s1">&#39;LABEL&#39;</span> <span class="k">if</span> <span class="n">persistency_type</span> <span class="o">==</span> <span class="s1">&#39;by-label&#39;</span> <span class="k">else</span> <span class="s1">&#39;UUID&#39;</span>
+        <span class="n">device_id</span> <span class="o">=</span> <span class="n">block_operation</span><span class="o">.</span><span class="n">get_blkid</span><span class="p">(</span><span class="n">blkid_type</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_args</span><span class="p">[</span><span class="s1">&#39;root_is_snapshot&#39;</span><span class="p">]:</span>
+            <span class="n">mount_entry_options</span> <span class="o">=</span> <span class="n">mount_options</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;subvol=@/.snapshots&#39;</span><span class="p">]</span>
+            <span class="n">fstab_entry</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">blkid_type</span> <span class="o">+</span> <span class="s1">&#39;=&#39;</span> <span class="o">+</span> <span class="n">device_id</span><span class="p">,</span> <span class="s1">&#39;/.snapshots&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;btrfs&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mount_entry_options</span><span class="p">),</span> <span class="s1">&#39;0 0&#39;</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">fstab_entries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fstab_entry</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">volume_mount</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subvol_mount_list</span><span class="p">:</span>
+            <span class="n">subvol_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_subvol_name_from_mountpoint</span><span class="p">(</span><span class="n">volume_mount</span><span class="p">)</span>
+            <span class="n">mount_entry_options</span> <span class="o">=</span> <span class="n">mount_options</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;subvol=&#39;</span> <span class="o">+</span> <span class="n">subvol_name</span><span class="p">]</span>
+            <span class="n">fstab_entry</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">blkid_type</span> <span class="o">+</span> <span class="s1">&#39;=&#39;</span> <span class="o">+</span> <span class="n">device_id</span><span class="p">,</span> <span class="n">subvol_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+                    <span class="s1">&#39;btrfs&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mount_entry_options</span><span class="p">),</span> <span class="s1">&#39;0 0&#39;</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">fstab_entries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fstab_entry</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fstab_entries</span></div>
+
+<div class="viewcode-block" id="VolumeManagerBtrfs.get_volumes"><a class="viewcode-back" href="../../../api/kiwi.volume_manager.html#kiwi.volume_manager.btrfs.VolumeManagerBtrfs.get_volumes">[docs]</a>    <span class="k">def</span> <span class="nf">get_volumes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return dict of volumes</span>
+
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">volumes</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">volume_mount</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subvol_mount_list</span><span class="p">:</span>
+            <span class="n">subvol_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_subvol_name_from_mountpoint</span><span class="p">(</span><span class="n">volume_mount</span><span class="p">)</span>
+            <span class="n">subvol_options</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="s1">&#39;subvol=&#39;</span> <span class="o">+</span> <span class="n">subvol_name</span>
+                <span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_filesystem_args</span><span class="p">[</span><span class="s1">&#39;mount_options&#39;</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">volumes</span><span class="p">[</span><span class="n">subvol_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">subvol_options</span>
+        <span class="k">return</span> <span class="n">volumes</span></div>
+
+<div class="viewcode-block" id="VolumeManagerBtrfs.mount_volumes"><a class="viewcode-back" href="../../../api/kiwi.volume_manager.html#kiwi.volume_manager.btrfs.VolumeManagerBtrfs.mount_volumes">[docs]</a>    <span class="k">def</span> <span class="nf">mount_volumes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Mount btrfs subvolumes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">toplevel_mount</span><span class="o">.</span><span class="n">is_mounted</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">toplevel_mount</span><span class="o">.</span><span class="n">mount</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">custom_filesystem_args</span><span class="p">[</span><span class="s1">&#39;mount_options&#39;</span><span class="p">]</span>
+            <span class="p">)</span>
+        <span class="k">for</span> <span class="n">volume_mount</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subvol_mount_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">volume_mount</span><span class="o">.</span><span class="n">mountpoint</span><span class="p">):</span>
+                <span class="n">Path</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">volume_mount</span><span class="o">.</span><span class="n">mountpoint</span><span class="p">)</span>
+            <span class="n">subvol_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_subvol_name_from_mountpoint</span><span class="p">(</span><span class="n">volume_mount</span><span class="p">)</span>
+            <span class="n">subvol_options</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="s1">&#39;subvol=&#39;</span> <span class="o">+</span> <span class="n">subvol_name</span>
+                <span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_filesystem_args</span><span class="p">[</span><span class="s1">&#39;mount_options&#39;</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">volume_mount</span><span class="o">.</span><span class="n">mount</span><span class="p">(</span>
+                <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="n">subvol_options</span><span class="p">]</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="VolumeManagerBtrfs.umount_volumes"><a class="viewcode-back" href="../../../api/kiwi.volume_manager.html#kiwi.volume_manager.btrfs.VolumeManagerBtrfs.umount_volumes">[docs]</a>    <span class="k">def</span> <span class="nf">umount_volumes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Umount btrfs subvolumes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">all_volumes_umounted</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">for</span> <span class="n">volume_mount</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subvol_mount_list</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">volume_mount</span><span class="o">.</span><span class="n">is_mounted</span><span class="p">():</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">volume_mount</span><span class="o">.</span><span class="n">umount</span><span class="p">():</span>
+                    <span class="n">all_volumes_umounted</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">all_volumes_umounted</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">toplevel_mount</span><span class="o">.</span><span class="n">is_mounted</span><span class="p">():</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">toplevel_mount</span><span class="o">.</span><span class="n">umount</span><span class="p">():</span>
+                    <span class="n">all_volumes_umounted</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="n">all_volumes_umounted</span></div>
+
+<div class="viewcode-block" id="VolumeManagerBtrfs.sync_data"><a class="viewcode-back" href="../../../api/kiwi.volume_manager.html#kiwi.volume_manager.btrfs.VolumeManagerBtrfs.sync_data">[docs]</a>    <span class="k">def</span> <span class="nf">sync_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sync data into btrfs filesystem</span>
+
+<span class="sd">        If snapshots are activated the root filesystem is synced</span>
+<span class="sd">        into the first snapshot</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">toplevel_mount</span><span class="p">:</span>
+            <span class="n">sync_target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mountpoint</span> <span class="o">+</span> <span class="s1">&#39;/@&#39;</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_args</span><span class="p">[</span><span class="s1">&#39;root_is_snapshot&#39;</span><span class="p">]:</span>
+                <span class="n">sync_target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mountpoint</span> <span class="o">+</span> <span class="s1">&#39;/@/.snapshots/1/snapshot&#39;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_create_snapshot_info</span><span class="p">(</span>
+                    <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">mountpoint</span><span class="p">,</span> <span class="s1">&#39;/@/.snapshots/1/info.xml&#39;</span><span class="p">])</span>
+                <span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">DataSync</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span><span class="p">,</span> <span class="n">sync_target</span><span class="p">)</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">sync_data</span><span class="p">(</span>
+                <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;-a&#39;</span><span class="p">,</span> <span class="s1">&#39;-H&#39;</span><span class="p">,</span> <span class="s1">&#39;-X&#39;</span><span class="p">,</span> <span class="s1">&#39;-A&#39;</span><span class="p">,</span> <span class="s1">&#39;--one-file-system&#39;</span><span class="p">],</span>
+                <span class="n">exclude</span><span class="o">=</span><span class="n">exclude</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="VolumeManagerBtrfs.set_property_readonly_root"><a class="viewcode-back" href="../../../api/kiwi.volume_manager.html#kiwi.volume_manager.btrfs.VolumeManagerBtrfs.set_property_readonly_root">[docs]</a>    <span class="k">def</span> <span class="nf">set_property_readonly_root</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">root_is_snapshot</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">custom_args</span><span class="p">[</span><span class="s1">&#39;root_is_snapshot&#39;</span><span class="p">]</span>
+        <span class="n">root_is_readonly_snapshot</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">custom_args</span><span class="p">[</span><span class="s1">&#39;root_is_readonly_snapshot&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">root_is_snapshot</span> <span class="ow">and</span> <span class="n">root_is_readonly_snapshot</span><span class="p">:</span>
+            <span class="n">sync_target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mountpoint</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+                <span class="p">[</span><span class="s1">&#39;btrfs&#39;</span><span class="p">,</span> <span class="s1">&#39;property&#39;</span><span class="p">,</span> <span class="s1">&#39;set&#39;</span><span class="p">,</span> <span class="n">sync_target</span><span class="p">,</span> <span class="s1">&#39;ro&#39;</span><span class="p">,</span> <span class="s1">&#39;true&#39;</span><span class="p">]</span>
+            <span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_set_default_volume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default_volume</span><span class="p">):</span>
+        <span class="n">subvolume_list_call</span> <span class="o">=</span> <span class="n">Command</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="p">[</span><span class="s1">&#39;btrfs&#39;</span><span class="p">,</span> <span class="s1">&#39;subvolume&#39;</span><span class="p">,</span> <span class="s1">&#39;list&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mountpoint</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">subvolume</span> <span class="ow">in</span> <span class="n">subvolume_list_call</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">):</span>
+            <span class="n">id_search</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;ID (\d+) .*path (.*)&#39;</span><span class="p">,</span> <span class="n">subvolume</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">id_search</span><span class="p">:</span>
+                <span class="n">volume_id</span> <span class="o">=</span> <span class="n">id_search</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">volume_path</span> <span class="o">=</span> <span class="n">id_search</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">volume_path</span> <span class="o">==</span> <span class="n">default_volume</span><span class="p">:</span>
+                    <span class="n">Command</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+                        <span class="p">[</span>
+                            <span class="s1">&#39;btrfs&#39;</span><span class="p">,</span> <span class="s1">&#39;subvolume&#39;</span><span class="p">,</span> <span class="s1">&#39;set-default&#39;</span><span class="p">,</span>
+                            <span class="n">volume_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mountpoint</span>
+                        <span class="p">]</span>
+                    <span class="p">)</span>
+                    <span class="k">return</span>
+
+        <span class="k">raise</span> <span class="n">KiwiVolumeRootIDError</span><span class="p">(</span>
+            <span class="s1">&#39;Failed to find btrfs volume: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">default_volume</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_xml_pretty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">toplevel_element</span><span class="p">):</span>
+        <span class="n">xml_data_unformatted</span> <span class="o">=</span> <span class="n">ElementTree</span><span class="o">.</span><span class="n">tostring</span><span class="p">(</span>
+            <span class="n">toplevel_element</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span>
+        <span class="p">)</span>
+        <span class="n">xml_data_domtree</span> <span class="o">=</span> <span class="n">minidom</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span><span class="n">xml_data_unformatted</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">xml_data_domtree</span><span class="o">.</span><span class="n">toprettyxml</span><span class="p">(</span><span class="n">indent</span><span class="o">=</span><span class="s2">&quot;    &quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_create_snapshot_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="n">date_info</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">snapshot</span> <span class="o">=</span> <span class="n">ElementTree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;snapshot&#39;</span><span class="p">)</span>
+
+        <span class="n">snapshot_type</span> <span class="o">=</span> <span class="n">ElementTree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">snapshot</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">)</span>
+        <span class="n">snapshot_type</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;single&#39;</span>
+
+        <span class="n">snapshot_number</span> <span class="o">=</span> <span class="n">ElementTree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">snapshot</span><span class="p">,</span> <span class="s1">&#39;num&#39;</span><span class="p">)</span>
+        <span class="n">snapshot_number</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+
+        <span class="n">snapshot_description</span> <span class="o">=</span> <span class="n">ElementTree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">snapshot</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">)</span>
+        <span class="n">snapshot_description</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;first root filesystem&#39;</span>
+
+        <span class="n">snapshot_date</span> <span class="o">=</span> <span class="n">ElementTree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">snapshot</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">)</span>
+        <span class="n">snapshot_date</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">date_info</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">snapshot_info_file</span><span class="p">:</span>
+            <span class="n">snapshot_info_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_xml_pretty</span><span class="p">(</span><span class="n">snapshot</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_get_subvol_name_from_mountpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">volume_mount</span><span class="p">):</span>
+        <span class="n">subvol_name</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">volume_mount</span><span class="o">.</span><span class="n">mountpoint</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="mi">3</span><span class="p">:])</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_args</span><span class="p">[</span><span class="s1">&#39;root_is_snapshot&#39;</span><span class="p">]:</span>
+            <span class="n">subvol_name</span> <span class="o">=</span> <span class="n">subvol_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.snapshots/1/snapshot/&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normpath</span><span class="p">(</span><span class="n">subvol_name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">toplevel_mount</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Cleaning up </span><span class="si">%s</span><span class="s1"> instance&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">umount_volumes</span><span class="p">():</span>
+                <span class="n">Path</span><span class="o">.</span><span class="n">wipe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mountpoint</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/kiwi-logo.png" alt="Logo"/>
+            </a></p><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  <li><a href="../volume_manager.html">kiwi.volume_manager</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<h1 class="logo"><a href="../../../index.html">kiwi</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=SUSE&repo=kiwi&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/SUSE/kiwi">
+    <img
+        alt="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+        src="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Marcus Schäfer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/SUSE/kiwi" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,407 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kiwi.volume_manager.lvm &#8212; kiwi 8.25.5 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '8.25.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="top" title="kiwi 8.25.5 documentation" href="../../../index.html" />
+    <link rel="up" title="kiwi.volume_manager" href="../volume_manager.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for kiwi.volume_manager.lvm</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2015 SUSE Linux GmbH.  All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This file is part of kiwi.</span>
+<span class="c1">#</span>
+<span class="c1"># kiwi is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1"># (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># kiwi is distributed in the hope that it will be useful,</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1"># GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with kiwi.  If not, see &lt;http://www.gnu.org/licenses/&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># project</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">VolumeManagerBase</span>
+<span class="kn">from</span> <span class="nn">..command</span> <span class="k">import</span> <span class="n">Command</span>
+<span class="kn">from</span> <span class="nn">..mount_manager</span> <span class="k">import</span> <span class="n">MountManager</span>
+<span class="kn">from</span> <span class="nn">..storage.mapped_device</span> <span class="k">import</span> <span class="n">MappedDevice</span>
+<span class="kn">from</span> <span class="nn">..filesystem</span> <span class="k">import</span> <span class="n">FileSystem</span>
+<span class="kn">from</span> <span class="nn">..path</span> <span class="k">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">..logger</span> <span class="k">import</span> <span class="n">log</span>
+
+<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">KiwiVolumeGroupConflict</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="VolumeManagerLVM"><a class="viewcode-back" href="../../../api/kiwi.volume_manager.html#kiwi.volume_manager.lvm.VolumeManagerLVM">[docs]</a><span class="k">class</span> <span class="nc">VolumeManagerLVM</span><span class="p">(</span><span class="n">VolumeManagerBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implements LVM volume management</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="VolumeManagerLVM.post_init"><a class="viewcode-back" href="../../../api/kiwi.volume_manager.html#kiwi.volume_manager.lvm.VolumeManagerLVM.post_init">[docs]</a>    <span class="k">def</span> <span class="nf">post_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">custom_args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Post initialization method</span>
+
+<span class="sd">        Store custom lvm initialization arguments</span>
+
+<span class="sd">        :param list custom_args: custom lvm volume manager arguments</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">custom_args</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">custom_args</span> <span class="o">=</span> <span class="n">custom_args</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">custom_args</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="s1">&#39;root_label&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_args</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">custom_args</span><span class="p">[</span><span class="s1">&#39;root_label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ROOT&#39;</span>
+        <span class="k">if</span> <span class="s1">&#39;image_type&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_args</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">custom_args</span><span class="p">[</span><span class="s1">&#39;image_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_filesystem_args</span><span class="p">[</span><span class="s1">&#39;mount_options&#39;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mount_options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_filesystem_args</span><span class="p">[</span><span class="s1">&#39;mount_options&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mount_options</span> <span class="o">=</span> <span class="s1">&#39;defaults&#39;</span></div>
+
+<div class="viewcode-block" id="VolumeManagerLVM.get_device"><a class="viewcode-back" href="../../../api/kiwi.volume_manager.html#kiwi.volume_manager.lvm.VolumeManagerLVM.get_device">[docs]</a>    <span class="k">def</span> <span class="nf">get_device</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Dictionary of MappedDevice instances per volume</span>
+
+<span class="sd">        Note: The mapping requires an explicit create_volumes() call</span>
+
+<span class="sd">        :return: root plus volume device map</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">device_map</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">volume_name</span><span class="p">,</span> <span class="n">volume_node</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">volume_map</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="n">volume_name</span> <span class="o">==</span> <span class="s1">&#39;LVRoot&#39;</span><span class="p">:</span>
+                <span class="c1"># LVRoot volume device takes precedence over the</span>
+                <span class="c1"># root partition device from the disk. Therefore use</span>
+                <span class="c1"># the same key to put them on the same level</span>
+                <span class="n">volume_name</span> <span class="o">=</span> <span class="s1">&#39;root&#39;</span>
+            <span class="n">device_map</span><span class="p">[</span><span class="n">volume_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">MappedDevice</span><span class="p">(</span>
+                <span class="n">device</span><span class="o">=</span><span class="n">volume_node</span><span class="p">,</span> <span class="n">device_provider</span><span class="o">=</span><span class="bp">self</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">device_map</span></div>
+
+<div class="viewcode-block" id="VolumeManagerLVM.setup"><a class="viewcode-back" href="../../../api/kiwi.volume_manager.html#kiwi.volume_manager.lvm.VolumeManagerLVM.setup">[docs]</a>    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">volume_group_name</span><span class="o">=</span><span class="s1">&#39;systemVG&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Setup lvm volume management</span>
+
+<span class="sd">        In case of LVM a new volume group is created on a PV</span>
+<span class="sd">        initialized storage device</span>
+
+<span class="sd">        :param string name: volume group name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_mountpoint</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_volume_group_in_use_on_host_system</span><span class="p">(</span><span class="n">volume_group_name</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">KiwiVolumeGroupConflict</span><span class="p">(</span>
+                <span class="s1">&#39;Requested volume group </span><span class="si">%s</span><span class="s1"> is in use on this host&#39;</span> <span class="o">%</span>
+                <span class="n">volume_group_name</span>
+            <span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s1">&#39;Creating volume group </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">volume_group_name</span>
+        <span class="p">)</span>
+        <span class="n">Command</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="n">command</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;vgremove&#39;</span><span class="p">,</span> <span class="s1">&#39;--force&#39;</span><span class="p">,</span> <span class="n">volume_group_name</span><span class="p">],</span>
+            <span class="n">raise_on_error</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+        <span class="n">Command</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;pvcreate&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">])</span>
+        <span class="n">Command</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;vgcreate&#39;</span><span class="p">,</span> <span class="n">volume_group_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">volume_group</span> <span class="o">=</span> <span class="n">volume_group_name</span></div>
+
+<div class="viewcode-block" id="VolumeManagerLVM.create_volumes"><a class="viewcode-back" href="../../../api/kiwi.volume_manager.html#kiwi.volume_manager.lvm.VolumeManagerLVM.create_volumes">[docs]</a>    <span class="k">def</span> <span class="nf">create_volumes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filesystem_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create configured lvm volumes and filesystems</span>
+
+<span class="sd">        All volumes receive the same filesystem</span>
+
+<span class="sd">        :param string filesystem_name: volumes filesystem name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s1">&#39;Creating volumes(</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="n">filesystem_name</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_volume_paths_in_root_dir</span><span class="p">()</span>
+
+        <span class="n">canonical_volume_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_canonical_volume_list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">volume</span> <span class="ow">in</span> <span class="n">canonical_volume_list</span><span class="o">.</span><span class="n">volumes</span><span class="p">:</span>
+            <span class="p">[</span><span class="n">size_type</span><span class="p">,</span> <span class="n">volume_mbsize</span><span class="p">]</span> <span class="o">=</span> <span class="n">volume</span><span class="o">.</span><span class="n">size</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+            <span class="n">volume_mbsize</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_volume_mbsize</span><span class="p">(</span>
+                <span class="n">volume_mbsize</span><span class="p">,</span>
+                <span class="n">size_type</span><span class="p">,</span>
+                <span class="n">volume</span><span class="o">.</span><span class="n">realpath</span><span class="p">,</span>
+                <span class="n">filesystem_name</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">custom_args</span><span class="p">[</span><span class="s1">&#39;image_type&#39;</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s1">&#39;--&gt; volume </span><span class="si">%s</span><span class="s1"> with </span><span class="si">%s</span><span class="s1"> MB&#39;</span><span class="p">,</span> <span class="n">volume</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">volume_mbsize</span>
+            <span class="p">)</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="s1">&#39;lvcreate&#39;</span><span class="p">,</span> <span class="s1">&#39;-L&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="p">(</span><span class="n">volume_mbsize</span><span class="p">),</span> <span class="s1">&#39;-n&#39;</span><span class="p">,</span>
+                    <span class="n">volume</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume_group</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_to_volume_map</span><span class="p">(</span><span class="n">volume</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_create_filesystem</span><span class="p">(</span>
+                <span class="n">volume</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">filesystem_name</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_to_mount_list</span><span class="p">(</span>
+                <span class="n">volume</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">volume</span><span class="o">.</span><span class="n">realpath</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">canonical_volume_list</span><span class="o">.</span><span class="n">full_size_volume</span><span class="p">:</span>
+            <span class="n">full_size_volume</span> <span class="o">=</span> <span class="n">canonical_volume_list</span><span class="o">.</span><span class="n">full_size_volume</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--&gt; fullsize volume </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">full_size_volume</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="s1">&#39;lvcreate&#39;</span><span class="p">,</span> <span class="s1">&#39;-l&#39;</span><span class="p">,</span> <span class="s1">&#39;+100</span><span class="si">%F</span><span class="s1">REE&#39;</span><span class="p">,</span> <span class="s1">&#39;-n&#39;</span><span class="p">,</span> <span class="n">full_size_volume</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">volume_group</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_to_volume_map</span><span class="p">(</span><span class="n">full_size_volume</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_create_filesystem</span><span class="p">(</span>
+                <span class="n">full_size_volume</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">filesystem_name</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_to_mount_list</span><span class="p">(</span>
+                <span class="n">full_size_volume</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">full_size_volume</span><span class="o">.</span><span class="n">realpath</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="VolumeManagerLVM.get_fstab"><a class="viewcode-back" href="../../../api/kiwi.volume_manager.html#kiwi.volume_manager.lvm.VolumeManagerLVM.get_fstab">[docs]</a>    <span class="k">def</span> <span class="nf">get_fstab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">persistency_type</span><span class="p">,</span> <span class="n">filesystem_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Implements creation of the fstab entries. The method</span>
+<span class="sd">        returns a list of fstab compatible entries</span>
+
+<span class="sd">        :param string persistency_type: unused</span>
+<span class="sd">        :param string filesystem_name: volumes filesystem name</span>
+
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fstab_entries</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">volume_mount</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mount_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;LVRoot&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">volume_mount</span><span class="o">.</span><span class="n">device</span><span class="p">:</span>
+                <span class="n">mount_path</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">volume_mount</span><span class="o">.</span><span class="n">mountpoint</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="mi">3</span><span class="p">:])</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">mount_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">):</span>
+                    <span class="n">mount_path</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">mount_path</span>
+                <span class="n">fstab_entry</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="n">volume_mount</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">mount_path</span><span class="p">,</span> <span class="n">filesystem_name</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">mount_options</span><span class="p">,</span> <span class="s1">&#39;1 2&#39;</span>
+                    <span class="p">]</span>
+                <span class="p">)</span>
+                <span class="n">fstab_entries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fstab_entry</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">fstab_entries</span></div>
+
+<div class="viewcode-block" id="VolumeManagerLVM.get_volumes"><a class="viewcode-back" href="../../../api/kiwi.volume_manager.html#kiwi.volume_manager.lvm.VolumeManagerLVM.get_volumes">[docs]</a>    <span class="k">def</span> <span class="nf">get_volumes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return dict of volumes</span>
+
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">volumes</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">volume_mount</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mount_list</span><span class="p">:</span>
+            <span class="n">mount_path</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">volume_mount</span><span class="o">.</span><span class="n">mountpoint</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="mi">3</span><span class="p">:])</span>
+            <span class="k">if</span> <span class="n">mount_path</span><span class="p">:</span>
+                <span class="n">volumes</span><span class="p">[</span><span class="n">mount_path</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mount_options</span>
+        <span class="k">return</span> <span class="n">volumes</span></div>
+
+<div class="viewcode-block" id="VolumeManagerLVM.mount_volumes"><a class="viewcode-back" href="../../../api/kiwi.volume_manager.html#kiwi.volume_manager.lvm.VolumeManagerLVM.mount_volumes">[docs]</a>    <span class="k">def</span> <span class="nf">mount_volumes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Mount lvm volumes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">volume_mount</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mount_list</span><span class="p">:</span>
+            <span class="n">Path</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">volume_mount</span><span class="o">.</span><span class="n">mountpoint</span><span class="p">)</span>
+            <span class="n">volume_mount</span><span class="o">.</span><span class="n">mount</span><span class="p">(</span>
+                <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mount_options</span><span class="p">]</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="VolumeManagerLVM.umount_volumes"><a class="viewcode-back" href="../../../api/kiwi.volume_manager.html#kiwi.volume_manager.lvm.VolumeManagerLVM.umount_volumes">[docs]</a>    <span class="k">def</span> <span class="nf">umount_volumes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Umount lvm volumes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">all_volumes_umounted</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">for</span> <span class="n">volume_mount</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mount_list</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">volume_mount</span><span class="o">.</span><span class="n">is_mounted</span><span class="p">():</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">volume_mount</span><span class="o">.</span><span class="n">umount</span><span class="p">():</span>
+                    <span class="n">all_volumes_umounted</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="n">all_volumes_umounted</span></div>
+
+    <span class="k">def</span> <span class="nf">_create_filesystem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">volume_name</span><span class="p">,</span> <span class="n">filesystem_name</span><span class="p">):</span>
+        <span class="n">device_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume_map</span><span class="p">[</span><span class="n">volume_name</span><span class="p">]</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">volume_name</span> <span class="o">==</span> <span class="s1">&#39;LVRoot&#39;</span><span class="p">:</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_args</span><span class="p">[</span><span class="s1">&#39;root_label&#39;</span><span class="p">]</span>
+        <span class="n">filesystem</span> <span class="o">=</span> <span class="n">FileSystem</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">filesystem_name</span><span class="p">,</span>
+            <span class="n">device_provider</span><span class="o">=</span><span class="n">MappedDevice</span><span class="p">(</span>
+                <span class="n">device</span><span class="o">=</span><span class="n">device_node</span><span class="p">,</span> <span class="n">device_provider</span><span class="o">=</span><span class="bp">self</span>
+            <span class="p">),</span>
+            <span class="n">custom_args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">custom_filesystem_args</span>
+        <span class="p">)</span>
+        <span class="n">filesystem</span><span class="o">.</span><span class="n">create_on_device</span><span class="p">(</span>
+            <span class="n">label</span><span class="o">=</span><span class="n">label</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_add_to_mount_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">volume_name</span><span class="p">,</span> <span class="n">realpath</span><span class="p">):</span>
+        <span class="n">device_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume_map</span><span class="p">[</span><span class="n">volume_name</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">volume_name</span> <span class="o">==</span> <span class="s1">&#39;LVRoot&#39;</span><span class="p">:</span>
+            <span class="c1"># root volume must be first in the list</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mount_list</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
+                <span class="mi">0</span><span class="p">,</span> <span class="n">MountManager</span><span class="p">(</span>
+                    <span class="n">device</span><span class="o">=</span><span class="n">device_node</span><span class="p">,</span>
+                    <span class="n">mountpoint</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mountpoint</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mount_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">MountManager</span><span class="p">(</span>
+                    <span class="n">device</span><span class="o">=</span><span class="n">device_node</span><span class="p">,</span>
+                    <span class="n">mountpoint</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mountpoint</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">realpath</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_add_to_volume_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">volume_name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">volume_map</span><span class="p">[</span><span class="n">volume_name</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">[</span><span class="s1">&#39;/dev/&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume_group</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="n">volume_name</span><span class="p">]</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_volume_group_in_use_on_host_system</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">volume_group_name</span><span class="p">):</span>
+        <span class="n">vgs_call</span> <span class="o">=</span> <span class="n">Command</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="p">[</span><span class="s1">&#39;vgs&#39;</span><span class="p">,</span> <span class="s1">&#39;--noheadings&#39;</span><span class="p">,</span> <span class="s1">&#39;-o&#39;</span><span class="p">,</span> <span class="s1">&#39;vg_name&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">host_volume_group_name</span> <span class="ow">in</span> <span class="n">vgs_call</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">volume_group_name</span> <span class="ow">in</span> <span class="n">host_volume_group_name</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume_group</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Cleaning up </span><span class="si">%s</span><span class="s1"> instance&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">umount_volumes</span><span class="p">():</span>
+                <span class="n">Path</span><span class="o">.</span><span class="n">wipe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mountpoint</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">Command</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;vgchange&#39;</span><span class="p">,</span> <span class="s1">&#39;-an&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume_group</span><span class="p">])</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="s1">&#39;volume group </span><span class="si">%s</span><span class="s1"> still busy&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume_group</span>
+                    <span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/kiwi-logo.png" alt="Logo"/>
+            </a></p><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  <li><a href="../volume_manager.html">kiwi.volume_manager</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<h1 class="logo"><a href="../../../index.html">kiwi</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=SUSE&repo=kiwi&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/SUSE/kiwi">
+    <img
+        alt="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+        src="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Marcus Schäfer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/SUSE/kiwi" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

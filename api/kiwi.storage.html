@@ -1,0 +1,992 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kiwi.storage Package &#8212; kiwi 8.25.5 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '8.25.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="kiwi 8.25.5 documentation" href="../index.html" />
+    <link rel="up" title="API Documentation 8.25.5" href="kiwi.html" />
+    <link rel="next" title="kiwi.storage.subformat Package" href="kiwi.storage.subformat.html" />
+    <link rel="prev" title="kiwi.repository.template Package" href="kiwi.repository.template.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="kiwi-storage-package">
+<h1>kiwi.storage Package<a class="headerlink" href="#kiwi-storage-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="kiwi.storage.subformat.html">kiwi.storage.subformat Package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="kiwi.storage.subformat.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="kiwi.storage.subformat.template.html">kiwi.storage.subformat.template Package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="kiwi.storage.subformat.template.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kiwi.storage.subformat.template.html#module-kiwi.storage.subformat.template.vmware_settings"><code class="docutils literal"><span class="pre">kiwi.storage.subformat.template.vmware_settings</span></code> Module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kiwi.storage.subformat.template.html#module-kiwi.storage.subformat.template">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="kiwi.storage.subformat.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kiwi.storage.subformat.html#module-kiwi.storage.subformat.base"><code class="docutils literal"><span class="pre">kiwi.storage.subformat.base</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kiwi.storage.subformat.html#module-kiwi.storage.subformat.gce"><code class="docutils literal"><span class="pre">kiwi.storage.subformat.gce</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kiwi.storage.subformat.html#module-kiwi.storage.subformat.qcow2"><code class="docutils literal"><span class="pre">kiwi.storage.subformat.qcow2</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kiwi.storage.subformat.html#module-kiwi.storage.subformat.vhd"><code class="docutils literal"><span class="pre">kiwi.storage.subformat.vhd</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kiwi.storage.subformat.html#module-kiwi.storage.subformat.vhdfixed"><code class="docutils literal"><span class="pre">kiwi.storage.subformat.vhdfixed</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kiwi.storage.subformat.html#module-kiwi.storage.subformat.vmdk"><code class="docutils literal"><span class="pre">kiwi.storage.subformat.vmdk</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kiwi.storage.subformat.html#module-kiwi.storage.subformat">Module Contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-kiwi.storage.device_provider">
+<span id="kiwi-storage-device-provider-module"></span><h2><a class="reference internal" href="#module-kiwi.storage.device_provider" title="kiwi.storage.device_provider"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.storage.device_provider</span></code></a> Module<a class="headerlink" href="#module-kiwi.storage.device_provider" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.storage.device_provider.DeviceProvider">
+<em class="property">class </em><code class="descclassname">kiwi.storage.device_provider.</code><code class="descname">DeviceProvider</code><a class="reference internal" href="../_modules/kiwi/storage/device_provider.html#DeviceProvider"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.device_provider.DeviceProvider" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Base class for any class providing storage devices</p>
+<dl class="method">
+<dt id="kiwi.storage.device_provider.DeviceProvider.get_byte_size">
+<code class="descname">get_byte_size</code><span class="sig-paren">(</span><em>device</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/device_provider.html#DeviceProvider.get_byte_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.device_provider.DeviceProvider.get_byte_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Size of device in bytes</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>device</strong> (<em>string</em>) &#8211; node name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.storage.device_provider.DeviceProvider.get_device">
+<code class="descname">get_device</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/device_provider.html#DeviceProvider.get_device"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.device_provider.DeviceProvider.get_device" title="Permalink to this definition">¶</a></dt>
+<dd><p>Representation of device nodes</p>
+<p>Could provide one ore more devices representing the storage
+Implementation in specialized device provider class</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.storage.device_provider.DeviceProvider.get_uuid">
+<code class="descname">get_uuid</code><span class="sig-paren">(</span><em>device</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/device_provider.html#DeviceProvider.get_uuid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.device_provider.DeviceProvider.get_uuid" title="Permalink to this definition">¶</a></dt>
+<dd><p>UUID of device</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>device</strong> (<em>string</em>) &#8211; node name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.storage.device_provider.DeviceProvider.is_loop">
+<code class="descname">is_loop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/device_provider.html#DeviceProvider.is_loop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.device_provider.DeviceProvider.is_loop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if device provider is loop based</p>
+<p>By default this is always False and needs an implementation
+in the the specialized device provider class</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.storage.disk">
+<span id="kiwi-storage-disk-module"></span><h2><a class="reference internal" href="#module-kiwi.storage.disk" title="kiwi.storage.disk"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.storage.disk</span></code></a> Module<a class="headerlink" href="#module-kiwi.storage.disk" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.storage.disk.Disk">
+<em class="property">class </em><code class="descclassname">kiwi.storage.disk.</code><code class="descname">Disk</code><span class="sig-paren">(</span><em>table_type</em>, <em>storage_provider</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/disk.html#Disk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.disk.Disk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kiwi.storage.device_provider.DeviceProvider" title="kiwi.storage.device_provider.DeviceProvider"><code class="xref py py-class docutils literal"><span class="pre">kiwi.storage.device_provider.DeviceProvider</span></code></a></p>
+<p>Implements storage disk and partition table setup</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">storage_provider</span></code></dt>
+<dd><p class="first last">Instance of class based on DeviceProvider</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">partition_map</span></code></dt>
+<dd><p class="first last">Dict of internal partition names to device node name</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">public_partition_id_map</span></code></dt>
+<dd><p class="first last">Dict of public partition names to partition number</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">partition_id_map</span></code></dt>
+<dd><p class="first last">Dict of internal partition names to partition number</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">is_mapped</span></code></dt>
+<dd><p class="first last">Indicate if partitions are kpartx mapped</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">partitioner</span></code></dt>
+<dd><p class="first last">Instance of Partitioner</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">table_type</span></code></dt>
+<dd><p class="first last">Partition table type</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.storage.disk.Disk.activate_boot_partition">
+<code class="descname">activate_boot_partition</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/disk.html#Disk.activate_boot_partition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.disk.Disk.activate_boot_partition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Activate boot partition</p>
+<p>Note: not all Partitioner instances supports this</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.storage.disk.Disk.create_boot_partition">
+<code class="descname">create_boot_partition</code><span class="sig-paren">(</span><em>mbsize</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/disk.html#Disk.create_boot_partition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.disk.Disk.create_boot_partition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create boot partition</p>
+<p>Populates kiwi_BootPart(id)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mbsize</strong> (<em>int</em>) &#8211; partition size</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.storage.disk.Disk.create_efi_csm_partition">
+<code class="descname">create_efi_csm_partition</code><span class="sig-paren">(</span><em>mbsize</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/disk.html#Disk.create_efi_csm_partition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.disk.Disk.create_efi_csm_partition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create EFI bios grub partition</p>
+<p>Populates kiwi_BiosGrub(id)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mbsize</strong> (<em>int</em>) &#8211; partition size</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.storage.disk.Disk.create_efi_partition">
+<code class="descname">create_efi_partition</code><span class="sig-paren">(</span><em>mbsize</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/disk.html#Disk.create_efi_partition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.disk.Disk.create_efi_partition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create EFI partition</p>
+<p>Populates kiwi_EfiPart(id)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mbsize</strong> (<em>int</em>) &#8211; partition size</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.storage.disk.Disk.create_hybrid_mbr">
+<code class="descname">create_hybrid_mbr</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/disk.html#Disk.create_hybrid_mbr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.disk.Disk.create_hybrid_mbr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turn partition table into a hybrid GPT/MBR table</p>
+<p>Note: only GPT tables supports this</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.storage.disk.Disk.create_prep_partition">
+<code class="descname">create_prep_partition</code><span class="sig-paren">(</span><em>mbsize</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/disk.html#Disk.create_prep_partition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.disk.Disk.create_prep_partition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create prep partition</p>
+<p>Populates kiwi_PrepPart(id)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mbsize</strong> (<em>int</em>) &#8211; partition size</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.storage.disk.Disk.create_root_lvm_partition">
+<code class="descname">create_root_lvm_partition</code><span class="sig-paren">(</span><em>mbsize</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/disk.html#Disk.create_root_lvm_partition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.disk.Disk.create_root_lvm_partition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create root partition for use with LVM</p>
+<p>Populates kiwi_RootPart(id) and kiwi_RootPartVol(LVRoot)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mbsize</strong> (<em>int</em>) &#8211; partition size</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.storage.disk.Disk.create_root_partition">
+<code class="descname">create_root_partition</code><span class="sig-paren">(</span><em>mbsize</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/disk.html#Disk.create_root_partition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.disk.Disk.create_root_partition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create root partition</p>
+<p>Populates kiwi_RootPart(id) and kiwi_BootPart(id) if no extra
+boot partition is requested</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mbsize</strong> (<em>int</em>) &#8211; partition size</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.storage.disk.Disk.create_root_raid_partition">
+<code class="descname">create_root_raid_partition</code><span class="sig-paren">(</span><em>mbsize</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/disk.html#Disk.create_root_raid_partition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.disk.Disk.create_root_raid_partition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create root partition for use with MD Raid</p>
+<p>Populates kiwi_RootPart(id) and kiwi_RaidPart(id) as well
+as the default raid device node at boot time which is
+configured to be kiwi_RaidDev(/dev/md0)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mbsize</strong> (<em>int</em>) &#8211; partition size</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.storage.disk.Disk.create_root_readonly_partition">
+<code class="descname">create_root_readonly_partition</code><span class="sig-paren">(</span><em>mbsize</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/disk.html#Disk.create_root_readonly_partition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.disk.Disk.create_root_readonly_partition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create root readonly partition for use with overlayfs</p>
+<p>Populates kiwi_ReadOnlyPart(id), the partition is meant to
+contain a squashfs readonly filesystem. The partition size
+should be the size of the squashfs filesystem in order to
+avoid wasting disk space</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mbsize</strong> (<em>int</em>) &#8211; partition size</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.storage.disk.Disk.create_vboot_partition">
+<code class="descname">create_vboot_partition</code><span class="sig-paren">(</span><em>mbsize</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/disk.html#Disk.create_vboot_partition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.disk.Disk.create_vboot_partition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create virtual boot partition</p>
+<p>Populates kiwi_VbootPart(id)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mbsize</strong> (<em>int</em>) &#8211; partition size</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.storage.disk.Disk.get_device">
+<code class="descname">get_device</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/disk.html#Disk.get_device"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.disk.Disk.get_device" title="Permalink to this definition">¶</a></dt>
+<dd><p>Names of partition devices</p>
+<p>Note that the mapping requires an explicit map() call</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">instances of MappedDevice</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.storage.disk.Disk.get_public_partition_id_map">
+<code class="descname">get_public_partition_id_map</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/disk.html#Disk.get_public_partition_id_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.disk.Disk.get_public_partition_id_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Populated partition name to number map</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.storage.disk.Disk.is_loop">
+<code class="descname">is_loop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/disk.html#Disk.is_loop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.disk.Disk.is_loop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if storage provider is loop based</p>
+<p>The information is taken from the storage provider. If
+the storage provider is loop based the disk is it too</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.storage.disk.Disk.map_partitions">
+<code class="descname">map_partitions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/disk.html#Disk.map_partitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.disk.Disk.map_partitions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Map/Activate partitions</p>
+<p>In order to access the partitions through a device node it is
+required to map them if the storage provider is loop based</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.storage.disk.Disk.wipe">
+<code class="descname">wipe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/disk.html#Disk.wipe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.disk.Disk.wipe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zap (destroy) any GPT and MBR data structures if present
+For DASD disks create a new VTOC table</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.storage.loop_device">
+<span id="kiwi-storage-loop-device-module"></span><h2><a class="reference internal" href="#module-kiwi.storage.loop_device" title="kiwi.storage.loop_device"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.storage.loop_device</span></code></a> Module<a class="headerlink" href="#module-kiwi.storage.loop_device" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.storage.loop_device.LoopDevice">
+<em class="property">class </em><code class="descclassname">kiwi.storage.loop_device.</code><code class="descname">LoopDevice</code><span class="sig-paren">(</span><em>filename</em>, <em>filesize_mbytes=None</em>, <em>blocksize_bytes=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/loop_device.html#LoopDevice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.loop_device.LoopDevice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kiwi.storage.device_provider.DeviceProvider" title="kiwi.storage.device_provider.DeviceProvider"><code class="xref py py-class docutils literal"><span class="pre">kiwi.storage.device_provider.DeviceProvider</span></code></a></p>
+<p>Create and manage loop device file for block operations</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">node_name</span></code></dt>
+<dd><p class="first last">loop device node name</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">filename</span></code></dt>
+<dd><p class="first last">loop file name to create</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">filesize_mbytes</span></code></dt>
+<dd><p class="first last">size of the loop file</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">blocksize_bytes</span></code></dt>
+<dd><p class="first last">blocksize used in loop driver</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.storage.loop_device.LoopDevice.create">
+<code class="descname">create</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/loop_device.html#LoopDevice.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.loop_device.LoopDevice.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup a loop device of the specified size and blocksize</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.storage.loop_device.LoopDevice.get_device">
+<code class="descname">get_device</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/loop_device.html#LoopDevice.get_device"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.loop_device.LoopDevice.get_device" title="Permalink to this definition">¶</a></dt>
+<dd><p>Device node name</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">device node name</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.storage.loop_device.LoopDevice.is_loop">
+<code class="descname">is_loop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/loop_device.html#LoopDevice.is_loop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.loop_device.LoopDevice.is_loop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Always True</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.storage.luks_device">
+<span id="kiwi-storage-luks-device-module"></span><h2><a class="reference internal" href="#module-kiwi.storage.luks_device" title="kiwi.storage.luks_device"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.storage.luks_device</span></code></a> Module<a class="headerlink" href="#module-kiwi.storage.luks_device" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.storage.luks_device.LuksDevice">
+<em class="property">class </em><code class="descclassname">kiwi.storage.luks_device.</code><code class="descname">LuksDevice</code><span class="sig-paren">(</span><em>storage_provider</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/luks_device.html#LuksDevice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.luks_device.LuksDevice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kiwi.storage.device_provider.DeviceProvider" title="kiwi.storage.device_provider.DeviceProvider"><code class="xref py py-class docutils literal"><span class="pre">kiwi.storage.device_provider.DeviceProvider</span></code></a></p>
+<p>Implements luks setup on a storage device</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">storage_provider</span></code></dt>
+<dd><p class="first last">Instance of class based on DeviceProvider</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">luks_device</span></code></dt>
+<dd><p class="first last">LUKS device node name</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">luks_name</span></code></dt>
+<dd><p class="first last">LUKS map name, set to: luksRoot</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">option_map</span></code></dt>
+<dd><p class="first last">dict of distribution specific luks options</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.storage.luks_device.LuksDevice.create_crypto_luks">
+<code class="descname">create_crypto_luks</code><span class="sig-paren">(</span><em>passphrase</em>, <em>os=None</em>, <em>options=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/luks_device.html#LuksDevice.create_crypto_luks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.luks_device.LuksDevice.create_crypto_luks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create luks device. Please note the passphrase is readable
+at creation time of this image. Make sure your host system
+is secure while this process runs</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.storage.luks_device.LuksDevice.create_crypttab">
+<code class="descname">create_crypttab</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/luks_device.html#LuksDevice.create_crypttab"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.luks_device.LuksDevice.create_crypttab" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create crypttab, setting the UUID of the storage device</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.storage.luks_device.LuksDevice.get_device">
+<code class="descname">get_device</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/luks_device.html#LuksDevice.get_device"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.luks_device.LuksDevice.get_device" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instance of MappedDevice providing the luks device</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">mapped luks device</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#kiwi.storage.mapped_device.MappedDevice" title="kiwi.storage.mapped_device.MappedDevice">MappedDevice</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.storage.luks_device.LuksDevice.is_loop">
+<code class="descname">is_loop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/luks_device.html#LuksDevice.is_loop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.luks_device.LuksDevice.is_loop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if storage provider is loop based</p>
+<p>Return loop status from base storage provider</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.storage.mapped_device">
+<span id="kiwi-storage-mapped-device-module"></span><h2><a class="reference internal" href="#module-kiwi.storage.mapped_device" title="kiwi.storage.mapped_device"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.storage.mapped_device</span></code></a> Module<a class="headerlink" href="#module-kiwi.storage.mapped_device" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.storage.mapped_device.MappedDevice">
+<em class="property">class </em><code class="descclassname">kiwi.storage.mapped_device.</code><code class="descname">MappedDevice</code><span class="sig-paren">(</span><em>device</em>, <em>device_provider</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/mapped_device.html#MappedDevice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.mapped_device.MappedDevice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kiwi.storage.device_provider.DeviceProvider" title="kiwi.storage.device_provider.DeviceProvider"><code class="xref py py-class docutils literal"><span class="pre">kiwi.storage.device_provider.DeviceProvider</span></code></a></p>
+<p>Hold a reference on a single device</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">device_provider</span></code></dt>
+<dd><p class="first last">Instance of class based on DeviceProvider</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">device</span></code></dt>
+<dd><p class="first last">Device node name</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.storage.mapped_device.MappedDevice.get_device">
+<code class="descname">get_device</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/mapped_device.html#MappedDevice.get_device"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.mapped_device.MappedDevice.get_device" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mapped device node name</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">device node name</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.storage.mapped_device.MappedDevice.is_loop">
+<code class="descname">is_loop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/mapped_device.html#MappedDevice.is_loop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.mapped_device.MappedDevice.is_loop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if storage provider is loop based</p>
+<p>Return loop status from base storage provider</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.storage.raid_device">
+<span id="kiwi-storage-raid-device-module"></span><h2><a class="reference internal" href="#module-kiwi.storage.raid_device" title="kiwi.storage.raid_device"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.storage.raid_device</span></code></a> Module<a class="headerlink" href="#module-kiwi.storage.raid_device" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.storage.raid_device.RaidDevice">
+<em class="property">class </em><code class="descclassname">kiwi.storage.raid_device.</code><code class="descname">RaidDevice</code><span class="sig-paren">(</span><em>storage_provider</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/raid_device.html#RaidDevice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.raid_device.RaidDevice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kiwi.storage.device_provider.DeviceProvider" title="kiwi.storage.device_provider.DeviceProvider"><code class="xref py py-class docutils literal"><span class="pre">kiwi.storage.device_provider.DeviceProvider</span></code></a></p>
+<p>Implement raid setup on a storage device</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">storage_provider</span></code></dt>
+<dd><p class="first last">Instance of class based on DeviceProvider</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">raid_level_map</span></code></dt>
+<dd><p class="first last">dict mapping raid level name to number</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.storage.raid_device.RaidDevice.create_degraded_raid">
+<code class="descname">create_degraded_raid</code><span class="sig-paren">(</span><em>raid_level</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/raid_device.html#RaidDevice.create_degraded_raid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.raid_device.RaidDevice.create_degraded_raid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a raid array in degraded mode with one device missing.
+This only works in the raid levels 0(striping) and 1(mirroring)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>raid_level</strong> (<em>string</em>) &#8211; raid level name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.storage.raid_device.RaidDevice.create_raid_config">
+<code class="descname">create_raid_config</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/raid_device.html#RaidDevice.create_raid_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.raid_device.RaidDevice.create_raid_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create mdadm config file from mdadm request</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>string</em>) &#8211; config file name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.storage.raid_device.RaidDevice.get_device">
+<code class="descname">get_device</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/raid_device.html#RaidDevice.get_device"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.raid_device.RaidDevice.get_device" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instance of MappedDevice providing the raid device</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">mapped raid device</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#kiwi.storage.mapped_device.MappedDevice" title="kiwi.storage.mapped_device.MappedDevice">MappedDevice</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.storage.raid_device.RaidDevice.is_loop">
+<code class="descname">is_loop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/raid_device.html#RaidDevice.is_loop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.raid_device.RaidDevice.is_loop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if storage provider is loop based</p>
+<p>Return loop status from base storage provider</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.storage.setup">
+<span id="kiwi-storage-setup-module"></span><h2><a class="reference internal" href="#module-kiwi.storage.setup" title="kiwi.storage.setup"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.storage.setup</span></code></a> Module<a class="headerlink" href="#module-kiwi.storage.setup" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.storage.setup.DiskSetup">
+<em class="property">class </em><code class="descclassname">kiwi.storage.setup.</code><code class="descname">DiskSetup</code><span class="sig-paren">(</span><em>xml_state</em>, <em>root_dir</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/setup.html#DiskSetup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.setup.DiskSetup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Implement disk setup methods providing information required
+before building a disk image</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">configured_size</span></code></dt>
+<dd><p class="first last">Configured size setup</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">build_type_name</span></code></dt>
+<dd><p class="first last">Configured build type name</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">filesystem</span></code></dt>
+<dd><p class="first last">Configured filesystem name</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">bootpart_requested</span></code></dt>
+<dd><p class="first last">Configured request for a boot partition</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">bootpart_mbytes</span></code></dt>
+<dd><p class="first last">Configured boot partition size</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">mdraid</span></code></dt>
+<dd><p class="first last">Configured raid setup</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">luks</span></code></dt>
+<dd><p class="first last">Configured LUKS credentials</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">volume_manager</span></code></dt>
+<dd><p class="first last">Configured volume manager name</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">bootloader</span></code></dt>
+<dd><p class="first last">Configured bootloader</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">oemconfig</span></code></dt>
+<dd><p class="first last">Configured oemconfig section</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">volumes</span></code></dt>
+<dd><p class="first last">Configured volumes</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">firmware</span></code></dt>
+<dd><p class="first last">Instance of FirmWare</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">rootsize</span></code></dt>
+<dd><p class="first last">Instance of SystemSize</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">root_dir</span></code></dt>
+<dd><p class="first last">root directory path name</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">xml_state</span></code></dt>
+<dd><p class="first last">Instance of XMLState</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.storage.setup.DiskSetup.boot_partition_size">
+<code class="descname">boot_partition_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/setup.html#DiskSetup.boot_partition_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.setup.DiskSetup.boot_partition_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Size of the boot partition in mbytes</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">boot size mbytes</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.storage.setup.DiskSetup.get_boot_label">
+<code class="descname">get_boot_label</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/setup.html#DiskSetup.get_boot_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.setup.DiskSetup.get_boot_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filesystem Label to use for the boot partition</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">label name</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.storage.setup.DiskSetup.get_disksize_mbytes">
+<code class="descname">get_disksize_mbytes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/setup.html#DiskSetup.get_disksize_mbytes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.setup.DiskSetup.get_disksize_mbytes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Precalculate disk size requirements in mbytes</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">disk size mbytes</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.storage.setup.DiskSetup.get_efi_label">
+<code class="descname">get_efi_label</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/setup.html#DiskSetup.get_efi_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.setup.DiskSetup.get_efi_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filesystem Label to use for the EFI partition</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">label name</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.storage.setup.DiskSetup.get_root_label">
+<code class="descname">get_root_label</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/setup.html#DiskSetup.get_root_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.setup.DiskSetup.get_root_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filesystem Label to use for the root partition</p>
+<p>If not specified in the XML configuration the default
+root label is set to &#8216;ROOT&#8217;</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">label name</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.storage.setup.DiskSetup.need_boot_partition">
+<code class="descname">need_boot_partition</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/storage/setup.html#DiskSetup.need_boot_partition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.storage.setup.DiskSetup.need_boot_partition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decide if an extra boot partition is needed. This is done with
+the bootpartition attribute from the type, however if it is not
+set it depends on some other type configuration parameters if
+we need a boot partition or not</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.storage">
+<span id="module-contents"></span><h2>Module Contents<a class="headerlink" href="#module-kiwi.storage" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/kiwi-logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">kiwi.storage Package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-kiwi.storage.device_provider"><code class="docutils literal"><span class="pre">kiwi.storage.device_provider</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.storage.disk"><code class="docutils literal"><span class="pre">kiwi.storage.disk</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.storage.loop_device"><code class="docutils literal"><span class="pre">kiwi.storage.loop_device</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.storage.luks_device"><code class="docutils literal"><span class="pre">kiwi.storage.luks_device</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.storage.mapped_device"><code class="docutils literal"><span class="pre">kiwi.storage.mapped_device</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.storage.raid_device"><code class="docutils literal"><span class="pre">kiwi.storage.raid_device</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.storage.setup"><code class="docutils literal"><span class="pre">kiwi.storage.setup</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.storage">Module Contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="kiwi.html">API Documentation 8.25.5</a><ul>
+      <li>Previous: <a href="kiwi.repository.template.html" title="previous chapter">kiwi.repository.template Package</a></li>
+      <li>Next: <a href="kiwi.storage.subformat.html" title="next chapter">kiwi.storage.subformat Package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<h1 class="logo"><a href="../index.html">kiwi</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=SUSE&repo=kiwi&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/SUSE/kiwi">
+    <img
+        alt="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+        src="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Marcus Schäfer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/api/kiwi.storage.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/SUSE/kiwi" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

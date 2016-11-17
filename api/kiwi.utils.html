@@ -1,0 +1,429 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kiwi.utils Package &#8212; kiwi 8.25.5 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '8.25.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="kiwi 8.25.5 documentation" href="../index.html" />
+    <link rel="up" title="API Documentation 8.25.5" href="kiwi.html" />
+    <link rel="next" title="kiwi.volume_manager Package" href="kiwi.volume_manager.html" />
+    <link rel="prev" title="kiwi.tasks package" href="kiwi.tasks.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="kiwi-utils-package">
+<h1>kiwi.utils Package<a class="headerlink" href="#kiwi-utils-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-kiwi.utils.block">
+<span id="kiwi-utils-checksum-module"></span><h2><a class="reference internal" href="#module-kiwi.utils.checksum" title="kiwi.utils.checksum"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.utils.checksum</span></code></a> Module<a class="headerlink" href="#module-kiwi.utils.block" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.utils.block.BlockID">
+<em class="property">class </em><code class="descclassname">kiwi.utils.block.</code><code class="descname">BlockID</code><span class="sig-paren">(</span><em>device</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/utils/block.html#BlockID"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.utils.block.BlockID" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Get information from a block device</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">device</span></code></dt>
+<dd><p class="first last">block device node name name</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.utils.block.BlockID.get_blkid">
+<code class="descname">get_blkid</code><span class="sig-paren">(</span><em>id_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/utils/block.html#BlockID.get_blkid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.utils.block.BlockID.get_blkid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve information for specified metadata ID from block device</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>id_type</strong> (<em>string</em>) &#8211; metadata ID, see man blkid for details</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.utils.block.BlockID.get_filesystem">
+<code class="descname">get_filesystem</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/utils/block.html#BlockID.get_filesystem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.utils.block.BlockID.get_filesystem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve filesystem type from block device</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.utils.block.BlockID.get_label">
+<code class="descname">get_label</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/utils/block.html#BlockID.get_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.utils.block.BlockID.get_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve filesystem label from block device</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.utils.block.BlockID.get_uuid">
+<code class="descname">get_uuid</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/utils/block.html#BlockID.get_uuid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.utils.block.BlockID.get_uuid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve filesystem uuid from block device</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.utils.checksum">
+<span id="kiwi-utils-block-module"></span><h2><a class="reference internal" href="#module-kiwi.utils.block" title="kiwi.utils.block"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.utils.block</span></code></a> Module<a class="headerlink" href="#module-kiwi.utils.checksum" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.utils.checksum.Checksum">
+<em class="property">class </em><code class="descclassname">kiwi.utils.checksum.</code><code class="descname">Checksum</code><span class="sig-paren">(</span><em>source_filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/utils/checksum.html#Checksum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.utils.checksum.Checksum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Manage checksum creation for files</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">source_filename</span></code></dt>
+<dd><p class="first last">source file name to build checksum for</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">checksum_filename</span></code></dt>
+<dd><p class="first last">target file with checksum information</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.utils.checksum.Checksum.md5">
+<code class="descname">md5</code><span class="sig-paren">(</span><em>filename=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/utils/checksum.html#Checksum.md5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.utils.checksum.Checksum.md5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create md5 checksum</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>string</em>) &#8211; filename for checksum</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.utils.checksum.Checksum.sha256">
+<code class="descname">sha256</code><span class="sig-paren">(</span><em>filename=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/utils/checksum.html#Checksum.sha256"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.utils.checksum.Checksum.sha256" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create sha256 checksum</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>string</em>) &#8211; filename for checksum</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.utils.compress">
+<span id="kiwi-utils-compress-module"></span><h2><a class="reference internal" href="#module-kiwi.utils.compress" title="kiwi.utils.compress"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.utils.compress</span></code></a> Module<a class="headerlink" href="#module-kiwi.utils.compress" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.utils.compress.Compress">
+<em class="property">class </em><code class="descclassname">kiwi.utils.compress.</code><code class="descname">Compress</code><span class="sig-paren">(</span><em>source_filename</em>, <em>keep_source_on_compress=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/utils/compress.html#Compress"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.utils.compress.Compress" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>File compression / decompression</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">keep_source</span></code></dt>
+<dd><p class="first last">Request to keep the uncompressed source</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">source_filename</span></code></dt>
+<dd><p class="first last">Source file name to compress</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">supported_zipper</span></code></dt>
+<dd><p class="first last">List of supported compression tools</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">compressed_filename</span></code></dt>
+<dd><p class="first last">Compressed file name path with compression suffix</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">uncompressed_filename</span></code></dt>
+<dd><p class="first last">Uncompressed file name path</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.utils.compress.Compress.get_format">
+<code class="descname">get_format</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/utils/compress.html#Compress.get_format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.utils.compress.Compress.get_format" title="Permalink to this definition">¶</a></dt>
+<dd><p>Detect compression format</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">compression format name</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.utils.compress.Compress.gzip">
+<code class="descname">gzip</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/utils/compress.html#Compress.gzip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.utils.compress.Compress.gzip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create gzip(max compression) compressed file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.utils.compress.Compress.uncompress">
+<code class="descname">uncompress</code><span class="sig-paren">(</span><em>temporary=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/utils/compress.html#Compress.uncompress"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.utils.compress.Compress.uncompress" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uncompress with format autodetection</p>
+<p>By default the original source file will be changed into
+the uncompressed variant. If temporary is set to True
+a temporary file is created instead</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>temporary</strong> (<em>bool</em>) &#8211; uncompress to a temporary file</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.utils.compress.Compress.xz">
+<code class="descname">xz</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/utils/compress.html#Compress.xz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.utils.compress.Compress.xz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create XZ compressed file</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.utils.sync">
+<span id="kiwi-utils-sync-module"></span><h2><a class="reference internal" href="#module-kiwi.utils.sync" title="kiwi.utils.sync"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.utils.sync</span></code></a> Module<a class="headerlink" href="#module-kiwi.utils.sync" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.utils.sync.DataSync">
+<em class="property">class </em><code class="descclassname">kiwi.utils.sync.</code><code class="descname">DataSync</code><span class="sig-paren">(</span><em>source_dir</em>, <em>target_dir</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/utils/sync.html#DataSync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.utils.sync.DataSync" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Sync data from a source directory to a target directory
+using the rsync protocol</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">source_dir</span></code></dt>
+<dd><p class="first last">source directory path name</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">target_dir</span></code></dt>
+<dd><p class="first last">target directory path name</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.utils.sync.DataSync.sync_data">
+<code class="descname">sync_data</code><span class="sig-paren">(</span><em>options=None</em>, <em>exclude=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/utils/sync.html#DataSync.sync_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.utils.sync.DataSync.sync_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sync data from source to target using rsync</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>options</strong> (<em>list</em>) &#8211; rsync options</li>
+<li><strong>exclude</strong> (<em>list</em>) &#8211; file patterns to exclude</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.utils.sync.DataSync.target_supports_extended_attributes">
+<code class="descname">target_supports_extended_attributes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/utils/sync.html#DataSync.target_supports_extended_attributes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.utils.sync.DataSync.target_supports_extended_attributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the target directory supports extended filesystem
+attributes</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.utils">
+<span id="module-contents"></span><h2>Module Contents<a class="headerlink" href="#module-kiwi.utils" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/kiwi-logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">kiwi.utils Package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-kiwi.utils.block"><code class="docutils literal"><span class="pre">kiwi.utils.checksum</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.utils.checksum"><code class="docutils literal"><span class="pre">kiwi.utils.block</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.utils.compress"><code class="docutils literal"><span class="pre">kiwi.utils.compress</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.utils.sync"><code class="docutils literal"><span class="pre">kiwi.utils.sync</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.utils">Module Contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="kiwi.html">API Documentation 8.25.5</a><ul>
+      <li>Previous: <a href="kiwi.tasks.html" title="previous chapter">kiwi.tasks package</a></li>
+      <li>Next: <a href="kiwi.volume_manager.html" title="next chapter">kiwi.volume_manager Package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<h1 class="logo"><a href="../index.html">kiwi</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=SUSE&repo=kiwi&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/SUSE/kiwi">
+    <img
+        alt="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+        src="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Marcus Schäfer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/api/kiwi.utils.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/SUSE/kiwi" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

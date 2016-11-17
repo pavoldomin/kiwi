@@ -1,0 +1,424 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kiwi.bootloader.install.grub2 &#8212; kiwi 8.25.5 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '8.25.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="top" title="kiwi 8.25.5 documentation" href="../../../../index.html" />
+    <link rel="up" title="kiwi.bootloader.install" href="../install.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for kiwi.bootloader.install.grub2</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2015 SUSE Linux GmbH.  All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This file is part of kiwi.</span>
+<span class="c1">#</span>
+<span class="c1"># kiwi is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1"># (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># kiwi is distributed in the hope that it will be useful,</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1"># GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with kiwi.  If not, see &lt;http://www.gnu.org/licenses/&gt;</span>
+<span class="c1">#</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">platform</span>
+
+<span class="c1"># project</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">BootLoaderInstallBase</span>
+<span class="kn">from</span> <span class="nn">...command</span> <span class="k">import</span> <span class="n">Command</span>
+<span class="kn">from</span> <span class="nn">...logger</span> <span class="k">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">...defaults</span> <span class="k">import</span> <span class="n">Defaults</span>
+<span class="kn">from</span> <span class="nn">...mount_manager</span> <span class="k">import</span> <span class="n">MountManager</span>
+
+<span class="kn">from</span> <span class="nn">...exceptions</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">KiwiBootLoaderGrubInstallError</span><span class="p">,</span>
+    <span class="n">KiwiBootLoaderGrubPlatformError</span><span class="p">,</span>
+    <span class="n">KiwiBootLoaderGrubDataError</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="BootLoaderInstallGrub2"><a class="viewcode-back" href="../../../../api/kiwi.bootloader.install.html#kiwi.bootloader.install.grub2.BootLoaderInstallGrub2">[docs]</a><span class="k">class</span> <span class="nc">BootLoaderInstallGrub2</span><span class="p">(</span><span class="n">BootLoaderInstallBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    grub2 bootloader installation</span>
+
+<span class="sd">    Attributes</span>
+
+<span class="sd">    * :attr:`arch`</span>
+<span class="sd">        platform.machine</span>
+
+<span class="sd">    * :attr:`firmware`</span>
+<span class="sd">        Instance of FirmWare</span>
+
+<span class="sd">    * :attr:`efi_mount`</span>
+<span class="sd">        Instance of MountManager for EFI device</span>
+
+<span class="sd">    * :attr:`root_mount`</span>
+<span class="sd">        Instance of MountManager for root device</span>
+
+<span class="sd">    * :attr:`boot_mount`</span>
+<span class="sd">        Instance of MountManager for boot device</span>
+
+<span class="sd">    * :attr:`device_mount`</span>
+<span class="sd">        Instance of MountManager for /dev tree</span>
+
+<span class="sd">    * :attr:`proc_mount`</span>
+<span class="sd">        Instance of MountManager for proc</span>
+
+<span class="sd">    * :attr:`sysfs_mount`</span>
+<span class="sd">        Instance of MountManager for sysfs</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="BootLoaderInstallGrub2.post_init"><a class="viewcode-back" href="../../../../api/kiwi.bootloader.install.html#kiwi.bootloader.install.grub2.BootLoaderInstallGrub2.post_init">[docs]</a>    <span class="k">def</span> <span class="nf">post_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">custom_args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        grub2 post initialization method</span>
+
+<span class="sd">        Setup class attributes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">arch</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">machine</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">custom_args</span> <span class="o">=</span> <span class="n">custom_args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">install_arguments</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">firmware</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">efi_mount</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_mount</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">boot_mount</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device_mount</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">proc_mount</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sysfs_mount</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">volumes</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">volumes_mount</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target_removable</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">custom_args</span> <span class="ow">and</span> <span class="s1">&#39;target_removable&#39;</span> <span class="ow">in</span> <span class="n">custom_args</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">target_removable</span> <span class="o">=</span> <span class="n">custom_args</span><span class="p">[</span><span class="s1">&#39;target_removable&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">custom_args</span> <span class="ow">and</span> <span class="s1">&#39;system_volumes&#39;</span> <span class="ow">in</span> <span class="n">custom_args</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">volumes</span> <span class="o">=</span> <span class="n">custom_args</span><span class="p">[</span><span class="s1">&#39;system_volumes&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">custom_args</span> <span class="ow">and</span> <span class="s1">&#39;firmware&#39;</span> <span class="ow">in</span> <span class="n">custom_args</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">firmware</span> <span class="o">=</span> <span class="n">custom_args</span><span class="p">[</span><span class="s1">&#39;firmware&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">firmware</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">firmware</span><span class="o">.</span><span class="n">efi_mode</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">custom_args</span> <span class="ow">or</span> <span class="s1">&#39;efi_device&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">custom_args</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">KiwiBootLoaderGrubInstallError</span><span class="p">(</span>
+                    <span class="s1">&#39;EFI device name required for shim installation&#39;</span>
+                <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">custom_args</span> <span class="ow">or</span> <span class="s1">&#39;boot_device&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">custom_args</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">KiwiBootLoaderGrubInstallError</span><span class="p">(</span>
+                <span class="s1">&#39;boot device name required for grub2 installation&#39;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">custom_args</span> <span class="ow">or</span> <span class="s1">&#39;root_device&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">custom_args</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">KiwiBootLoaderGrubInstallError</span><span class="p">(</span>
+                <span class="s1">&#39;root device name required for grub2 installation&#39;</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="BootLoaderInstallGrub2.install_required"><a class="viewcode-back" href="../../../../api/kiwi.bootloader.install.html#kiwi.bootloader.install.grub2.BootLoaderInstallGrub2.install_required">[docs]</a>    <span class="k">def</span> <span class="nf">install_required</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if grub2 has to be installed</span>
+
+<span class="sd">        Take architecture and firmware setup into account to check if</span>
+<span class="sd">        bootloader code in a boot record is required</span>
+
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s1">&#39;ppc64&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">arch</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">firmware</span><span class="o">.</span><span class="n">opal_mode</span><span class="p">():</span>
+            <span class="c1"># OPAL doesn&#39;t need a grub2 stage1, just a config file.</span>
+            <span class="c1"># The machine will be setup to kexec grub2 in user space</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s1">&#39;No grub boot code installation in opal mode on </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">arch</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">elif</span> <span class="s1">&#39;arm&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">arch</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">arch</span> <span class="o">==</span> <span class="s1">&#39;aarch64&#39;</span><span class="p">:</span>
+            <span class="c1"># On arm grub2 is used for EFI setup only, no install</span>
+            <span class="c1"># of grub2 boot code makes sense</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s1">&#39;No grub boot code installation on </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">arch</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="BootLoaderInstallGrub2.install"><a class="viewcode-back" href="../../../../api/kiwi.bootloader.install.html#kiwi.bootloader.install.grub2.BootLoaderInstallGrub2.install">[docs]</a>    <span class="k">def</span> <span class="nf">install</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Install bootloader on disk device</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Installing grub2 on disk </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_removable</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">install_arguments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;--removable&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">arch</span> <span class="o">==</span> <span class="s1">&#39;x86_64&#39;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">arch</span> <span class="o">==</span> <span class="s1">&#39;i686&#39;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">arch</span> <span class="o">==</span> <span class="s1">&#39;i586&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="s1">&#39;i386-pc&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">install_device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">modules</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="n">Defaults</span><span class="o">.</span><span class="n">get_grub_bios_modules</span><span class="p">(</span><span class="n">multiboot</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">install_arguments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;--skip-fs-probe&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">arch</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;ppc64&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_args</span> <span class="ow">or</span> <span class="s1">&#39;prep_device&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_args</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">KiwiBootLoaderGrubInstallError</span><span class="p">(</span>
+                    <span class="s1">&#39;prep device name required for grub2 installation on ppc&#39;</span>
+                <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="s1">&#39;powerpc-ieee1275&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">install_device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_args</span><span class="p">[</span><span class="s1">&#39;prep_device&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">modules</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">Defaults</span><span class="o">.</span><span class="n">get_grub_ofw_modules</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">install_arguments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;--skip-fs-probe&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">install_arguments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;--no-nvram&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">KiwiBootLoaderGrubPlatformError</span><span class="p">(</span>
+                <span class="s1">&#39;host architecture </span><span class="si">%s</span><span class="s1"> not supported for grub2 install&#39;</span> <span class="o">%</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">arch</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_mount</span> <span class="o">=</span> <span class="n">MountManager</span><span class="p">(</span>
+            <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">custom_args</span><span class="p">[</span><span class="s1">&#39;root_device&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">boot_mount</span> <span class="o">=</span> <span class="n">MountManager</span><span class="p">(</span>
+            <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">custom_args</span><span class="p">[</span><span class="s1">&#39;boot_device&#39;</span><span class="p">],</span>
+            <span class="n">mountpoint</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">root_mount</span><span class="o">.</span><span class="n">mountpoint</span> <span class="o">+</span> <span class="s1">&#39;/boot&#39;</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_mount</span><span class="o">.</span><span class="n">mount</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">root_mount</span><span class="o">.</span><span class="n">device</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">boot_mount</span><span class="o">.</span><span class="n">device</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boot_mount</span><span class="o">.</span><span class="n">mount</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">volumes</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">volume_path</span><span class="p">,</span> <span class="n">volume_options</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">volumes</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+                <span class="n">volume_mount</span> <span class="o">=</span> <span class="n">MountManager</span><span class="p">(</span>
+                    <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">custom_args</span><span class="p">[</span><span class="s1">&#39;root_device&#39;</span><span class="p">],</span>
+                    <span class="n">mountpoint</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">root_mount</span><span class="o">.</span><span class="n">mountpoint</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">volume_path</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">volumes_mount</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">volume_mount</span><span class="p">)</span>
+                <span class="n">volume_mount</span><span class="o">.</span><span class="n">mount</span><span class="p">(</span>
+                    <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="n">volume_options</span><span class="p">]</span>
+                <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">device_mount</span> <span class="o">=</span> <span class="n">MountManager</span><span class="p">(</span>
+            <span class="n">device</span><span class="o">=</span><span class="s1">&#39;/dev&#39;</span><span class="p">,</span>
+            <span class="n">mountpoint</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">root_mount</span><span class="o">.</span><span class="n">mountpoint</span> <span class="o">+</span> <span class="s1">&#39;/dev&#39;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">proc_mount</span> <span class="o">=</span> <span class="n">MountManager</span><span class="p">(</span>
+            <span class="n">device</span><span class="o">=</span><span class="s1">&#39;/proc&#39;</span><span class="p">,</span>
+            <span class="n">mountpoint</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">root_mount</span><span class="o">.</span><span class="n">mountpoint</span> <span class="o">+</span> <span class="s1">&#39;/proc&#39;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sysfs_mount</span> <span class="o">=</span> <span class="n">MountManager</span><span class="p">(</span>
+            <span class="n">device</span><span class="o">=</span><span class="s1">&#39;/sys&#39;</span><span class="p">,</span>
+            <span class="n">mountpoint</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">root_mount</span><span class="o">.</span><span class="n">mountpoint</span> <span class="o">+</span> <span class="s1">&#39;/sys&#39;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device_mount</span><span class="o">.</span><span class="n">bind_mount</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">proc_mount</span><span class="o">.</span><span class="n">bind_mount</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sysfs_mount</span><span class="o">.</span><span class="n">bind_mount</span><span class="p">()</span>
+
+        <span class="c1"># check if a grub installation could be found in the image system</span>
+        <span class="n">grub_directory</span> <span class="o">=</span> <span class="n">Defaults</span><span class="o">.</span><span class="n">get_grub_path</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">root_mount</span><span class="o">.</span><span class="n">mountpoint</span> <span class="o">+</span> <span class="s1">&#39;/usr/lib&#39;</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">grub_directory</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">KiwiBootLoaderGrubDataError</span><span class="p">(</span>
+                <span class="s1">&#39;No grub2 installation found in </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">root_mount</span><span class="o">.</span><span class="n">mountpoint</span>
+            <span class="p">)</span>
+        <span class="n">grub_directory</span> <span class="o">=</span> <span class="n">grub_directory</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">root_mount</span><span class="o">.</span><span class="n">mountpoint</span><span class="p">,</span> <span class="s1">&#39;&#39;</span>
+        <span class="p">)</span>
+        <span class="n">module_directory</span> <span class="o">=</span> <span class="n">grub_directory</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span>
+        <span class="n">boot_directory</span> <span class="o">=</span> <span class="s1">&#39;/boot&#39;</span>
+
+        <span class="c1"># install grub2 boot code</span>
+        <span class="n">Command</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="s1">&#39;chroot&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">root_mount</span><span class="o">.</span><span class="n">mountpoint</span><span class="p">,</span> <span class="s1">&#39;grub2-install&#39;</span>
+            <span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">install_arguments</span> <span class="o">+</span> <span class="p">[</span>
+                <span class="s1">&#39;--directory&#39;</span><span class="p">,</span> <span class="n">module_directory</span><span class="p">,</span>
+                <span class="s1">&#39;--boot-directory&#39;</span><span class="p">,</span> <span class="n">boot_directory</span><span class="p">,</span>
+                <span class="s1">&#39;--target&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">,</span>
+                <span class="s1">&#39;--modules&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">modules</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">install_device</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">firmware</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">firmware</span><span class="o">.</span><span class="n">efi_mode</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;uefi&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">efi_mount</span> <span class="o">=</span> <span class="n">MountManager</span><span class="p">(</span>
+                <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">custom_args</span><span class="p">[</span><span class="s1">&#39;efi_device&#39;</span><span class="p">],</span>
+                <span class="n">mountpoint</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">root_mount</span><span class="o">.</span><span class="n">mountpoint</span> <span class="o">+</span> <span class="s1">&#39;/boot/efi&#39;</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">efi_mount</span><span class="o">.</span><span class="n">mount</span><span class="p">()</span>
+
+            <span class="c1"># Before we call shim-install, the grub2-install binary is</span>
+            <span class="c1"># replaced by a noop. Actually there is no reason for shim-install</span>
+            <span class="c1"># to call grub2-install because it should only setup the system</span>
+            <span class="c1"># for EFI secure boot which does not require any bootloader code</span>
+            <span class="c1"># in the master boot record. In addition kiwi has called</span>
+            <span class="c1"># grub2-install right before</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_disable_grub2_install</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_mount</span><span class="o">.</span><span class="n">mountpoint</span><span class="p">)</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="s1">&#39;chroot&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">root_mount</span><span class="o">.</span><span class="n">mountpoint</span><span class="p">,</span>
+                    <span class="s1">&#39;shim-install&#39;</span><span class="p">,</span> <span class="s1">&#39;--removable&#39;</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">install_device</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+            <span class="c1"># restore the grub2-install noop</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_enable_grub2_install</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_mount</span><span class="o">.</span><span class="n">mountpoint</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_disable_grub2_install</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root_path</span><span class="p">):</span>
+        <span class="n">grub2_install</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">root_path</span><span class="p">,</span> <span class="s1">&#39;/usr/sbin/grub2-install&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">grub2_install_backup</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">root_path</span><span class="p">,</span> <span class="s1">&#39;/usr/sbin/grub2-install.orig&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">grub2_install_noop</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">root_path</span><span class="p">,</span> <span class="s1">&#39;/bin/true&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">Command</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="p">[</span><span class="s1">&#39;cp&#39;</span><span class="p">,</span> <span class="s1">&#39;-p&#39;</span><span class="p">,</span> <span class="n">grub2_install</span><span class="p">,</span> <span class="n">grub2_install_backup</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">Command</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="p">[</span><span class="s1">&#39;cp&#39;</span><span class="p">,</span> <span class="n">grub2_install_noop</span><span class="p">,</span> <span class="n">grub2_install</span><span class="p">]</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_enable_grub2_install</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root_path</span><span class="p">):</span>
+        <span class="n">grub2_install</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">root_path</span><span class="p">,</span> <span class="s1">&#39;/usr/sbin/grub2-install&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">grub2_install_backup</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">root_path</span><span class="p">,</span> <span class="s1">&#39;/usr/sbin/grub2-install.orig&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">grub2_install_backup</span><span class="p">):</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+                <span class="p">[</span><span class="s1">&#39;cp&#39;</span><span class="p">,</span> <span class="s1">&#39;-p&#39;</span><span class="p">,</span> <span class="n">grub2_install_backup</span><span class="p">,</span> <span class="n">grub2_install</span><span class="p">]</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Cleaning up </span><span class="si">%s</span><span class="s1"> instance&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">volume_mount</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">volumes_mount</span><span class="p">:</span>
+            <span class="n">volume_mount</span><span class="o">.</span><span class="n">umount</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">device_mount</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">device_mount</span><span class="o">.</span><span class="n">umount</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">proc_mount</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">proc_mount</span><span class="o">.</span><span class="n">umount</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sysfs_mount</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sysfs_mount</span><span class="o">.</span><span class="n">umount</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">efi_mount</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">efi_mount</span><span class="o">.</span><span class="n">umount</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">boot_mount</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boot_mount</span><span class="o">.</span><span class="n">umount</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">root_mount</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_enable_grub2_install</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_mount</span><span class="o">.</span><span class="n">mountpoint</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">root_mount</span><span class="o">.</span><span class="n">umount</span><span class="p">()</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../index.html">
+              <img class="logo" src="../../../../_static/kiwi-logo.png" alt="Logo"/>
+            </a></p><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  <li><a href="../install.html">kiwi.bootloader.install</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<h1 class="logo"><a href="../../../../index.html">kiwi</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=SUSE&repo=kiwi&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/SUSE/kiwi">
+    <img
+        alt="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+        src="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Marcus Schäfer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/SUSE/kiwi" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

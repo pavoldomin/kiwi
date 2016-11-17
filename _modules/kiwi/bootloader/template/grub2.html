@@ -1,0 +1,590 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kiwi.bootloader.template.grub2 &#8212; kiwi 8.25.5 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '8.25.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="top" title="kiwi 8.25.5 documentation" href="../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../index.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for kiwi.bootloader.template.grub2</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2015 SUSE Linux GmbH.  All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This file is part of kiwi.</span>
+<span class="c1">#</span>
+<span class="c1"># kiwi is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1"># (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># kiwi is distributed in the hope that it will be useful,</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1"># GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with kiwi.  If not, see &lt;http://www.gnu.org/licenses/&gt;</span>
+<span class="c1">#</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">string</span> <span class="k">import</span> <span class="n">Template</span>
+<span class="kn">from</span> <span class="nn">textwrap</span> <span class="k">import</span> <span class="n">dedent</span>
+
+
+<div class="viewcode-block" id="BootLoaderTemplateGrub2"><a class="viewcode-back" href="../../../../api/kiwi.bootloader.template.html#kiwi.bootloader.template.grub2.BootLoaderTemplateGrub2">[docs]</a><span class="k">class</span> <span class="nc">BootLoaderTemplateGrub2</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    grub2 configuraton file templates</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">            # kiwi generated one time grub2 config file</span>
+<span class="s1">            set btrfs_relative_path=&quot;y&quot;</span>
+<span class="s1">            export btrfs_relative_path</span>
+<span class="s1">            search $</span><span class="si">{search_params}</span><span class="s1"></span>
+<span class="s1">            set default=$</span><span class="si">{default_boot}</span><span class="s1"></span>
+<span class="s1">            set timeout=$</span><span class="si">{boot_timeout}</span><span class="s1"></span>
+<span class="s1">            if [ -n &quot;$$extra_cmdline&quot; ]; then</span>
+<span class="s1">              submenu &quot;Bootable snapshot $$snapshot_num&quot; {</span>
+<span class="s1">                menuentry &quot;If OK, run &#39;snapper rollback&#39; and reboot.&quot; { true; }</span>
+<span class="s1">              }</span>
+<span class="s1">            fi</span>
+<span class="s1">        &#39;&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">linesep</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">header_hybrid</span> <span class="o">=</span> <span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">            set linux=linux</span>
+<span class="s1">            set initrd=initrd</span>
+<span class="s1">            if [ &quot;$$</span><span class="si">{grub_cpu}</span><span class="s1">&quot; = &quot;x86_64&quot; -o &quot;$$</span><span class="si">{grub_cpu}</span><span class="s1">&quot; = &quot;i386&quot; ];then</span>
+<span class="s1">                if [ &quot;$$</span><span class="si">{grub_platform}</span><span class="s1">&quot; = &quot;efi&quot; ]; then</span>
+<span class="s1">                    set linux=linuxefi</span>
+<span class="s1">                    set initrd=initrdefi</span>
+<span class="s1">                fi</span>
+<span class="s1">            fi</span>
+<span class="s1">        &#39;&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">linesep</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">header_gfxterm</span> <span class="o">=</span> <span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">            if [ &quot;$$</span><span class="si">{grub_platform}</span><span class="s1">&quot; = &quot;efi&quot; ]; then</span>
+<span class="s1">                echo &quot;Please press &#39;t&#39; to show the boot menu on this console&quot;</span>
+<span class="s1">            fi</span>
+<span class="s1">            set gfxmode=$</span><span class="si">{gfxmode}</span><span class="s1"></span>
+<span class="s1">            insmod all_video</span>
+<span class="s1">            insmod gfxterm</span>
+<span class="s1">            terminal_output gfxterm</span>
+<span class="s1">        &#39;&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">linesep</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">header_serial</span> <span class="o">=</span> <span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">            serial --speed=9600 --unit=0 --word=8 --parity=no --stop=1</span>
+<span class="s1">            terminal_input serial</span>
+<span class="s1">            terminal_output serial</span>
+<span class="s1">        &#39;&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">linesep</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">header_textconsole</span> <span class="o">=</span> <span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">            terminal_input console</span>
+<span class="s1">            terminal_output console</span>
+<span class="s1">        &#39;&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">linesep</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fonts</span> <span class="o">=</span> <span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">            set font=($$root)$</span><span class="si">{bootpath}</span><span class="s1">/unicode.pf2</span>
+<span class="s1">            set ascii_font=grub2/themes/$</span><span class="si">{theme}</span><span class="s1">/ascii.pf2</span>
+<span class="s1">            set sans_bold_14_font=grub2/themes/$</span><span class="si">{theme}</span><span class="s1">/DejaVuSans-Bold14.pf2</span>
+<span class="s1">            set sans_10_font=grub2/themes/$</span><span class="si">{theme}</span><span class="s1">/DejaVuSans10.pf2</span>
+<span class="s1">            set sans_12_font=grub2/themes/$</span><span class="si">{theme}</span><span class="s1">/DejaVuSans12.pf2</span>
+<span class="s1">        &#39;&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">linesep</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">header_theme</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fonts</span> <span class="o">+</span> <span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">            if [ -f $$</span><span class="si">{font}</span><span class="s1"> ];then</span>
+<span class="s1">                loadfont $$</span><span class="si">{font}</span><span class="s1"></span>
+<span class="s1">            fi</span>
+<span class="s1">            if [ -f ($$root)$</span><span class="si">{bootpath}</span><span class="s1">/$$</span><span class="si">{ascii_font}</span><span class="s1"> ];then</span>
+<span class="s1">                loadfont ($$root)$</span><span class="si">{bootpath}</span><span class="s1">/$$</span><span class="si">{ascii_font}</span><span class="s1"></span>
+<span class="s1">            fi</span>
+<span class="s1">            if [ -f ($$root)$</span><span class="si">{bootpath}</span><span class="s1">/$$</span><span class="si">{sans_bold_14_font}</span><span class="s1"> ];then</span>
+<span class="s1">                loadfont ($$root)$</span><span class="si">{bootpath}</span><span class="s1">/$$</span><span class="si">{sans_bold_14_font}</span><span class="s1"></span>
+<span class="s1">            fi</span>
+<span class="s1">            if [ -f ($$root)$</span><span class="si">{bootpath}</span><span class="s1">/$$</span><span class="si">{sans_10_font}</span><span class="s1"> ];then</span>
+<span class="s1">                loadfont ($$root)$</span><span class="si">{bootpath}</span><span class="s1">/$$</span><span class="si">{sans_10_font}</span><span class="s1"></span>
+<span class="s1">            fi</span>
+<span class="s1">            if [ -f ($$root)$</span><span class="si">{bootpath}</span><span class="s1">/$$</span><span class="si">{sans_12_font}</span><span class="s1"> ];then</span>
+<span class="s1">                loadfont ($$root)$</span><span class="si">{bootpath}</span><span class="s1">/$$</span><span class="si">{sans_12_font}</span><span class="s1"></span>
+<span class="s1">            fi</span>
+<span class="s1">            if [ -f ($$root)$</span><span class="si">{bootpath}</span><span class="s1">/grub2/themes/$</span><span class="si">{theme}</span><span class="s1">/theme.txt ];then</span>
+<span class="s1">                set theme=($$root)$</span><span class="si">{bootpath}</span><span class="s1">/grub2/themes/$</span><span class="si">{theme}</span><span class="s1">/theme.txt</span>
+<span class="s1">                export theme</span>
+<span class="s1">            fi</span>
+<span class="s1">        &#39;&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">linesep</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">header_theme_iso</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fonts</span> <span class="o">+</span> <span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">            if [ -f $$</span><span class="si">{font}</span><span class="s1"> ];then</span>
+<span class="s1">                loadfont $$</span><span class="si">{font}</span><span class="s1"></span>
+<span class="s1">            fi</span>
+<span class="s1">            if [ -f ($$root)/boot/$$</span><span class="si">{ascii_font}</span><span class="s1"> ];then</span>
+<span class="s1">                loadfont ($$root)/boot/$$</span><span class="si">{ascii_font}</span><span class="s1"></span>
+<span class="s1">            fi</span>
+<span class="s1">            if [ -f ($$root)/boot/$$</span><span class="si">{sans_bold_14_font}</span><span class="s1"> ];then</span>
+<span class="s1">                loadfont ($$root)/boot/$$</span><span class="si">{sans_bold_14_font}</span><span class="s1"></span>
+<span class="s1">            fi</span>
+<span class="s1">            if [ -f ($$root)/boot/$$</span><span class="si">{sans_10_font}</span><span class="s1"> ];then</span>
+<span class="s1">                loadfont ($$root)/boot/$$</span><span class="si">{sans_10_font}</span><span class="s1"></span>
+<span class="s1">            fi</span>
+<span class="s1">            if [ -f ($$root)/boot/$$</span><span class="si">{sans_12_font}</span><span class="s1"> ];then</span>
+<span class="s1">                loadfont ($$root)/boot/$$</span><span class="si">{sans_12_font}</span><span class="s1"></span>
+<span class="s1">            fi</span>
+<span class="s1">            if [ -f ($$root)/boot/grub2/themes/$</span><span class="si">{theme}</span><span class="s1">/theme.txt ];then</span>
+<span class="s1">                set theme=($$root)/boot/grub2/themes/$</span><span class="si">{theme}</span><span class="s1">/theme.txt</span>
+<span class="s1">            fi</span>
+<span class="s1">        &#39;&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">linesep</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_entry_boot_snapshots</span> <span class="o">=</span> <span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">            if [ -f &quot;/.snapshots/grub-snapshot.cfg&quot; ]; then</span>
+<span class="s1">                source &quot;/.snapshots/grub-snapshot.cfg&quot;</span>
+<span class="s1">            fi</span>
+<span class="s1">        &#39;&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">linesep</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_entry_console_switch</span> <span class="o">=</span> <span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">            if [ &quot;$$</span><span class="si">{grub_platform}</span><span class="s1">&quot; = &quot;efi&quot; ]; then</span>
+<span class="s1">                hiddenentry &quot;Text mode&quot; --hotkey &quot;t&quot; {</span>
+<span class="s1">                    set textmode=true</span>
+<span class="s1">                    terminal_output console</span>
+<span class="s1">                }</span>
+<span class="s1">            fi</span>
+<span class="s1">        &#39;&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">linesep</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_entry_hybrid</span> <span class="o">=</span> <span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">            menuentry &quot;$</span><span class="si">{title}</span><span class="s1">&quot; --class os --unrestricted {</span>
+<span class="s1">                set gfxpayload=keep</span>
+<span class="s1">                echo Loading kernel...</span>
+<span class="s1">                $$linux ($$root)$</span><span class="si">{bootpath}</span><span class="s1">/$</span><span class="si">{kernel_file}</span><span class="s1"> $$</span><span class="si">{extra_cmdline}</span><span class="s1"> $</span><span class="si">{boot_options}</span><span class="s1"></span>
+<span class="s1">                echo Loading initrd...</span>
+<span class="s1">                $$initrd ($$root)$</span><span class="si">{bootpath}</span><span class="s1">/$</span><span class="si">{initrd_file}</span><span class="s1"></span>
+<span class="s1">            }</span>
+<span class="s1">        &#39;&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">linesep</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_entry_multiboot</span> <span class="o">=</span> <span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">            menuentry &quot;$</span><span class="si">{title}</span><span class="s1">&quot; --class os --unrestricted {</span>
+<span class="s1">                set gfxpayload=keep</span>
+<span class="s1">                echo Loading hypervisor...</span>
+<span class="s1">                multiboot $</span><span class="si">{bootpath}</span><span class="s1">/$</span><span class="si">{hypervisor}</span><span class="s1"> dummy</span>
+<span class="s1">                echo Loading kernel...</span>
+<span class="s1">                module $</span><span class="si">{bootpath}</span><span class="s1">/$</span><span class="si">{kernel_file}</span><span class="s1"> dummy $</span><span class="si">{boot_options}</span><span class="s1"></span>
+<span class="s1">                echo Loading initrd...</span>
+<span class="s1">                module $</span><span class="si">{bootpath}</span><span class="s1">/$</span><span class="si">{initrd_file}</span><span class="s1"> dummy</span>
+<span class="s1">            }</span>
+<span class="s1">        &#39;&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">linesep</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_entry</span> <span class="o">=</span> <span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">            menuentry &quot;$</span><span class="si">{title}</span><span class="s1">&quot; --class os --unrestricted {</span>
+<span class="s1">                set gfxpayload=keep</span>
+<span class="s1">                echo Loading kernel...</span>
+<span class="s1">                linux ($$root)$</span><span class="si">{bootpath}</span><span class="s1">/$</span><span class="si">{kernel_file}</span><span class="s1"> $$</span><span class="si">{extra_cmdline}</span><span class="s1"> $</span><span class="si">{boot_options}</span><span class="s1"></span>
+<span class="s1">                echo Loading initrd...</span>
+<span class="s1">                initrd ($$root)$</span><span class="si">{bootpath}</span><span class="s1">/$</span><span class="si">{initrd_file}</span><span class="s1"></span>
+<span class="s1">            }</span>
+<span class="s1">        &#39;&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">linesep</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_entry_failsafe_hybrid</span> <span class="o">=</span> <span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">            menuentry &quot;Failsafe -- $</span><span class="si">{title}</span><span class="s1">&quot; --class os --unrestricted {</span>
+<span class="s1">                set gfxpayload=keep</span>
+<span class="s1">                echo Loading kernel...</span>
+<span class="s1">                $$linux ($$root)$</span><span class="si">{bootpath}</span><span class="s1">/$</span><span class="si">{kernel_file}</span><span class="s1"> $$</span><span class="si">{extra_cmdline}</span><span class="s1"> $</span><span class="si">{failsafe_boot_options}</span><span class="s1"></span>
+<span class="s1">                echo Loading initrd...</span>
+<span class="s1">                $$initrd ($$root)$</span><span class="si">{bootpath}</span><span class="s1">/$</span><span class="si">{initrd_file}</span><span class="s1"></span>
+<span class="s1">            }</span>
+<span class="s1">        &#39;&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">linesep</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_entry_failsafe_multiboot</span> <span class="o">=</span> <span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">            menuentry &quot;Failsafe -- $</span><span class="si">{title}</span><span class="s1">&quot; --class os --unrestricted {</span>
+<span class="s1">                set gfxpayload=keep</span>
+<span class="s1">                echo Loading hypervisor...</span>
+<span class="s1">                multiboot $</span><span class="si">{bootpath}</span><span class="s1">/$</span><span class="si">{hypervisor}</span><span class="s1"> dummy</span>
+<span class="s1">                echo Loading kernel...</span>
+<span class="s1">                module $</span><span class="si">{bootpath}</span><span class="s1">/$</span><span class="si">{kernel_file}</span><span class="s1"> dummy $</span><span class="si">{failsafe_boot_options}</span><span class="s1"></span>
+<span class="s1">                echo Loading initrd...</span>
+<span class="s1">                module $</span><span class="si">{bootpath}</span><span class="s1">/$</span><span class="si">{initrd_file}</span><span class="s1"> dummy</span>
+<span class="s1">            }</span>
+<span class="s1">        &#39;&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">linesep</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_entry_failsafe</span> <span class="o">=</span> <span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">            menuentry &quot;Failsafe -- $</span><span class="si">{title}</span><span class="s1">&quot; --class os --unrestricted {</span>
+<span class="s1">                set gfxpayload=keep</span>
+<span class="s1">                echo Loading kernel...</span>
+<span class="s1">                linux ($$root)$</span><span class="si">{bootpath}</span><span class="s1">/$</span><span class="si">{kernel_file}</span><span class="s1"> $$</span><span class="si">{extra_cmdline}</span><span class="s1"> $</span><span class="si">{failsafe_boot_options}</span><span class="s1"></span>
+<span class="s1">                echo Loading initrd...</span>
+<span class="s1">                initrd ($$root)$</span><span class="si">{bootpath}</span><span class="s1">/$</span><span class="si">{initrd_file}</span><span class="s1"></span>
+<span class="s1">            }</span>
+<span class="s1">        &#39;&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">linesep</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_install_entry_hybrid</span> <span class="o">=</span> <span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">            menuentry &quot;Install $</span><span class="si">{title}</span><span class="s1">&quot; --class os --unrestricted {</span>
+<span class="s1">                set gfxpayload=keep</span>
+<span class="s1">                echo Loading kernel...</span>
+<span class="s1">                $$linux ($$root)$</span><span class="si">{bootpath}</span><span class="s1">/$</span><span class="si">{kernel_file}</span><span class="s1"> cdinst=1 $</span><span class="si">{boot_options}</span><span class="s1"></span>
+<span class="s1">                echo Loading initrd...</span>
+<span class="s1">                $$initrd ($$root)$</span><span class="si">{bootpath}</span><span class="s1">/$</span><span class="si">{initrd_file}</span><span class="s1"></span>
+<span class="s1">            }</span>
+<span class="s1">        &#39;&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">linesep</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_install_entry_multiboot</span> <span class="o">=</span> <span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">            menuentry &quot;Install -- $</span><span class="si">{title}</span><span class="s1">&quot; --class os --unrestricted {</span>
+<span class="s1">                set gfxpayload=keep</span>
+<span class="s1">                echo Loading hypervisor...</span>
+<span class="s1">                multiboot $</span><span class="si">{bootpath}</span><span class="s1">/$</span><span class="si">{hypervisor}</span><span class="s1"> dummy</span>
+<span class="s1">                echo Loading kernel...</span>
+<span class="s1">                module $</span><span class="si">{bootpath}</span><span class="s1">/$</span><span class="si">{kernel_file}</span><span class="s1"> dummy cdinst=1 $</span><span class="si">{failsafe_boot_options}</span><span class="s1"></span>
+<span class="s1">                echo Loading initrd...</span>
+<span class="s1">                module $</span><span class="si">{bootpath}</span><span class="s1">/$</span><span class="si">{initrd_file}</span><span class="s1"> dummy</span>
+<span class="s1">            }</span>
+<span class="s1">        &#39;&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">linesep</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_install_entry</span> <span class="o">=</span> <span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">            menuentry &quot;Install $</span><span class="si">{title}</span><span class="s1">&quot; --class os --unrestricted {</span>
+<span class="s1">                set gfxpayload=keep</span>
+<span class="s1">                echo Loading kernel...</span>
+<span class="s1">                linux ($$root)$</span><span class="si">{bootpath}</span><span class="s1">/$</span><span class="si">{kernel_file}</span><span class="s1"> cdinst=1 $</span><span class="si">{boot_options}</span><span class="s1"></span>
+<span class="s1">                echo Loading initrd...</span>
+<span class="s1">                initrd ($$root)$</span><span class="si">{bootpath}</span><span class="s1">/$</span><span class="si">{initrd_file}</span><span class="s1"></span>
+<span class="s1">            }</span>
+<span class="s1">        &#39;&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">linesep</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_install_entry_failsafe_hybrid</span> <span class="o">=</span> <span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">            menuentry &quot;Failsafe -- Install $</span><span class="si">{title}</span><span class="s1">&quot; --class os --unrestricted {</span>
+<span class="s1">                set gfxpayload=keep</span>
+<span class="s1">                echo Loading kernel...</span>
+<span class="s1">                $$linux ($$root)$</span><span class="si">{bootpath}</span><span class="s1">/$</span><span class="si">{kernel_file}</span><span class="s1"> cdinst=1 $</span><span class="si">{failsafe_boot_options}</span><span class="s1"></span>
+<span class="s1">                echo Loading initrd...</span>
+<span class="s1">                $$initrd ($$root)$</span><span class="si">{bootpath}</span><span class="s1">/$</span><span class="si">{initrd_file}</span><span class="s1"></span>
+<span class="s1">            }</span>
+<span class="s1">        &#39;&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">linesep</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_install_entry_failsafe_multiboot</span> <span class="o">=</span> <span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">            menuentry &quot;Failsafe -- Install $</span><span class="si">{title}</span><span class="s1">&quot; --class os --unrestricted {</span>
+<span class="s1">                set gfxpayload=keep</span>
+<span class="s1">                echo Loading hypervisor...</span>
+<span class="s1">                multiboot $</span><span class="si">{bootpath}</span><span class="s1">/$</span><span class="si">{hypervisor}</span><span class="s1"> dummy</span>
+<span class="s1">                echo Loading kernel...</span>
+<span class="s1">                module $</span><span class="si">{bootpath}</span><span class="s1">/$</span><span class="si">{kernel_file}</span><span class="s1"> dummy cdinst=1 $</span><span class="si">{failsafe_boot_options}</span><span class="s1"></span>
+<span class="s1">                echo Loading initrd...</span>
+<span class="s1">                module $</span><span class="si">{bootpath}</span><span class="s1">/$</span><span class="si">{initrd_file}</span><span class="s1"> dummy</span>
+<span class="s1">            }</span>
+<span class="s1">        &#39;&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">linesep</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_install_entry_failsafe</span> <span class="o">=</span> <span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">            menuentry &quot;Failsafe -- Install $</span><span class="si">{title}</span><span class="s1">&quot; --class os --unrestricted {</span>
+<span class="s1">                set gfxpayload=keep</span>
+<span class="s1">                echo Loading kernel...</span>
+<span class="s1">                linux ($$root)$</span><span class="si">{bootpath}</span><span class="s1">/$</span><span class="si">{kernel_file}</span><span class="s1"> cdinst=1 $</span><span class="si">{failsafe_boot_options}</span><span class="s1"></span>
+<span class="s1">                echo Loading initrd...</span>
+<span class="s1">                initrd ($$root)$</span><span class="si">{bootpath}</span><span class="s1">/$</span><span class="si">{initrd_file}</span><span class="s1"></span>
+<span class="s1">            }</span>
+<span class="s1">        &#39;&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">linesep</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_iso_harddisk_entry</span> <span class="o">=</span> <span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">            menuentry &quot;Boot from Hard Disk&quot; --class os --unrestricted {</span>
+<span class="s1">                search --set=root --label EFI</span>
+<span class="s1">                chainloader ($$</span><span class="si">{root}</span><span class="s1">)/EFI/BOOT/bootx64.efi</span>
+<span class="s1">            }</span>
+<span class="s1">        &#39;&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">linesep</span>
+
+<div class="viewcode-block" id="BootLoaderTemplateGrub2.get_disk_template"><a class="viewcode-back" href="../../../../api/kiwi.bootloader.template.html#kiwi.bootloader.template.grub2.BootLoaderTemplateGrub2.get_disk_template">[docs]</a>    <span class="k">def</span> <span class="nf">get_disk_template</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">failsafe</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">hybrid</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">terminal</span><span class="o">=</span><span class="s1">&#39;gfxterm&#39;</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Bootloader configuration template for disk image</span>
+
+<span class="sd">        :param bool failsafe: with failsafe true|false</span>
+<span class="sd">        :param bool hybrid: with hybrid true|false</span>
+<span class="sd">        :param string terminal: output terminal name</span>
+
+<span class="sd">        :rtype: Template</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">template_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">header</span>
+        <span class="k">if</span> <span class="n">hybrid</span><span class="p">:</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">header_hybrid</span>
+        <span class="k">if</span> <span class="n">terminal</span> <span class="o">==</span> <span class="s1">&#39;gfxterm&#39;</span><span class="p">:</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">header_gfxterm</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">header_theme</span>
+        <span class="k">elif</span> <span class="n">terminal</span> <span class="o">==</span> <span class="s1">&#39;serial&#39;</span><span class="p">:</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">header_serial</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">header_textconsole</span>
+        <span class="k">if</span> <span class="n">hybrid</span><span class="p">:</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_entry_hybrid</span>
+            <span class="k">if</span> <span class="n">failsafe</span><span class="p">:</span>
+                <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_entry_failsafe_hybrid</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_entry</span>
+            <span class="k">if</span> <span class="n">failsafe</span><span class="p">:</span>
+                <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_entry_failsafe</span>
+        <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_entry_boot_snapshots</span>
+        <span class="k">if</span> <span class="n">terminal</span> <span class="o">==</span> <span class="s1">&#39;gfxterm&#39;</span><span class="p">:</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_entry_console_switch</span>
+        <span class="k">return</span> <span class="n">Template</span><span class="p">(</span><span class="n">template_data</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BootLoaderTemplateGrub2.get_multiboot_disk_template"><a class="viewcode-back" href="../../../../api/kiwi.bootloader.template.html#kiwi.bootloader.template.grub2.BootLoaderTemplateGrub2.get_multiboot_disk_template">[docs]</a>    <span class="k">def</span> <span class="nf">get_multiboot_disk_template</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">failsafe</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">terminal</span><span class="o">=</span><span class="s1">&#39;gfxterm&#39;</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Bootloader configuration template for disk image with</span>
+<span class="sd">        hypervisor, e.g Xen dom0</span>
+
+<span class="sd">        :param bool failsafe: with failsafe true|false</span>
+<span class="sd">        :param string terminal: output terminal name</span>
+
+<span class="sd">        :rtype: Template</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">template_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">header</span>
+        <span class="k">if</span> <span class="n">terminal</span> <span class="o">==</span> <span class="s1">&#39;gfxterm&#39;</span><span class="p">:</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">header_gfxterm</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">header_theme</span>
+        <span class="k">elif</span> <span class="n">terminal</span> <span class="o">==</span> <span class="s1">&#39;serial&#39;</span><span class="p">:</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">header_serial</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">header_textconsole</span>
+        <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_entry_multiboot</span>
+        <span class="k">if</span> <span class="n">failsafe</span><span class="p">:</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_entry_failsafe_multiboot</span>
+        <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_entry_boot_snapshots</span>
+        <span class="k">if</span> <span class="n">terminal</span> <span class="o">==</span> <span class="s1">&#39;gfxterm&#39;</span><span class="p">:</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_entry_console_switch</span>
+        <span class="k">return</span> <span class="n">Template</span><span class="p">(</span><span class="n">template_data</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BootLoaderTemplateGrub2.get_iso_template"><a class="viewcode-back" href="../../../../api/kiwi.bootloader.template.html#kiwi.bootloader.template.grub2.BootLoaderTemplateGrub2.get_iso_template">[docs]</a>    <span class="k">def</span> <span class="nf">get_iso_template</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">failsafe</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">hybrid</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">terminal</span><span class="o">=</span><span class="s1">&#39;gfxterm&#39;</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Bootloader configuration template for live ISO media</span>
+
+<span class="sd">        :param bool failsafe: with failsafe true|false</span>
+<span class="sd">        :param bool hybrid: with hybrid true|false</span>
+<span class="sd">        :param string terminal: output terminal name</span>
+
+<span class="sd">        :rtype: Template</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">template_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">header</span>
+        <span class="k">if</span> <span class="n">hybrid</span><span class="p">:</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">header_hybrid</span>
+        <span class="k">if</span> <span class="n">terminal</span> <span class="o">==</span> <span class="s1">&#39;gfxterm&#39;</span><span class="p">:</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">header_gfxterm</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">header_theme_iso</span>
+        <span class="k">elif</span> <span class="n">terminal</span> <span class="o">==</span> <span class="s1">&#39;serial&#39;</span><span class="p">:</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">header_serial</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">header_textconsole</span>
+        <span class="k">if</span> <span class="n">hybrid</span><span class="p">:</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_entry_hybrid</span>
+            <span class="k">if</span> <span class="n">failsafe</span><span class="p">:</span>
+                <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_entry_failsafe_hybrid</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_entry</span>
+            <span class="k">if</span> <span class="n">failsafe</span><span class="p">:</span>
+                <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_entry_failsafe</span>
+        <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_iso_harddisk_entry</span>
+        <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_entry_boot_snapshots</span>
+        <span class="k">if</span> <span class="n">terminal</span> <span class="o">==</span> <span class="s1">&#39;gfxterm&#39;</span><span class="p">:</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_entry_console_switch</span>
+        <span class="k">return</span> <span class="n">Template</span><span class="p">(</span><span class="n">template_data</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BootLoaderTemplateGrub2.get_multiboot_iso_template"><a class="viewcode-back" href="../../../../api/kiwi.bootloader.template.html#kiwi.bootloader.template.grub2.BootLoaderTemplateGrub2.get_multiboot_iso_template">[docs]</a>    <span class="k">def</span> <span class="nf">get_multiboot_iso_template</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">failsafe</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">terminal</span><span class="o">=</span><span class="s1">&#39;gfxterm&#39;</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Bootloader configuration template for live ISO media with</span>
+<span class="sd">        hypervisor, e.g Xen dom0</span>
+
+<span class="sd">        :param bool failsafe: with failsafe true|false</span>
+<span class="sd">        :param string terminal: output terminal name</span>
+
+<span class="sd">        :rtype: Template</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">template_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">header</span>
+        <span class="k">if</span> <span class="n">terminal</span> <span class="o">==</span> <span class="s1">&#39;gfxterm&#39;</span><span class="p">:</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">header_gfxterm</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">header_theme_iso</span>
+        <span class="k">elif</span> <span class="n">terminal</span> <span class="o">==</span> <span class="s1">&#39;serial&#39;</span><span class="p">:</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">header_serial</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">header_textconsole</span>
+        <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_entry_multiboot</span>
+        <span class="k">if</span> <span class="n">failsafe</span><span class="p">:</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_entry_failsafe_multiboot</span>
+        <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_iso_harddisk_entry</span>
+        <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_entry_boot_snapshots</span>
+        <span class="k">if</span> <span class="n">terminal</span> <span class="o">==</span> <span class="s1">&#39;gfxterm&#39;</span><span class="p">:</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_entry_console_switch</span>
+        <span class="k">return</span> <span class="n">Template</span><span class="p">(</span><span class="n">template_data</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BootLoaderTemplateGrub2.get_install_template"><a class="viewcode-back" href="../../../../api/kiwi.bootloader.template.html#kiwi.bootloader.template.grub2.BootLoaderTemplateGrub2.get_install_template">[docs]</a>    <span class="k">def</span> <span class="nf">get_install_template</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">failsafe</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">hybrid</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">terminal</span><span class="o">=</span><span class="s1">&#39;gfxterm&#39;</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Bootloader configuration template for install media</span>
+
+<span class="sd">        :param bool failsafe: with failsafe true|false</span>
+<span class="sd">        :param bool hybrid: with hybrid true|false</span>
+<span class="sd">        :param string terminal: output terminal name</span>
+
+<span class="sd">        :rtype: Template</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">template_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">header</span>
+        <span class="k">if</span> <span class="n">hybrid</span><span class="p">:</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">header_hybrid</span>
+        <span class="k">if</span> <span class="n">terminal</span> <span class="o">==</span> <span class="s1">&#39;gfxterm&#39;</span><span class="p">:</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">header_gfxterm</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">header_theme_iso</span>
+        <span class="k">elif</span> <span class="n">terminal</span> <span class="o">==</span> <span class="s1">&#39;serial&#39;</span><span class="p">:</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">header_serial</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">header_textconsole</span>
+        <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_iso_harddisk_entry</span>
+        <span class="k">if</span> <span class="n">hybrid</span><span class="p">:</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_install_entry_hybrid</span>
+            <span class="k">if</span> <span class="n">failsafe</span><span class="p">:</span>
+                <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_install_entry_failsafe_hybrid</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_install_entry</span>
+            <span class="k">if</span> <span class="n">failsafe</span><span class="p">:</span>
+                <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_install_entry_failsafe</span>
+        <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_entry_boot_snapshots</span>
+        <span class="k">if</span> <span class="n">terminal</span> <span class="o">==</span> <span class="s1">&#39;gfxterm&#39;</span><span class="p">:</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_entry_console_switch</span>
+        <span class="k">return</span> <span class="n">Template</span><span class="p">(</span><span class="n">template_data</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BootLoaderTemplateGrub2.get_multiboot_install_template"><a class="viewcode-back" href="../../../../api/kiwi.bootloader.template.html#kiwi.bootloader.template.grub2.BootLoaderTemplateGrub2.get_multiboot_install_template">[docs]</a>    <span class="k">def</span> <span class="nf">get_multiboot_install_template</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">failsafe</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">terminal</span><span class="o">=</span><span class="s1">&#39;gfxterm&#39;</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Bootloader configuration template for install media with</span>
+<span class="sd">        hypervisor, e.g Xen dom0</span>
+
+<span class="sd">        :param bool failsafe: with failsafe true|false</span>
+<span class="sd">        :param string terminal: output terminal name</span>
+
+<span class="sd">        :rtype: Template</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">template_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">header</span>
+        <span class="k">if</span> <span class="n">terminal</span> <span class="o">==</span> <span class="s1">&#39;gfxterm&#39;</span><span class="p">:</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">header_gfxterm</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">header_theme_iso</span>
+        <span class="k">elif</span> <span class="n">terminal</span> <span class="o">==</span> <span class="s1">&#39;serial&#39;</span><span class="p">:</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">header_serial</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">header_textconsole</span>
+        <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_iso_harddisk_entry</span>
+        <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_install_entry_multiboot</span>
+        <span class="k">if</span> <span class="n">failsafe</span><span class="p">:</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_install_entry_failsafe_multiboot</span>
+        <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_entry_boot_snapshots</span>
+        <span class="k">if</span> <span class="n">terminal</span> <span class="o">==</span> <span class="s1">&#39;gfxterm&#39;</span><span class="p">:</span>
+            <span class="n">template_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_entry_console_switch</span>
+        <span class="k">return</span> <span class="n">Template</span><span class="p">(</span><span class="n">template_data</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../index.html">
+              <img class="logo" src="../../../../_static/kiwi-logo.png" alt="Logo"/>
+            </a></p><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<h1 class="logo"><a href="../../../../index.html">kiwi</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=SUSE&repo=kiwi&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/SUSE/kiwi">
+    <img
+        alt="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+        src="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Marcus Schäfer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/SUSE/kiwi" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

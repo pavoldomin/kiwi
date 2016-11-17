@@ -1,0 +1,293 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kiwi.solver.repository Package &#8212; kiwi 8.25.5 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '8.25.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="kiwi 8.25.5 documentation" href="../index.html" />
+    <link rel="up" title="kiwi.solver Package" href="kiwi.solver.html" />
+    <link rel="next" title="kiwi.tasks package" href="kiwi.tasks.html" />
+    <link rel="prev" title="kiwi.solver Package" href="kiwi.solver.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="kiwi-solver-repository-package">
+<h1>kiwi.solver.repository Package<a class="headerlink" href="#kiwi-solver-repository-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-kiwi.solver.repository.base">
+<span id="kiwi-solver-repository-base-module"></span><h2><a class="reference internal" href="#module-kiwi.solver.repository.base" title="kiwi.solver.repository.base"><code class="xref py py-obj docutils literal"><span class="pre">kiwi.solver.repository.base</span></code></a> Module<a class="headerlink" href="#module-kiwi.solver.repository.base" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.solver.repository.base.SolverRepositoryBase">
+<em class="property">class </em><code class="descclassname">kiwi.solver.repository.base.</code><code class="descname">SolverRepositoryBase</code><span class="sig-paren">(</span><em>uri</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/solver/repository/base.html#SolverRepositoryBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.solver.repository.base.SolverRepositoryBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Base class interface for SAT solvable creation.</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">uri</span></code></dt>
+<dd><p class="first last">Instance of Uri class</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="kiwi.solver.repository.base.SolverRepositoryBase.create_repository_solvable">
+<code class="descname">create_repository_solvable</code><span class="sig-paren">(</span><em>target_dir='/var/tmp/kiwi/satsolver'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/solver/repository/base.html#SolverRepositoryBase.create_repository_solvable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.solver.repository.base.SolverRepositoryBase.create_repository_solvable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create SAT solvable for this repository from previously
+created intermediate solvables by merge and store the
+result solvable in the specified target_dir</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>target_dir</strong> (<em>string</em>) &#8211; path name</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">file path to solvable</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.solver.repository.base.SolverRepositoryBase.download_from_repository">
+<code class="descname">download_from_repository</code><span class="sig-paren">(</span><em>repo_source</em>, <em>target</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/solver/repository/base.html#SolverRepositoryBase.download_from_repository"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.solver.repository.base.SolverRepositoryBase.download_from_repository" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download given source file from the repository and store
+it as target file</p>
+<p>The repo_source location is used relative to the repository
+location and will be part of a mime type source like:
+<a class="reference external" href="file://repo_path/repo_source">file://repo_path/repo_source</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>source</strong> (<em>string</em>) &#8211; source file in the repo</li>
+<li><strong>target</strong> (<em>string</em>) &#8211; file path</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.solver.repository.base.SolverRepositoryBase.is_uptodate">
+<code class="descname">is_uptodate</code><span class="sig-paren">(</span><em>target_dir='/var/tmp/kiwi/satsolver'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/solver/repository/base.html#SolverRepositoryBase.is_uptodate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.solver.repository.base.SolverRepositoryBase.is_uptodate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if repository metadata is up to date</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiwi.solver.repository.base.SolverRepositoryBase.timestamp">
+<code class="descname">timestamp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/solver/repository/base.html#SolverRepositoryBase.timestamp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.solver.repository.base.SolverRepositoryBase.timestamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return repository timestamp</p>
+<p>The retrieval of the repository timestamp depends on the
+type of the repository and is therefore supposed to be implemented
+in the specialized Solver Repository classes. If no such
+implementation exists the method returns the value &#8216;static&#8217;
+to indicate there is no timestamp information available.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-kiwi.solver.repository.rpm_md"></span><dl class="class">
+<dt id="kiwi.solver.repository.rpm_md.SolverRepositoryRpmMd">
+<em class="property">class </em><code class="descclassname">kiwi.solver.repository.rpm_md.</code><code class="descname">SolverRepositoryRpmMd</code><span class="sig-paren">(</span><em>uri</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/solver/repository/rpm_md.html#SolverRepositoryRpmMd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.solver.repository.rpm_md.SolverRepositoryRpmMd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kiwi.solver.repository.base.SolverRepositoryBase" title="kiwi.solver.repository.base.SolverRepositoryBase"><code class="xref py py-class docutils literal"><span class="pre">kiwi.solver.repository.base.SolverRepositoryBase</span></code></a></p>
+<dl class="method">
+<dt id="kiwi.solver.repository.rpm_md.SolverRepositoryRpmMd.timestamp">
+<code class="descname">timestamp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/solver/repository/rpm_md.html#SolverRepositoryRpmMd.timestamp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.solver.repository.rpm_md.SolverRepositoryRpmMd.timestamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get timestamp from the first primary metadata</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">time value as text</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-kiwi.solver.repository.rpm_dir"></span><dl class="class">
+<dt id="kiwi.solver.repository.rpm_dir.SolverRepositoryRpmDir">
+<em class="property">class </em><code class="descclassname">kiwi.solver.repository.rpm_dir.</code><code class="descname">SolverRepositoryRpmDir</code><span class="sig-paren">(</span><em>uri</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/solver/repository/rpm_dir.html#SolverRepositoryRpmDir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.solver.repository.rpm_dir.SolverRepositoryRpmDir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kiwi.solver.repository.base.SolverRepositoryBase" title="kiwi.solver.repository.base.SolverRepositoryBase"><code class="xref py py-class docutils literal"><span class="pre">kiwi.solver.repository.base.SolverRepositoryBase</span></code></a></p>
+</dd></dl>
+
+<span class="target" id="module-kiwi.solver.repository.suse"></span><dl class="class">
+<dt id="kiwi.solver.repository.suse.SolverRepositorySUSE">
+<em class="property">class </em><code class="descclassname">kiwi.solver.repository.suse.</code><code class="descname">SolverRepositorySUSE</code><span class="sig-paren">(</span><em>uri</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiwi/solver/repository/suse.html#SolverRepositorySUSE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.solver.repository.suse.SolverRepositorySUSE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kiwi.solver.repository.base.SolverRepositoryBase" title="kiwi.solver.repository.base.SolverRepositoryBase"><code class="xref py py-class docutils literal"><span class="pre">kiwi.solver.repository.base.SolverRepositoryBase</span></code></a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-kiwi.solver.repository">
+<span id="module-contents"></span><h2>Module Contents<a class="headerlink" href="#module-kiwi.solver.repository" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kiwi.solver.repository.SolverRepository">
+<em class="property">class </em><code class="descclassname">kiwi.solver.repository.</code><code class="descname">SolverRepository</code><a class="reference internal" href="../_modules/kiwi/solver/repository.html#SolverRepository"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiwi.solver.repository.SolverRepository" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Repository factory for creation of SAT solvables</p>
+<p>Attributes</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal"><span class="pre">uri</span></code></dt>
+<dd><p class="first last">Instance of Uri</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/kiwi-logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">kiwi.solver.repository Package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-kiwi.solver.repository.base"><code class="docutils literal"><span class="pre">kiwi.solver.repository.base</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-kiwi.solver.repository">Module Contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="kiwi.html">API Documentation 8.25.5</a><ul>
+  <li><a href="kiwi.solver.html">kiwi.solver Package</a><ul>
+      <li>Previous: <a href="kiwi.solver.html" title="previous chapter">kiwi.solver Package</a></li>
+      <li>Next: <a href="kiwi.tasks.html" title="next chapter">kiwi.tasks package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<h1 class="logo"><a href="../index.html">kiwi</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=SUSE&repo=kiwi&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/SUSE/kiwi">
+    <img
+        alt="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+        src="https://secure.travis-ci.org/SUSE/kiwi.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Marcus Schäfer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/api/kiwi.solver.repository.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/SUSE/kiwi" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>
